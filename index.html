@@ -72,9 +72,9 @@
         </div>
       </div>
 
-      <!-- Quick Switch to LingoAce App -->
+      <!-- Quick Switch to LingoAce App with exact GitHub Pages URL -->
       <div class="flex items-center space-x-2">
-        <a href="./lingoace-mandarin-app.html" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-colors border border-amber-300 shadow-sm">
+        <a href="https://jactong-san.github.io/mandarin/lingoace.html" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-colors border border-amber-300 shadow-sm">
           <span>📚</span>
           <span>切換至 LingoAce 課程</span>
         </a>
@@ -919,7 +919,7 @@
       let options = [...wrongOptions, item].sort(() => 0.5 - Math.random());
 
       const grid = document.getElementById('quizOptionsGrid');
-      // Choice words are larger (font-2xl to 3xl), definitions smaller (text-xs to sm)
+      // Choice words are larger (font-2xl to 3xl), definitions smaller
       grid.innerHTML = options.map(opt => {
         return `
           <button onclick="submitQuizAnswer('${opt.word}')" class="quiz-opt-btn p-5 bg-white hover:bg-amber-50 border-2 border-stone-200 hover:border-amber-500 rounded-2xl shadow-sm transition-all flex items-center justify-between">
