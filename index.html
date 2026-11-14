@@ -396,6 +396,7 @@
     let audioUnlocked = false;
     let currentSpeakRequestId = 0;
     let selectedTwVoice = null;
+    let activeUtterance = null; // Keep reference so iOS Safari doesn't garbage collect mid-speech
 
     let vocabSubMode = 'flashcard';
     let flashcardIdx = 0;
@@ -425,7 +426,7 @@
       window.speechSynthesis.onvoiceschanged = loadTaiwaneseVoice;
     }
 
-    // Unlock Speech Synthesis & Web Audio API on first user gesture (crucial for iOS Safari)
+    // Unlock Web Audio API on first user gesture (do NOT call empty speechSynthesis.speak here as it cancels real speech on iOS)
     function unlockAudioEngine() {
       if (audioUnlocked) return;
       try {
@@ -441,12 +442,7 @@
           source.connect(ctx.destination);
           source.start(0);
         }
-        if (window.speechSynthesis) {
-          loadTaiwaneseVoice();
-          const silentUtterance = new SpeechSynthesisUtterance('');
-          silentUtterance.volume = 0;
-          window.speechSynthesis.speak(silentUtterance);
-        }
+        loadTaiwaneseVoice();
         audioUnlocked = true;
       } catch (e) {
         console.debug("Audio unlock note:", e);
@@ -458,6 +454,7 @@
 
     function stopCurrentAudio() {
       currentSpeakRequestId++;
+      activeUtterance = null;
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
@@ -481,6 +478,7 @@
       if (!selectedTwVoice) loadTaiwaneseVoice();
 
       const utterance = new SpeechSynthesisUtterance(text);
+      activeUtterance = utterance;
       if (selectedTwVoice) {
         utterance.voice = selectedTwVoice;
       }
@@ -489,24 +487,22 @@
       utterance.pitch = 1.0;
 
       utterance.onend = () => {
-        if (reqId === currentSpeakRequestId && onEndCallback) {
-          onEndCallback();
+        if (reqId === currentSpeakRequestId) {
+          activeUtterance = null;
+          if (onEndCallback) onEndCallback();
         }
       };
 
       utterance.onerror = () => {
-        if (reqId === currentSpeakRequestId && onEndCallback) {
-          onEndCallback();
+        if (reqId === currentSpeakRequestId) {
+          activeUtterance = null;
+          if (onEndCallback) onEndCallback();
         }
       };
 
-      // Small delay after cancel() prevents Chrome/iOS Safari speech queue freeze
-      setTimeout(() => {
-        if (reqId === currentSpeakRequestId) {
-          window.speechSynthesis.resume();
-          window.speechSynthesis.speak(utterance);
-        }
-      }, 40);
+      // MUST call speak() synchronously inside the user tap event for iOS Safari!
+      window.speechSynthesis.resume();
+      window.speechSynthesis.speak(utterance);
     }
 
     function showToast(message, icon = "✨") {
