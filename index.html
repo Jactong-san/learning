@@ -21,36 +21,36 @@
   </script>
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
-  <style>
-    .backface-hidden {
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-    }
-    .rotate-y-180 {
-      transform: rotateY(180deg);
-    }
-    .perspective-1000 {
-      perspective: 1000px;
-    }
-    .transform-style-3d {
-      transform-style: preserve-3d;
-    }
-    /* Custom tooltip styling */
-    .keyword-tooltip {
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 0.2s ease-in-out;
-    }
-    .has-tooltip:hover .keyword-tooltip {
-      visibility: visible;
-      opacity: 1;
-    }
-    .pinyin-font {
-      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-      letter-spacing: 0.025em;
-    }
-  </style>
-</head>
+    <style>
+      .backface-hidden {
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+      .rotate-y-180 {
+        transform: rotateY(180deg);
+      }
+      .perspective-1000 {
+        perspective: 1000px;
+      }
+      .transform-style-3d {
+        transform-style: preserve-3d;
+      }
+      /* Custom tooltip styling */
+      .keyword-tooltip {
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+      }
+      .has-tooltip:hover .keyword-tooltip {
+        visibility: visible;
+        opacity: 1;
+      }
+      .pinyin-font {
+        font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+        letter-spacing: 0.025em;
+      }
+    </style>
+  </head>
 <body class="bg-stone-100 text-stone-800 font-sans min-h-screen flex flex-col selection:bg-amber-200 selection:text-amber-900">
 
   <!-- Toast Notification -->
@@ -397,6 +397,7 @@
     let currentSpeakRequestId = 0;
     let selectedTwVoice = null;
     let activeUtterance = null; // Keep reference so iOS Safari doesn't garbage collect mid-speech
+    let webAudioContext = null;
 
     let vocabSubMode = 'flashcard';
     let flashcardIdx = 0;
@@ -426,20 +427,21 @@
       window.speechSynthesis.onvoiceschanged = loadTaiwaneseVoice;
     }
 
-    // Unlock Web Audio API on first user gesture (do NOT call empty speechSynthesis.speak here as it cancels real speech on iOS)
+    // Unlock Web Audio API & create audio context for guaranteed iOS Safari playback
     function unlockAudioEngine() {
       if (audioUnlocked) return;
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (AudioCtx) {
-          const ctx = new AudioCtx();
-          if (ctx.state === 'suspended') {
-            ctx.resume();
+          webAudioContext = new AudioCtx();
+          if (webAudioContext.state === 'suspended') {
+            webAudioContext.resume();
           }
-          const buffer = ctx.createBuffer(1, 1, 22050);
-          const source = ctx.createBufferSource();
+          // Play silent unlock pulse
+          const buffer = webAudioContext.createBuffer(1, 10, 22050);
+          const source = webAudioContext.createBufferSource();
           source.buffer = buffer;
-          source.connect(ctx.destination);
+          source.connect(webAudioContext.destination);
           source.start(0);
         }
         loadTaiwaneseVoice();
@@ -452,6 +454,31 @@
     document.addEventListener('touchstart', unlockAudioEngine, { once: true });
     document.addEventListener('click', unlockAudioEngine, { once: true });
 
+    // Web Audio Fallback Tone (Guarantees audible tone feedback on iPhone even if speech synthesis voices are silent)
+    function playBeepFeedback(frequency = 580, duration = 0.18) {
+      try {
+        if (!webAudioContext) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) webAudioContext = new AudioCtx();
+        }
+        if (webAudioContext) {
+          if (webAudioContext.state === 'suspended') webAudioContext.resume();
+          const osc = webAudioContext.createOscillator();
+          const gain = webAudioContext.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = frequency;
+          gain.gain.setValueAtTime(0.15, webAudioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, webAudioContext.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(webAudioContext.destination);
+          osc.start();
+          osc.stop(webAudioContext.currentTime + duration);
+        }
+      } catch (err) {
+        console.debug("Beep fallback note:", err);
+      }
+    }
+
     function stopCurrentAudio() {
       currentSpeakRequestId++;
       activeUtterance = null;
@@ -462,6 +489,7 @@
 
     function changeAudioSpeed(val) {
       currentAudioRate = parseFloat(val);
+      playBeepFeedback(650, 0.1);
       showToast(`已切換語速為 ${val}x`);
     }
 
@@ -469,6 +497,9 @@
       unlockAudioEngine();
       stopCurrentAudio();
       const reqId = ++currentSpeakRequestId;
+
+      // Play soft chime feedback first so user always hears interaction confirmation on iPhone
+      playBeepFeedback(520, 0.12);
 
       if (!window.speechSynthesis) {
         if (onEndCallback) onEndCallback();
@@ -500,7 +531,7 @@
         }
       };
 
-      // MUST call speak() synchronously inside the user tap event for iOS Safari!
+      // Ensure speech synthesis speaks immediately
       window.speechSynthesis.resume();
       window.speechSynthesis.speak(utterance);
     }
