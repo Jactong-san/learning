@@ -1,1192 +1,1638 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>French Holiday & Verbs Audio Quiz</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>French Holiday & Environment Study App</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Inter', sans-serif;
     }
-    @keyframes pulseRing {
-      0% { transform: scale(0.95); opacity: 0.8; }
-      70% { transform: scale(1.15); opacity: 0; }
-      100% { transform: scale(0.95); opacity: 0; }
+    /* Smooth 3D Flip for Flashcards */
+    .perspective-1000 {
+      perspective: 1000px;
     }
-    .speaking-pulse::after {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      border-radius: 9999px;
-      border: 2px solid #2563eb;
-      animation: pulseRing 1.2s infinite;
+    .transform-style-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.25s ease-out forwards;
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col items-center py-4 px-3 sm:py-8 sm:px-6">
 
-  <!-- Top Header -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
-    <div class="max-w-4xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-xl bg-blue-700 text-white flex items-center justify-center font-extrabold text-sm shadow-sm">
-          FR
-        </div>
+  <!-- Main App Shell -->
+  <div class="w-full max-w-4xl bg-white rounded-2xl shadow-lg border border-slate-200/80 overflow-hidden flex flex-col">
+    
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-700 text-white p-5 sm:p-7">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">
-            French Holiday & Verbs Audio Quiz
-          </h1>
-          <p class="text-xs text-slate-500">Auto-pronounces the correct French on every answer</p>
-        </div>
-      </div>
-
-      <!-- Audio & Speed Settings -->
-      <div class="flex items-center gap-2">
-        <button
-          id="speedToggleBtn"
-          onclick="toggleSpeechRate()"
-          title="Toggle normal or slow French pronunciation"
-          class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700 transition"
-        >
-          🐢 1.0x Speed
-        </button>
-        <button
-          id="autoSpeakBtn"
-          onclick="toggleAutoSpeak()"
-          title="Toggle automatic pronunciation when clicking an answer"
-          class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
-        >
-          🔊 Auto-Speak: ON
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-6 sm:py-8">
-
-    <!-- Filter & Stats Bar -->
-    <div id="quizControlsBar" class="mb-5 flex flex-wrap items-center justify-between gap-3">
-      <div class="inline-flex rounded-xl bg-slate-200/70 p-1">
-        <button
-          id="modeAllBtn"
-          onclick="setQuizMode('all')"
-          class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-blue-700 shadow-sm transition"
-        >
-          🎲 Random 20 (from 40)
-        </button>
-        <button
-          id="modeTrickyBtn"
-          onclick="setQuizMode('tricky')"
-          class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition"
-        >
-          ⚡ Tricky Only (18)
-        </button>
-      </div>
-
-      <div class="flex items-center gap-3 text-sm font-semibold">
-        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-          Score: <span id="scoreDisplay">0</span>
-        </span>
-        <span class="text-slate-500" id="progressText">1 / 20</span>
-      </div>
-    </div>
-
-    <!-- Progress Bar -->
-    <div id="progressBarWrapper" class="w-full bg-slate-200 rounded-full h-2.5 mb-6 overflow-hidden">
-      <div id="progressBar" class="bg-blue-700 h-2.5 rounded-full transition-all duration-300" style="width: 5%"></div>
-    </div>
-
-    <!-- Active Question Card -->
-    <section id="quizCard" class="bg-white rounded-2xl shadow-md border border-slate-200/80 p-5 sm:p-8">
-      <!-- Category & Tricky Badge -->
-      <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-        <span id="questionCategory" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
-          Vocabulary
-        </span>
-        <span id="trickyBadge" class="hidden px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300">
-          ⚡ Tricky Conjugation / Grammar
-        </span>
-      </div>
-
-      <!-- Question Text -->
-      <h2 id="questionText" class="text-lg sm:text-2xl font-bold text-slate-900 mb-6 leading-snug">
-        Loading question...
-      </h2>
-
-      <!-- Options Container -->
-      <div id="optionsContainer" class="space-y-3"></div>
-
-      <!-- Feedback & French Audio Bar (Shown after answering) -->
-      <div id="feedbackBox" class="hidden mt-6 rounded-xl p-4 sm:p-5 border transition-all">
-        <div class="flex flex-wrap items-start justify-between gap-3">
-          <div class="flex-1 min-w-[200px]">
-            <div id="feedbackHeader" class="font-bold text-base mb-1"></div>
-            <div class="text-sm font-semibold text-slate-900 mb-1.5">
-              Correct French: <span id="correctFrenchPhrase" class="text-blue-700 underline decoration-blue-300"></span>
-            </div>
-            <p id="explanationText" class="text-sm text-slate-600 leading-relaxed"></p>
-          </div>
-
-          <!-- Replay Audio Button -->
-          <button
-            id="replayAudioBtn"
-            onclick="replayCurrentFrench()"
-            class="relative inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold shadow-sm transition shrink-0"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H2v6h4l5 4V5zm4.54 3.46a5 5 0 010 7.07m2.83-9.9a9 9 0 010 12.73" />
-            </svg>
-            <span>Listen Again</span>
-          </button>
+          <span class="inline-block text-xs font-semibold uppercase tracking-wider bg-white/15 px-2.5 py-1 rounded-full mb-2">Français • Vocabulaire & Grammaire</span>
+          <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">French Holiday & Environment Studio</h1>
+          <p class="text-indigo-100 text-sm mt-1">Flashcards, 60-Question 3-Round Challenge, & Smart Audio</p>
         </div>
 
-        <!-- Next Question Button -->
-        <div class="mt-5 pt-4 border-t border-slate-200/70 flex justify-end">
-          <button
-            id="nextBtn"
-            onclick="nextQuestion()"
-            class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm shadow-sm transition"
-          >
-            Next Question →
+        <!-- Audio Controls Pill -->
+        <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm p-2 rounded-xl border border-white/15 self-start sm:self-auto">
+          <button id="audio-toggle-btn" onclick="toggleAudio()" class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-white text-indigo-700 shadow-sm hover:bg-indigo-50 transition">
+            <span id="audio-status-icon">🔊</span>
+            <span id="audio-status-text">Auto-Audio: ON</span>
           </button>
         </div>
       </div>
-    </section>
+    </header>
 
-    <!-- End-of-Quiz Summary Screen -->
-    <section id="summaryScreen" class="hidden space-y-6">
-      <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 sm:p-8 text-center">
-        <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center mx-auto mb-4 text-3xl">
-          🎉
-        </div>
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">Quiz Complete!</h2>
-        <p id="summarySubtitle" class="text-slate-600 mb-6">Here is how you performed on your French practice.</p>
+    <!-- Primary Navigation Tabs -->
+    <nav class="flex border-b border-slate-200 bg-slate-100/70 overflow-x-auto">
+      <button id="tab-flashcards" onclick="switchMode('flashcards')" class="flex-1 py-3.5 px-4 text-sm font-bold text-indigo-600 bg-white border-b-2 border-indigo-600 transition whitespace-nowrap flex items-center justify-center gap-2">
+        <span>🗂️</span>
+        <span>1. Flashcard Study (18)</span>
+      </button>
+      <button id="tab-quiz" onclick="switchMode('quiz')" class="flex-1 py-3.5 px-4 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition whitespace-nowrap flex items-center justify-center gap-2">
+        <span>🎯</span>
+        <span>2. 60-Q Quiz (3 Rounds)</span>
+      </button>
+      <button id="tab-mistakes" onclick="switchMode('mistakes')" class="flex-1 py-3.5 px-4 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition whitespace-nowrap flex items-center justify-center gap-2">
+        <span>📌</span>
+        <span id="mistakes-tab-label">3. Missed Review (0)</span>
+      </button>
+    </nav>
 
-        <!-- Score Metrics -->
-        <div class="grid grid-cols-3 gap-3 max-w-md mx-auto mb-7">
-          <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200">
-            <div id="finalScore" class="text-2xl font-extrabold text-blue-700">0/20</div>
-            <div class="text-xs font-medium text-slate-500 mt-0.5">Score</div>
-          </div>
-          <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200">
-            <div id="finalAccuracy" class="text-2xl font-extrabold text-emerald-600">0%</div>
-            <div class="text-xs font-medium text-slate-500 mt-0.5">Accuracy</div>
-          </div>
-          <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200">
-            <div id="finalMissed" class="text-2xl font-extrabold text-rose-600">0</div>
-            <div class="text-xs font-medium text-slate-500 mt-0.5">To Review</div>
-          </div>
-        </div>
+    <!-- Main Dynamic Workspace -->
+    <main id="app-workspace" class="p-4 sm:p-7 flex-1">
+      <!-- Rendered dynamically by JS -->
+    </main>
 
-        <!-- Action Buttons -->
-        <div class="flex flex-wrap items-center justify-center gap-3">
-          <button
-            id="retryMissedBtn"
-            onclick="retryMissedQuestions()"
-            class="hidden px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-sm shadow-sm transition"
-          >
-            🔁 Retry Missed Questions
-          </button>
-          <button
-            onclick="restartCurrentMode()"
-            class="px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-semibold text-sm shadow-sm transition"
-          >
-            🎲 New Random 20
-          </button>
-        </div>
-      </div>
+  </div>
 
-      <!-- Full Review List with Audio Replay -->
-      <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-5 sm:p-6">
-        <h3 class="text-lg font-bold text-slate-900 mb-4">Full Review & Pronunciation</h3>
-        <div id="reviewList" class="space-y-3"></div>
-      </div>
-    </section>
-
-  </main>
+  <!-- Footer Note -->
+  <footer class="mt-4 text-center text-xs text-slate-400 max-w-2xl">
+    Tip: Use <strong>Normal (0.9x)</strong> or <strong>Slow (0.5x)</strong> audio buttons to hear liaisons and verb endings clearly. Completing all 3 rounds automatically reshuffles the 60 questions into 3 fresh rounds!
+  </footer>
 
   <script>
-    // Complete 40-question pool based strictly on your French holiday destinations & verbs notes
-    const ALL_QUESTIONS = [
+    // =========================================================================
+    // 1. FLASHCARD DECK DATA (18 Comprehensive Cards)
+    // =========================================================================
+    const flashcardsData = [
       {
         id: 1,
-        category: "Sentence Translation",
-        tricky: false,
-        question: 'How do you translate "We are going to the mountains" into French?',
-        options: [
-          "Nous allons à la montagne.",
-          "Vous allez à la montagne.",
-          "Nous allons à la mer.",
-          "On va dans la forêt."
-        ],
-        correctAnswer: "Nous allons à la montagne.",
-        frenchAudioText: "Nous allons à la montagne.",
-        explanation: '"Nous allons" means "We are going", and "à la montagne" means "to the mountains".'
+        category: "Environment Verb",
+        french: "trier",
+        phonetic: "[tʁi.je]",
+        english: "to sort (recycling)",
+        exampleFr: "Tous les weekends, je trie le plastique, le verre et le papier chez moi.",
+        exampleEn: "Every weekend, I sort plastic, glass and paper at home.",
+        grammarNote: "Présent: je trie, tu tries, nous trions, ils trient. Passé composé (avoir): j'ai trié."
       },
       {
         id: 2,
-        category: "Sentence Translation",
-        tricky: false,
-        question: 'Which sentence correctly translates "She is fishing in the river"?',
-        options: [
-          "Elle pêche dans la rivière.",
-          "Elles pêchent dans la rivière.",
-          "Il pêche dans la rivière.",
-          "Elle nage dans le lac."
-        ],
-        correctAnswer: "Elle pêche dans la rivière.",
-        frenchAudioText: "Elle pêche dans la rivière.",
-        explanation: '"Elle" (she) takes the singular ending "-e" ("pêche"), whereas "Elles" (they, feminine) takes "-ent" ("pêchent").'
+        category: "Environment Verb",
+        french: "nettoyer",
+        phonetic: "[ne.twa.je]",
+        english: "to clean",
+        exampleFr: "Chaque mercredi, ma sœur et moi nettoyons la plage.",
+        exampleEn: "Every Wednesday, my sister and I clean the beach.",
+        grammarNote: "Stem change (-yer): 'y' becomes 'i' before silent 'e' (je nettoie, ils nettoient), but stays 'y' in nous nettoyons / vous nettoyez. Passé composé: avons nettoyé."
       },
       {
         id: 3,
-        category: "Verb Conjugation",
-        tricky: false,
-        question: 'What is the correct conjugation of the verb "nager" (to swim) for "nous" (we)?',
-        options: [
-          "nous nageons",
-          "nous nagons",
-          "nous nagent",
-          "nous nagez"
-        ],
-        correctAnswer: "nous nageons",
-        frenchAudioText: "nous nageons",
-        explanation: 'Verbs ending in "-ger" keep an "e" before "-ons" in the "nous" form ("nous nageons").'
+        category: "Environment Verb",
+        french: "ramasser",
+        phonetic: "[ʁa.ma.se]",
+        english: "to pick up / collect",
+        exampleFr: "Dimanche dernier, mon frère et mon père ont ramassé les déchets.",
+        exampleEn: "Last Sunday, my brother and my father picked up the rubbish.",
+        grammarNote: "Regular -er verb. Présent: ils ramassent. Passé composé (avoir): ont ramassé."
       },
       {
         id: 4,
-        category: "Sentence Translation",
-        tricky: false,
-        question: 'How do you say "You live on an island" using the informal singular "tu" form?',
-        options: [
-          "Tu habites sur une île.",
-          "J’habite sur une île.",
-          "Il habite sur une île.",
-          "Tu habite sur une île."
-        ],
-        correctAnswer: "Tu habites sur une île.",
-        frenchAudioText: "Tu habites sur une île.",
-        explanation: 'With "tu", regular "-er" verbs like "habiter" always end in "-es" ("tu habites").'
+        category: "Environment Verb",
+        french: "jeter",
+        phonetic: "[ʒə.te]",
+        english: "to throw (away)",
+        exampleFr: "Hier, j’ai vu des gens qui ont jeté leurs papiers par terre.",
+        exampleEn: "Yesterday, I saw people who threw their papers on the ground.",
+        grammarNote: "Tricky spelling! Doubles the 't' in present when followed by silent 'e' (je jette, tu jettes, ils jettent), but single 't' in nous jetons and passé composé (ont jeté)."
       },
       {
         id: 5,
-        category: "Comprehension",
-        tricky: false,
-        question: 'What does the French phrase "Ils vont en ville" mean in English?',
-        options: [
-          "They are going into town.",
-          "We are going into town.",
-          "They are going to the countryside.",
-          "He is going into town."
-        ],
-        correctAnswer: "They are going into town.",
-        frenchAudioText: "Ils vont en ville.",
-        explanation: '"Ils vont" means "They are going" (masculine or mixed group), and "en ville" means "into town".'
+        category: "Environment Verb",
+        french: "manifester",
+        phonetic: "[ma.ni.fɛs.te]",
+        english: "to protest / demonstrate",
+        exampleFr: "Régulièrement, mes cousins manifestent en groupe avec des pancartes.",
+        exampleEn: "Regularly, my cousins protest in a group with placards.",
+        grammarNote: "Regular -er verb. Présent: ils manifestent. Passé composé (avoir): ont manifesté."
       },
       {
         id: 6,
-        category: "Verb Conjugation",
-        tricky: false,
-        question: 'Which pronoun and verb form correctly translates "You go (formal / plural)"?',
-        options: [
-          "vous allez",
-          "tu vas",
-          "nous allons",
-          "ils vont"
-        ],
-        correctAnswer: "vous allez",
-        frenchAudioText: "vous allez",
-        explanation: '"Vous" is used for formal singular "you" or plural "you all", paired with "allez".'
+        category: "Environment Verb",
+        french: "polluer",
+        phonetic: "[pɔ.lɥe]",
+        english: "to pollute",
+        exampleFr: "L’année dernière, les centres de données ont pollué beaucoup l’environnement.",
+        exampleEn: "Last year, the data centres polluted the environment a lot.",
+        grammarNote: "Regular -er verb. Présent: ils polluent. Passé composé (avoir): ont pollué."
       },
       {
         id: 7,
-        category: "Vocabulary",
-        tricky: false,
-        question: 'What is the English translation for "la forêt"?',
-        options: [
-          "the forest",
-          "the river",
-          "the sea",
-          "the countryside"
-        ],
-        correctAnswer: "the forest",
-        frenchAudioText: "la forêt",
-        explanation: '"La forêt" means "the forest". Notice the circumflex accent (^) over the "e".'
+        category: "Relative Pronoun",
+        french: "qui (+ verbe)",
+        phonetic: "[ki]",
+        english: "who / that (subject)",
+        exampleFr: "Une maison qui se trouve au bord de la mer.",
+        exampleEn: "A house that is by the sea.",
+        grammarNote: "Used as the SUBJECT of the clause. Always followed directly by a conjugated verb (or object pronoun + verb like 'qui me plaît'). Never elides to qu'!"
       },
       {
         id: 8,
-        category: "Verb Conjugation",
-        tricky: false,
-        question: 'How do you conjugate the verb "pêcher" (to fish) for "ils/elles" (they)?',
-        options: [
-          "ils/elles pêchent",
-          "ils/elles pêchons",
-          "ils/elles pêche",
-          "ils/elles pêches"
-        ],
-        correctAnswer: "ils/elles pêchent",
-        frenchAudioText: "ils pêchent",
-        explanation: 'For "ils/elles", regular "-er" verbs take the silent "-ent" ending ("pêchent").'
+        category: "Relative Pronoun",
+        french: "que / qu’ (+ sujet)",
+        phonetic: "[kə]",
+        english: "that / whom (direct object)",
+        exampleFr: "Un cours qu’elle a fait pendant l’été.",
+        exampleEn: "A course that she did during the summer.",
+        grammarNote: "Used as the DIRECT OBJECT. Always followed by a subject noun or pronoun (je, tu, elle, nous, les touristes). Shortens to qu' before a vowel or silent h."
       },
       {
         id: 9,
-        category: "Sentence Translation",
-        tricky: false,
-        question: 'Which option translates "He is going into the forest"?',
-        options: [
-          "Il va dans la forêt.",
-          "Elle va dans la forêt.",
-          "On va dans la forêt.",
-          "Ils vont dans la forêt."
-        ],
-        correctAnswer: "Il va dans la forêt.",
-        frenchAudioText: "Il va dans la forêt.",
-        explanation: '"Il va" means "He goes / He is going", followed by "dans la forêt" (into the forest).'
+        category: "Advanced Vocabulary",
+        french: "réputée",
+        phonetic: "[ʁe.py.te]",
+        english: "famous / renowned / well-known",
+        exampleFr: "Une ville qui est réputée pour sa gastronomie.",
+        exampleEn: "A city that is famous for its food.",
+        grammarNote: "Adjective agrees in gender & number: réputé (m.sg), réputée (f.sg), réputés (m.pl), réputées (f.pl)."
       },
       {
         id: 10,
-        category: "Vocabulary",
-        tricky: false,
-        question: 'What does "une île" mean?',
-        options: [
-          "an island",
-          "a lake",
-          "a city",
-          "a mountain"
-        ],
-        correctAnswer: "an island",
-        frenchAudioText: "une île",
-        explanation: '"Une île" is feminine and means "an island".'
+        category: "Advanced Vocabulary",
+        french: "la gastronomie",
+        phonetic: "[la ɡas.tʁɔ.nɔ.mi]",
+        english: "gastronomy / fine food",
+        exampleFr: "Lyon est une ville réputée pour sa gastronomie.",
+        exampleEn: "Lyon is a city famous for its fine food.",
+        grammarNote: "Feminine noun. Refers to regional culinary specialties and fine cooking."
       },
       {
         id: 11,
-        category: "Verb Conjugation",
-        tricky: false,
-        question: 'Choose the correct conjugation of "habiter" (to live) for "nous" (we):',
-        options: [
-          "nous habitons",
-          "nous habitez",
-          "nous habitent",
-          "nous habite"
-        ],
-        correctAnswer: "nous habitons",
-        frenchAudioText: "nous habitons",
-        explanation: 'Remove "-er" from "habiter" and add "-ons" for "nous": "nous habitons".'
+        category: "Advanced Vocabulary",
+        french: "émerveiller",
+        phonetic: "[e.mɛʁ.vɛ.je]",
+        english: "to amaze / fill with wonder",
+        exampleFr: "Une ville qui va vous émerveiller.",
+        exampleEn: "A city that is going to amaze you.",
+        grammarNote: "From 'merveille' (marvel/wonder). Often used in futur proche: aller + infinitive."
       },
       {
         id: 12,
-        category: "Sentence Translation",
-        tricky: false,
-        question: 'How do you say "They (feminine) are going to the countryside"?',
-        options: [
-          "Elles vont à la campagne.",
-          "Ils vont à la campagne.",
-          "Elles vont à la montagne.",
-          "Elles va à la campagne."
-        ],
-        correctAnswer: "Elles vont à la campagne.",
-        frenchAudioText: "Elles vont à la campagne.",
-        explanation: '"Elles" refers to an all-feminine "they", and "vont" is the 3rd-person plural of "aller".'
+        category: "Environment Noun",
+        french: "les pancartes",
+        phonetic: "[le pɑ̃.kaʁt]",
+        english: "placards / protest signs",
+        exampleFr: "Mes cousins manifestent en groupe avec des pancartes.",
+        exampleEn: "My cousins protest in a group with placards.",
+        grammarNote: "Feminine plural noun (une pancarte)."
       },
       {
         id: 13,
-        category: "Conjugation Trap",
-        tricky: true,
-        question: 'TRICKY: What is the correct "tu" conjugation for "nager" (remember: tu always takes an -s)?',
-        options: [
-          "tu nages",
-          "tu nage",
-          "tu nageons",
-          "tu nagent"
-        ],
-        correctAnswer: "tu nages",
-        frenchAudioText: "tu nages",
-        explanation: 'Even though "tu nages" sounds identical to "je nage", you must write the "-s" with "tu"!'
+        category: "Environment Noun",
+        french: "les déchets",
+        phonetic: "[le de.ʃɛ]",
+        english: "rubbish / waste / trash",
+        exampleFr: "Tous les dimanches, mon frère et mon père ramassent les déchets.",
+        exampleEn: "Every Sunday, my brother and my father pick up the rubbish.",
+        grammarNote: "Masculine plural noun (un déchet). Note the silent 't' at the end."
       },
       {
         id: 14,
-        category: "Conjugation Trap",
-        tricky: true,
-        question: 'TRICKY: Which sentence accurately translates "You swim in the lake" (informal singular)?',
-        options: [
-          "Tu nages dans le lac.",
-          "Tu nage dans le lac.",
-          "Tu nages dans la rivière.",
-          "Vous nagez dans le lac."
-        ],
-        correctAnswer: "Tu nages dans le lac.",
-        frenchAudioText: "Tu nages dans le lac.",
-        explanation: 'Watch out for the missing "-s" in "Tu nage"! With "tu", it must be spelled "Tu nages".'
+        category: "Holiday & Home",
+        french: "transformer",
+        phonetic: "[tʁɑ̃s.fɔʁ.me]",
+        english: "to transform / renovate",
+        exampleFr: "Une petite maison que nous allons transformer.",
+        exampleEn: "A small house that we are going to transform.",
+        grammarNote: "Regular -er verb. Used here in futur proche (allons transformer)."
       },
       {
         id: 15,
-        category: "Vocabulary",
-        tricky: false,
-        question: 'What is the English translation for "la campagne"?',
-        options: [
-          "the countryside",
-          "the town / the city",
-          "the sea",
-          "the lake"
-        ],
-        correctAnswer: "the countryside",
-        frenchAudioText: "la campagne",
-        explanation: '"La campagne" means "the countryside" (not to be confused with "camping").'
+        category: "Holiday & Location",
+        french: "au bord de la mer",
+        phonetic: "[o bɔʁ də la mɛʁ]",
+        english: "by the sea / at the seaside",
+        exampleFr: "Une maison qui se trouve au bord de la mer.",
+        exampleEn: "A house that is located by the sea.",
+        grammarNote: "Fixed prepositional phrase. 'Se trouver' = to be located."
       },
       {
         id: 16,
-        category: "Spelling & Phonetics",
-        tricky: true,
-        question: 'TRICKY: Why is the spelling "nous nageons" correct instead of "nous nagons"?',
-        options: [
-          "To keep the soft 'g' sound before the 'o' of the '-ons' ending.",
-          "Because 'nager' is an irregular verb like 'aller'.",
-          "Because 'nous' always adds an extra 'e' to all verbs.",
-          "To make it plural for feminine subjects."
-        ],
-        correctAnswer: "To keep the soft 'g' sound before the 'o' of the '-ons' ending.",
-        frenchAudioText: "nous nageons",
-        explanation: 'In French, "g" followed by "o" makes a hard "g" sound (like "go"). Adding "e" preserves the soft "j" sound in "nous nageons".'
+        category: "Environment Noun",
+        french: "les centres de données",
+        phonetic: "[le sɑ̃tʁ də dɔ.ne]",
+        english: "data centres",
+        exampleFr: "Les centres de données polluent beaucoup l’environnement.",
+        exampleEn: "Data centres pollute the environment a lot.",
+        grammarNote: "Masculine plural noun phrase (un centre de données)."
       },
       {
         id: 17,
-        category: "Sentence Translation",
-        tricky: false,
-        question: 'How do you translate "We fish in the river"?',
-        options: [
-          "Nous pêchons dans la rivière.",
-          "Nous pêchent dans la rivière.",
-          "On pêchons dans la rivière.",
-          "Nous nageons dans la rivière."
-        ],
-        correctAnswer: "Nous pêchons dans la rivière.",
-        frenchAudioText: "Nous pêchons dans la rivière.",
-        explanation: '"Nous" takes "-ons" ("pêchons"), and "in the river" is "dans la rivière".'
+        category: "Grammar Expression",
+        french: "venir de + infinitif",
+        phonetic: "[və.niʁ də]",
+        english: "to have just (done something)",
+        exampleFr: "Nos amis qui viennent d’arriver.",
+        exampleEn: "Our friends who have just arrived.",
+        grammarNote: "Passé récent! Conjugate 'venir' in present + de/d' + infinitive."
       },
       {
         id: 18,
-        category: "Grammar Trap",
-        tricky: true,
-        question: 'TRICKY: Which subject pronoun means "we" casually, yet uses the exact same singular verb form as "il" and "elle"?',
-        options: [
-          "on",
-          "ils",
-          "nous",
-          "vous"
-        ],
-        correctAnswer: "on",
-        frenchAudioText: "il va, elle va, on va",
-        explanation: '"On" means "we/one" in everyday French, but grammatically it conjugates in the 3rd-person singular ("on va", "on nage").'
-      },
-      {
-        id: 19,
-        category: "Vocabulary",
-        tricky: false,
-        question: 'What does "aller en vacances" mean?',
-        options: [
-          "to go on holiday",
-          "to live on an island",
-          "to swim in the sea",
-          "to go into town"
-        ],
-        correctAnswer: "to go on holiday",
-        frenchAudioText: "aller en vacances",
-        explanation: '"Aller en vacances" is the infinitive phrase for "to go on holiday / vacation".'
-      },
-      {
-        id: 20,
-        category: "Elision Trap",
-        tricky: true,
-        question: 'TRICKY: Choose the correct conjugation of "habiter" for "je" (I):',
-        options: [
-          "j'habite",
-          "je habite",
-          "j'habites",
-          "je habitons"
-        ],
-        correctAnswer: "j'habite",
-        frenchAudioText: "j'habite",
-        explanation: 'Because "habiter" begins with a silent "h" (h muet), "je" drops its "e" and contracts to "j’habite".'
-      },
-      {
-        id: 21,
-        category: "Pronunciation Trap",
-        tricky: true,
-        question: 'TRICKY: Which form of "pêcher" is pronounced DIFFERENTLY from the other three?',
-        options: [
-          "nous pêchons",
-          "je pêche",
-          "tu pêches",
-          "ils pêchent"
-        ],
-        correctAnswer: "nous pêchons",
-        frenchAudioText: "nous pêchons",
-        explanation: '"Je pêche", "tu pêches", and "ils pêchent" all sound identical ("pêsh") because "-e", "-es", and "-ent" are silent! Only "nous pêchons" sounds different.'
-      },
-      {
-        id: 22,
-        category: "Irregular Verb Trap",
-        tricky: true,
-        question: 'TRICKY: Select the correct present-tense form of the irregular verb "aller" for "il", "elle", and "on":',
-        options: [
-          "va",
-          "vas",
-          "vais",
-          "vont"
-        ],
-        correctAnswer: "va",
-        frenchAudioText: "il va, elle va, on va",
-        explanation: 'Careful! "Tu vas" ends in "-s", while "il/elle/on va" has NO "-s" at the end.'
-      },
-      {
-        id: 23,
-        category: "Question Formation",
-        tricky: false,
-        question: 'How do you ask "Where are you going on holiday?" using the informal "tu" form?',
-        options: [
-          "Où tu vas en vacances ?",
-          "Où tu va en vacances ?",
-          "Où vous allez en vacances ?",
-          "Où il va en vacances ?"
-        ],
-        correctAnswer: "Où tu vas en vacances ?",
-        frenchAudioText: "Où tu vas en vacances ?",
-        explanation: '"Où" means "Where", and "tu vas" requires the "-s" on "vas".'
-      },
-      {
-        id: 24,
-        category: "Preposition Trap",
-        tricky: true,
-        question: 'TRICKY: Which preposition is correctly paired with "une île" to say "on an island"?',
-        options: [
-          "sur une île",
-          "dans une île",
-          "en une île",
-          "à une île"
-        ],
-        correctAnswer: "sur une île",
-        frenchAudioText: "sur une île",
-        explanation: 'In French, you live ON an island ("sur une île"), unlike "dans la forêt" (in the forest) or "en ville" (in town).'
-      },
-      {
-        id: 25,
-        category: "Conjugation Trap",
-        tricky: true,
-        question: 'TRICKY: What is the correct conjugation of "habiter" for "ils/elles" (they)?',
-        options: [
-          "ils/elles habitent",
-          "ils/elles habites",
-          "ils/elles habite",
-          "ils/elles habitons"
-        ],
-        correctAnswer: "ils/elles habitent",
-        frenchAudioText: "ils habitent",
-        explanation: 'For 3rd-person plural ("ils/elles"), regular "-er" verbs always end in "-ent" ("habitent"), never "-es".'
-      },
-      {
-        id: 26,
-        category: "Vocabulary",
-        tricky: false,
-        question: 'What is the French word for "the sea"?',
-        options: [
-          "la mer",
-          "le lac",
-          "la rivière",
-          "la montagne"
-        ],
-        correctAnswer: "la mer",
-        frenchAudioText: "la mer",
-        explanation: '"La mer" means "the sea" (feminine).'
-      },
-      {
-        id: 27,
-        category: "Vocabulary",
-        tricky: false,
-        question: 'What is the French word for "the lake"?',
-        options: [
-          "le lac",
-          "la mer",
-          "la rivière",
-          "la ville"
-        ],
-        correctAnswer: "le lac",
-        frenchAudioText: "le lac",
-        explanation: '"Le lac" is masculine and means "the lake".'
-      },
-      {
-        id: 28,
-        category: "Vocabulary",
-        tricky: false,
-        question: 'What does "la ville" mean in English?',
-        options: [
-          "the town / the city",
-          "the countryside",
-          "the forest",
-          "an island"
-        ],
-        correctAnswer: "the town / the city",
-        frenchAudioText: "la ville",
-        explanation: '"La ville" means "the town" or "the city".'
-      },
-      {
-        id: 29,
-        category: "Vocabulary",
-        tricky: false,
-        question: 'Which French infinitive verb means "to fish"?',
-        options: [
-          "pêcher",
-          "nager",
-          "habiter",
-          "aller"
-        ],
-        correctAnswer: "pêcher",
-        frenchAudioText: "pêcher",
-        explanation: '"Pêcher" means "to fish" (written with a circumflex accent: ê).'
-      },
-      {
-        id: 30,
-        category: "Sentence Translation",
-        tricky: false,
-        question: 'How do you translate "I’m going to the sea" into French?',
-        options: [
-          "Je vais à la mer.",
-          "Je va à la mer.",
-          "Tu vas à la mer.",
-          "Nous allons à la mer."
-        ],
-        correctAnswer: "Je vais à la mer.",
-        frenchAudioText: "Je vais à la mer.",
-        explanation: '"Je vais" means "I go / I am going", and "à la mer" means "to the sea".'
-      },
-      {
-        id: 31,
-        category: "Sentence Translation",
-        tricky: false,
-        question: 'Which sentence translates "You’re going to the countryside" (informal singular)?',
-        options: [
-          "Tu vas à la campagne.",
-          "Vous allez à la campagne.",
-          "Tu vais à la campagne.",
-          "Il va à la campagne."
-        ],
-        correctAnswer: "Tu vas à la campagne.",
-        frenchAudioText: "Tu vas à la campagne.",
-        explanation: '"Tu vas" means "You go / You are going", and "à la campagne" means "to the countryside".'
-      },
-      {
-        id: 32,
-        category: "Sentence Translation",
-        tricky: false,
-        question: 'What does "On nage dans le lac" mean in English?',
-        options: [
-          "We swim in the lake.",
-          "They swim in the lake.",
-          "You swim in the lake.",
-          "We fish in the river."
-        ],
-        correctAnswer: "We swim in the lake.",
-        frenchAudioText: "On nage dans le lac.",
-        explanation: '"On" is commonly used in spoken French to mean "We", so "On nage dans le lac" translates to "We swim in the lake."'
-      },
-      {
-        id: 33,
-        category: "Sentence Translation",
-        tricky: false,
-        question: 'How do you translate "I live on an island" into French?',
-        options: [
-          "J’habite sur une île.",
-          "Il habite sur une île.",
-          "Tu habites sur une île.",
-          "Je habite dans une île."
-        ],
-        correctAnswer: "J’habite sur une île.",
-        frenchAudioText: "J’habite sur une île.",
-        explanation: '"J’habite" means "I live", and "sur une île" means "on an island".'
-      },
-      {
-        id: 34,
-        category: "Sentence Translation",
-        tricky: false,
-        question: 'Which sentence translates "They swim in the lake" (masculine/mixed group)?',
-        options: [
-          "Ils nagent dans le lac.",
-          "Ils nageons dans le lac.",
-          "Ils nage dans le lac.",
-          "Ils pêchent dans la rivière."
-        ],
-        correctAnswer: "Ils nagent dans le lac.",
-        frenchAudioText: "Ils nagent dans le lac.",
-        explanation: '"Ils" takes the "-ent" ending ("nagent"), and "dans le lac" means "in the lake".'
-      },
-      {
-        id: 35,
-        category: "Irregular Verb Trap",
-        tricky: true,
-        question: 'TRICKY: Which form of "aller" (to go) pairs with "je" (I)?',
-        options: [
-          "je vais",
-          "je vas",
-          "je va",
-          "j'alle"
-        ],
-        correctAnswer: "je vais",
-        frenchAudioText: "je vais",
-        explanation: '"Aller" is completely irregular: "je vais" ends in "-is", whereas "tu vas" ends in "-as".'
-      },
-      {
-        id: 36,
-        category: "Conjugation Trap",
-        tricky: true,
-        question: 'TRICKY: Spot the mistake! Why is "Nous nagons dans le lac" spelled wrong?',
-        options: [
-          "It is missing the 'e' after 'g'; it must be 'nous nageons'.",
-          "It should end in '-ent' instead of '-ons'.",
-          "'Lac' is feminine so it must be 'dans la lac'.",
-          "'Nous' requires 'va' instead of a conjugated verb."
-        ],
-        correctAnswer: "It is missing the 'e' after 'g'; it must be 'nous nageons'.",
-        frenchAudioText: "Nous nageons dans le lac.",
-        explanation: 'All "-ger" verbs add an "e" before "-ons" in the "nous" form: "nous nageons".'
-      },
-      {
-        id: 37,
-        category: "Pronunciation Trap",
-        tricky: true,
-        question: 'TRICKY: Which of these conjugations of "nager" sounds DIFFERENT when spoken aloud?',
-        options: [
-          "nous nageons",
-          "je nage",
-          "tu nages",
-          "ils nagent"
-        ],
-        correctAnswer: "nous nageons",
-        frenchAudioText: "nous nageons",
-        explanation: '"Je nage", "tu nages", and "ils nagent" are all pronounced identically ("nazh"). Only "nous nageons" ("na-zhon") is pronounced differently!'
-      },
-      {
-        id: 38,
-        category: "Preposition Trap",
-        tricky: true,
-        question: 'TRICKY: Which preposition is used with "ville" to say "into town / to town"?',
-        options: [
-          "en ville",
-          "sur ville",
-          "à la ville",
-          "dans ville"
-        ],
-        correctAnswer: "en ville",
-        frenchAudioText: "On va en ville.",
-        explanation: 'In your notes, "into town" is expressed without an article using "en": "en ville" (e.g., "Ils vont en ville" / "On va en ville").'
-      },
-      {
-        id: 39,
-        category: "Pronunciation Trap",
-        tricky: true,
-        question: 'TRICKY: Which form of "habiter" is pronounced DIFFERENTLY from the other three?',
-        options: [
-          "nous habitons",
-          "j’habite",
-          "tu habites",
-          "ils habitent"
-        ],
-        correctAnswer: "nous habitons",
-        frenchAudioText: "nous habitons",
-        explanation: '"J’habite", "tu habites", and "ils habitent" all sound identical ("a-beet"). Only "nous habitons" ("a-bee-ton") sounds different!'
-      },
-      {
-        id: 40,
-        category: "Preposition Trap",
-        tricky: true,
-        question: 'TRICKY: Compare the prepositions in your notes: "à la mer", "à la montagne", "à la campagne", versus "___ la forêt" and "___ la rivière". Which preposition goes in both blanks?',
-        options: [
-          "dans",
-          "sur",
-          "en",
-          "à"
-        ],
-        correctAnswer: "dans",
-        frenchAudioText: "dans la forêt, dans la rivière",
-        explanation: 'You go "à la" mer/montagne/campagne, "en" ville, "sur" une île, and "dans" la forêt / la rivière / le lac!'
+        category: "Sports & Leisure",
+        french: "pratiquer",
+        phonetic: "[pʁa.ti.ke]",
+        english: "to practice / play (a sport)",
+        exampleFr: "Le sport que je pratique depuis longtemps.",
+        exampleEn: "The sport that I have been practising for a long time.",
+        grammarNote: "Note: 'depuis longtemps' + present tense translates to 'have been doing for a long time'."
       }
     ];
 
-    const SESSION_QUESTION_LIMIT = 20;
+    // =========================================================================
+    // 2. COMPLETE 60-QUESTION BANK (Split into 3 Rounds of 20 Questions)
+    // =========================================================================
+    const all60Questions = [
+      // --- PART A: QUI vs QUE / QU' TRAPS (Questions 1–20) ---
+      {
+        id: 1,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Choisissez le pronom correct : « C’est une ville _____ est <strong>réputée</strong> pour sa <strong>gastronomie</strong>. »",
+        spokenSentence: "C'est une ville qui est réputée pour sa gastronomie.",
+        options: ["qui", "que", "qu'", "où"],
+        correctIndex: 0,
+        explanationHtml: "Use <strong>qui</strong> because it acts as the subject and is immediately followed by the verb <strong>est</strong>.",
+        englishSentence: "This is a city that is famous for its food.",
+        keyVocab: [{ fr: "réputée", en: "famous / renowned" }, { fr: "la gastronomie", en: "fine food / gastronomy" }]
+      },
+      {
+        id: 2,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Complétez : « La ville _____ vous allez adorer va vous <strong>émerveiller</strong>. »",
+        spokenSentence: "La ville que vous allez adorer va vous émerveiller.",
+        options: ["qui", "que", "qu'", "dont"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>que</strong> because it is the direct object, immediately followed by the subject pronoun <strong>vous</strong>.",
+        englishSentence: "The city that you are going to love is going to amaze you.",
+        keyVocab: [{ fr: "adorer", en: "to love / adore" }, { fr: "émerveiller", en: "to amaze / fill with wonder" }]
+      },
+      {
+        id: 3,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Attention au piège ! « C’est une ville _____ va vous <strong>émerveiller</strong>. »",
+        spokenSentence: "C'est une ville qui va vous émerveiller.",
+        options: ["que", "qui", "qu'", "où"],
+        correctIndex: 1,
+        explanationHtml: "Tricky trap! Even though <strong>vous</strong> appears later, <strong>qui</strong> is immediately followed by the verb <strong>va</strong> (subject).",
+        englishSentence: "It is a city that is going to amaze you.",
+        keyVocab: [{ fr: "va vous émerveiller", en: "is going to amaze you" }, { fr: "une ville", en: "a city" }]
+      },
+      {
+        id: 4,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Choisissez la bonne forme : « Un cours _____ elle a fait pendant l’été. »",
+        spokenSentence: "Un cours qu'elle a fait pendant l'été.",
+        options: ["qui", "que", "qu’", "qui'"],
+        correctIndex: 2,
+        explanationHtml: "Because <strong>que</strong> is followed by the vowel-initial pronoun <strong>elle</strong>, it must elide to <strong>qu’</strong>. (Note: <em>qui</em> never elides!)",
+        englishSentence: "A course that she did during the summer.",
+        keyVocab: [{ fr: "un cours", en: "a course / class" }, { fr: "pendant l’été", en: "during the summer" }]
+      },
+      {
+        id: 5,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Complétez : « Un cours _____ peut t’intéresser cet été. »",
+        spokenSentence: "Un cours qui peut t'intéresser cet été.",
+        options: ["que", "qu’", "qui", "dont"],
+        correctIndex: 2,
+        explanationHtml: "Use <strong>qui</strong> because it is followed directly by the verb <strong>peut</strong> (subject of the clause).",
+        englishSentence: "A course that might interest you this summer.",
+        keyVocab: [{ fr: "peut t’intéresser", en: "might interest you" }, { fr: "cet été", en: "this summer" }]
+      },
+      {
+        id: 6,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Choisissez : « Une chanson _____ ne me plaît pas du tout. »",
+        spokenSentence: "Une chanson qui ne me plaît pas du tout.",
+        options: ["que", "qui", "qu’", "où"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>qui</strong> because <em>une chanson</em> is the subject of the verb <strong>plaît</strong> (<em>ne me plaît pas</em>).",
+        englishSentence: "A song that I don't like at all.",
+        keyVocab: [{ fr: "une chanson", en: "a song" }, { fr: "plaire à quelqu'un", en: "to please someone / be liked by" }]
+      },
+      {
+        id: 7,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Complétez : « Une chanson _____ tu as écoutée hier soir. »",
+        spokenSentence: "Une chanson que tu as écoutée hier soir.",
+        options: ["qui", "que", "qu’", "dont"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>que</strong> because it is followed by the subject pronoun <strong>tu</strong>.",
+        englishSentence: "A song that you listened to last night.",
+        keyVocab: [{ fr: "écouter", en: "to listen to" }, { fr: "hier soir", en: "last night" }]
+      },
+      {
+        id: 8,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Attention ! « Un collègue _____ tu m’as présenté au bureau. »",
+        spokenSentence: "Un collègue que tu m'as présenté au bureau.",
+        options: ["qui", "que", "qu’", "où"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>que</strong> because the subject pronoun <strong>tu</strong> immediately follows the blank.",
+        englishSentence: "A colleague whom you introduced to me at the office.",
+        keyVocab: [{ fr: "un collègue", en: "a colleague" }, { fr: "présenter", en: "to introduce" }]
+      },
+      {
+        id: 9,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Complétez : « Un collègue _____ s’appelle Léo. »",
+        spokenSentence: "Un collègue qui s'appelle Léo.",
+        options: ["que", "qu’", "qui", "dont"],
+        correctIndex: 2,
+        explanationHtml: "Use <strong>qui</strong> because it is followed immediately by the reflexive verb <strong>s’appelle</strong>.",
+        englishSentence: "A colleague who is called Léo.",
+        keyVocab: [{ fr: "s’appeler", en: "to be called / named" }]
+      },
+      {
+        id: 10,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Choisissez : « Une piscine _____ fait 60 m de long. »",
+        spokenSentence: "Une piscine qui fait soixante mètres de long.",
+        options: ["que", "qui", "qu’", "où"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>qui</strong> because it is followed directly by the verb <strong>fait</strong>.",
+        englishSentence: "A swimming pool that is 60 m long.",
+        keyVocab: [{ fr: "une piscine", en: "a swimming pool" }, { fr: "de long", en: "in length / long" }]
+      },
+      {
+        id: 11,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Complétez : « Une piscine _____ j’aime beaucoup. »",
+        spokenSentence: "Une piscine que j'aime beaucoup.",
+        options: ["qui", "que", "qu’", "dont"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>que</strong> because it precedes the subject pronoun <strong>j’</strong> (consonant 'j' sound, so no elision).",
+        englishSentence: "A swimming pool that I like a lot.",
+        keyVocab: [{ fr: "aimer beaucoup", en: "to like a lot" }]
+      },
+      {
+        id: 12,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Choisissez : « Nos amis _____ <strong>viennent d’arriver</strong> à la gare. »",
+        spokenSentence: "Nos amis qui viennent d'arriver à la gare.",
+        options: ["que", "qui", "qu’", "où"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>qui</strong> because it is followed directly by the verb <strong>viennent</strong>.",
+        englishSentence: "Our friends who have just arrived at the train station.",
+        keyVocab: [{ fr: "viennent d’arriver", en: "have just arrived" }, { fr: "la gare", en: "train station" }]
+      },
+      {
+        id: 13,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Complétez : « Nos amis _____ nous connaissons depuis longtemps. »",
+        spokenSentence: "Nos amis que nous connaissons depuis longtemps.",
+        options: ["qui", "que", "qu’", "dont"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>que</strong> because it is followed by the subject pronoun <strong>nous</strong>.",
+        englishSentence: "Our friends whom we have known for a long time.",
+        keyVocab: [{ fr: "connaître", en: "to know (a person/place)" }, { fr: "depuis longtemps", en: "for a long time" }]
+      },
+      {
+        id: 14,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Piège grammatical : « Le sport _____ me plaît le plus, c’est le volley. »",
+        spokenSentence: "Le sport qui me plaît le plus, c'est le volley.",
+        options: ["que", "qui", "qu’", "dont"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>qui</strong>! <strong>me</strong> is an indirect object pronoun ('to me'), while <em>le sport</em> is the subject of <strong>plaît</strong>.",
+        englishSentence: "The sport that I like the most is volleyball.",
+        keyVocab: [{ fr: "le plus", en: "the most" }, { fr: "le volley", en: "volleyball" }]
+      },
+      {
+        id: 15,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Complétez : « Le sport _____ je <strong>pratique</strong> depuis longtemps. »",
+        spokenSentence: "Le sport que je pratique depuis longtemps.",
+        options: ["qui", "que", "qu’", "où"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>que</strong> because it is followed by the subject pronoun <strong>je</strong>.",
+        englishSentence: "The sport that I have been practising for a long time.",
+        keyVocab: [{ fr: "pratiquer", en: "to practice / play" }, { fr: "depuis longtemps", en: "for a long time" }]
+      },
+      {
+        id: 16,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Choisissez : « Une maison _____ se trouve <strong>au bord de la mer</strong>. »",
+        spokenSentence: "Une maison qui se trouve au bord de la mer.",
+        options: ["que", "qui", "qu’", "où"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>qui</strong> because it is immediately followed by the reflexive verb <strong>se trouve</strong>.",
+        englishSentence: "A house that is by the sea.",
+        keyVocab: [{ fr: "se trouver", en: "to be located" }, { fr: "au bord de la mer", en: "by the sea" }]
+      },
+      {
+        id: 17,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Complétez : « Une petite maison _____ nous allons <strong>transformer</strong>. »",
+        spokenSentence: "Une petite maison que nous allons transformer.",
+        options: ["qui", "que", "qu’", "dont"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>que</strong> because the subject pronoun <strong>nous</strong> follows directly.",
+        englishSentence: "A small house that we are going to transform.",
+        keyVocab: [{ fr: "transformer", en: "to transform / renovate" }]
+      },
+      {
+        id: 18,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Choisissez : « Une maison _____ plaît à toute la famille. »",
+        spokenSentence: "Une maison qui plaît à toute la famille.",
+        options: ["que", "qu’", "qui", "où"],
+        correctIndex: 2,
+        explanationHtml: "Use <strong>qui</strong> because it is followed directly by the verb <strong>plaît</strong>.",
+        englishSentence: "A house that the whole family likes.",
+        keyVocab: [{ fr: "toute la famille", en: "the whole family" }]
+      },
+      {
+        id: 19,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Complétez : « Le concert _____ j’ai le plus aimé cet été. »",
+        spokenSentence: "Le concert que j'ai le plus aimé cet été.",
+        options: ["qui", "que", "qu’", "dont"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>que</strong> because it is followed by the subject pronoun <strong>j’</strong>.",
+        englishSentence: "The concert that I liked the most this summer.",
+        keyVocab: [{ fr: "le concert", en: "the concert" }, { fr: "le plus aimé", en: "liked the most" }]
+      },
+      {
+        id: 20,
+        category: "Relative Pronouns (qui vs. que)",
+        promptHtml: "Choisissez : « Des villes _____ ont des concerts de rock. »",
+        spokenSentence: "Des villes qui ont des concerts de rock.",
+        options: ["que", "qu’", "qui", "où"],
+        correctIndex: 2,
+        explanationHtml: "Use <strong>qui</strong> before the verb <strong>ont</strong>. Remember: <em>qui</em> NEVER elides to <em>qu’</em> before a vowel!",
+        englishSentence: "Cities that have rock concerts.",
+        keyVocab: [{ fr: "des villes", en: "cities" }, { fr: "ont", en: "have (3rd pl. avoir)" }]
+      },
 
-    // App State
-    let currentMode = 'all'; // 'all' | 'tricky' | 'missed'
-    let activeQuestions = [];
-    let currentIndex = 0;
-    let score = 0;
-    let answeredCurrent = false;
-    let userHistory = []; // Stores { questionObj, userAnswer, isCorrect }
-    let autoSpeak = true;
-    let speechRate = 1.0;
-    let frenchVoice = null;
+      // --- PART B: TRICKY PRÉSENT vs. PASSÉ COMPOSÉ & CONJUGATION TRAPS (Questions 21–42) ---
+      {
+        id: 21,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Présent ou Passé Composé ? « <strong>Tous les weekends</strong>, je _____ le plastique, le verre et le papier chez moi. »",
+        spokenSentence: "Tous les weekends, je trie le plastique, le verre et le papier chez moi.",
+        options: ["ai trié", "trie", "tries", "triais"],
+        correctIndex: 1,
+        explanationHtml: "<strong>Tous les weekends</strong> signals a repeated habit (Présent). With <strong>je</strong>, <em>trier</em> conjugates to <strong>trie</strong>.",
+        englishSentence: "Every weekend, I sort plastic, glass and paper at home.",
+        keyVocab: [{ fr: "tous les weekends", en: "every weekend" }, { fr: "trier", en: "to sort" }]
+      },
+      {
+        id: 22,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Présent ou Passé Composé ? « <strong>Hier</strong>, j’_____ le plastique, le verre et le papier chez moi. »",
+        spokenSentence: "Hier, j'ai trié le plastique, le verre et le papier chez moi.",
+        options: ["trie", "suis trié", "ai trié", "ai trier"],
+        correctIndex: 2,
+        explanationHtml: "<strong>Hier</strong> (yesterday) requires the Passé Composé. <em>Trier</em> uses auxiliary <strong>avoir</strong> + past participle <strong>trié</strong>.",
+        englishSentence: "Yesterday, I sorted the plastic, glass and paper at home.",
+        keyVocab: [{ fr: "hier", en: "yesterday" }, { fr: "chez moi", en: "at home" }]
+      },
+      {
+        id: 23,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Attention à l'orthographe ! « <strong>Chaque mercredi</strong>, ma sœur et moi _____ la plage. »",
+        spokenSentence: "Chaque mercredi, ma sœur et moi nettoyons la plage.",
+        options: ["nettoions", "nettoyons", "avons nettoyé", "nettoient"],
+        correctIndex: 1,
+        explanationHtml: "<strong>Chaque mercredi</strong> = habitual present. For <em>ma sœur et moi</em> (<strong>nous</strong>), keep the 'y': <strong>nettoyons</strong>.",
+        englishSentence: "Every Wednesday, my sister and I clean the beach.",
+        keyVocab: [{ fr: "chaque mercredi", en: "every Wednesday" }, { fr: "la plage", en: "the beach" }]
+      },
+      {
+        id: 24,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Présent ou Passé Composé ? « <strong>Mercredi dernier</strong>, ma sœur et moi _____ la plage. »",
+        spokenSentence: "Mercredi dernier, ma sœur et moi avons nettoyé la plage.",
+        options: ["nettoyons", "sommes nettoyés", "avons nettoyé", "avons nettoyés"],
+        correctIndex: 2,
+        explanationHtml: "<strong>Mercredi dernier</strong> = past event. <em>Nettoyer</em> takes <strong>avoir</strong> (<strong>avons nettoyé</strong>), with no agreement on the past participle.",
+        englishSentence: "Last Wednesday, my sister and I cleaned the beach.",
+        keyVocab: [{ fr: "mercredi dernier", en: "last Wednesday" }, { fr: "nettoyer", en: "to clean" }]
+      },
+      {
+        id: 25,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Piège de conjugaison ! « <strong>Tous les dimanches</strong>, mon frère et mon père _____ les <strong>déchets</strong>. »",
+        spokenSentence: "Tous les dimanches, mon frère et mon père ramassent les déchets.",
+        options: ["ramasse", "ramassons", "ramassent", "ont ramassé"],
+        correctIndex: 2,
+        explanationHtml: "<strong>Tous les dimanches</strong> = habitual present. <em>Mon frère et mon père</em> = <strong>ils</strong>, so use <strong>ramassent</strong>.",
+        englishSentence: "Every Sunday, my brother and my father pick up the rubbish.",
+        keyVocab: [{ fr: "tous les dimanches", en: "every Sunday" }, { fr: "les déchets", en: "the rubbish / waste" }]
+      },
+      {
+        id: 26,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Présent ou Passé Composé ? « <strong>Dimanche dernier</strong>, mon frère et mon père _____ les <strong>déchets</strong>. »",
+        spokenSentence: "Dimanche dernier, mon frère et mon père ont ramassé les déchets.",
+        options: ["ramassent", "ont ramassé", "sont ramassés", "ont ramassés"],
+        correctIndex: 1,
+        explanationHtml: "<strong>Dimanche dernier</strong> requires Passé Composé with <em>avoir</em>: <strong>ont ramassé</strong> (never add '-s' with <em>avoir</em> here).",
+        englishSentence: "Last Sunday, my brother and my father picked up the rubbish.",
+        keyVocab: [{ fr: "dimanche dernier", en: "last Sunday" }, { fr: "ramasser", en: "to pick up" }]
+      },
+      {
+        id: 27,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Piège d'orthographe (double 't') ! « Des gens qui _____ leurs papiers <strong>par terre</strong>. »",
+        spokenSentence: "Des gens qui jettent leurs papiers par terre.",
+        options: ["jetent", "jettent", "jetons", "ont jeté"],
+        correctIndex: 1,
+        explanationHtml: "In the present tense, <em>jeter</em> doubles its <strong>t</strong> before a silent ending: <strong>ils/elles jettent</strong>.",
+        englishSentence: "People who throw their papers on the ground.",
+        keyVocab: [{ fr: "jeter", en: "to throw" }, { fr: "par terre", en: "on the ground" }]
+      },
+      {
+        id: 28,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Passé Composé de <em>jeter</em> : « <strong>Hier</strong>, j’ai vu des gens qui _____ leurs papiers <strong>par terre</strong>. »",
+        spokenSentence: "Hier, j'ai vu des gens qui ont jeté leurs papiers par terre.",
+        options: ["ont jetté", "ont jeté", "jettent", "sont jetés"],
+        correctIndex: 1,
+        explanationHtml: "Careful! Unlike the present tense (<em>jettent</em>), the past participle of <em>jeter</em> has only ONE <strong>t</strong>: <strong>ont jeté</strong>.",
+        englishSentence: "Yesterday, I saw people who threw their papers on the ground.",
+        keyVocab: [{ fr: "j’ai vu", en: "I saw" }, { fr: "ont jeté", en: "threw" }]
+      },
+      {
+        id: 29,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Présent ou Passé Composé ? « <strong>Régulièrement</strong>, mes cousins _____ en groupe avec des <strong>pancartes</strong>. »",
+        spokenSentence: "Régulièrement, mes cousins manifestent en groupe avec des pancartes.",
+        options: ["ont manifesté", "manifestent", "manifeste", "manifestons"],
+        correctIndex: 1,
+        explanationHtml: "<strong>Régulièrement</strong> indicates a regular habit in the present. With <em>mes cousins</em> (<strong>ils</strong>), use <strong>manifestent</strong>.",
+        englishSentence: "Regularly, my cousins protest in a group with placards.",
+        keyVocab: [{ fr: "régulièrement", en: "regularly" }, { fr: "des pancartes", en: "placards / signs" }]
+      },
+      {
+        id: 30,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Présent ou Passé Composé ? « <strong>La semaine dernière</strong>, mes cousins _____ en groupe. »",
+        spokenSentence: "La semaine dernière, mes cousins ont manifesté en groupe.",
+        options: ["manifestent", "sont manifestés", "ont manifesté", "ont manifestés"],
+        correctIndex: 2,
+        explanationHtml: "<strong>La semaine dernière</strong> = completed past action. Use <strong>ont manifesté</strong>.",
+        englishSentence: "Last week, my cousins protested in a group.",
+        keyVocab: [{ fr: "la semaine dernière", en: "last week" }, { fr: "en groupe", en: "in a group" }]
+      },
+      {
+        id: 31,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Présent ou Passé Composé ? « Aujourd’hui, les <strong>centres de données</strong> _____ beaucoup l’environnement. »",
+        spokenSentence: "Aujourd'hui, les centres de données polluent beaucoup l'environnement.",
+        options: ["ont pollué", "polluent", "pollue", "polluons"],
+        correctIndex: 1,
+        explanationHtml: "<strong>Aujourd’hui</strong> (today / general fact) uses the present tense: <strong>polluent</strong> (3rd person plural).",
+        englishSentence: "Today, data centres pollute the environment a lot.",
+        keyVocab: [{ fr: "les centres de données", en: "data centres" }, { fr: "polluer", en: "to pollute" }]
+      },
+      {
+        id: 32,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Présent ou Passé Composé ? « <strong>L’année dernière</strong>, les <strong>centres de données</strong> _____ beaucoup l’environnement. »",
+        spokenSentence: "L'année dernière, les centres de données ont pollué beaucoup l'environnement.",
+        options: ["polluent", "ont pollué", "sont pollués", "ont pollués"],
+        correctIndex: 1,
+        explanationHtml: "<strong>L’année dernière</strong> (last year) triggers the Passé Composé: <strong>ont pollué</strong>.",
+        englishSentence: "Last year, the data centres polluted the environment a lot.",
+        keyVocab: [{ fr: "l’année dernière", en: "last year" }, { fr: "l’environnement", en: "the environment" }]
+      },
+      {
+        id: 33,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Piège de conjugaison (<em>nettoyer</em>) : « Chaque jour, ils _____ la cuisine après le dîner. »",
+        spokenSentence: "Chaque jour, ils nettoient la cuisine après le dîner.",
+        options: ["nettoyent", "nettoient", "nettoyons", "ont nettoyé"],
+        correctIndex: 1,
+        explanationHtml: "In 3rd person plural present, <em>nettoyer</em> changes <strong>y</strong> to <strong>i</strong> before silent <em>-ent</em>: <strong>nettoient</strong>.",
+        englishSentence: "Every day, they clean the kitchen after dinner.",
+        keyVocab: [{ fr: "chaque jour", en: "every day" }, { fr: "après le dîner", en: "after dinner" }]
+      },
+      {
+        id: 34,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Piège de conjugaison (<em>jeter</em>) : « Nous ne _____ jamais nos déchets dans la rue ! »",
+        spokenSentence: "Nous ne jetons jamais nos déchets dans la rue !",
+        options: ["jettons", "jetons", "jettent", "avons jeté"],
+        correctIndex: 1,
+        explanationHtml: "With <strong>nous</strong>, the ending <em>-ons</em> is pronounced, so <em>jeter</em> keeps a SINGLE <strong>t</strong>: <strong>jetons</strong>.",
+        englishSentence: "We never throw our rubbish in the street!",
+        keyVocab: [{ fr: "ne ... jamais", en: "never" }, { fr: "dans la rue", en: "in the street" }]
+      },
+      {
+        id: 35,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Conjugaison au présent : « Tu _____ toujours le verre et le papier chez toi ? »",
+        spokenSentence: "Tu tries toujours le verre et le papier chez toi ?",
+        options: ["trie", "tries", "trient", "as trié"],
+        correctIndex: 1,
+        explanationHtml: "For <strong>tu</strong> in the present tense, regular <em>-er</em> verbs end in <strong>-es</strong>: <strong>tu tries</strong>.",
+        englishSentence: "Do you always sort glass and paper at home?",
+        keyVocab: [{ fr: "toujours", en: "always" }, { fr: "le verre", en: "glass" }]
+      },
+      {
+        id: 36,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Passé Composé avec <em>vous</em> : « Hier, vous _____ tous les déchets sur la plage. »",
+        spokenSentence: "Hier, vous avez ramassé tous les déchets sur la plage.",
+        options: ["ramassez", "êtes ramassés", "avez ramassé", "avez ramassez"],
+        correctIndex: 2,
+        explanationHtml: "<strong>Hier</strong> = Passé Composé. With <strong>vous</strong> and <em>avoir</em>, use <strong>avez ramassé</strong> (not <em>-ez</em>).",
+        englishSentence: "Yesterday, you picked up all the rubbish on the beach.",
+        keyVocab: [{ fr: "sur la plage", en: "on the beach" }, { fr: "tous les déchets", en: "all the rubbish" }]
+      },
+      {
+        id: 37,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Passé Composé avec <em>tu</em> : « Pourquoi est-ce que tu _____ ton papier <strong>par terre</strong> hier ? »",
+        spokenSentence: "Pourquoi est-ce que tu as jeté ton papier par terre hier ?",
+        options: ["jettes", "as jetté", "as jeté", "es jeté"],
+        correctIndex: 2,
+        explanationHtml: "<strong>Hier</strong> = Passé Composé. Auxiliary <strong>as</strong> + past participle <strong>jeté</strong> (one 't').",
+        englishSentence: "Why did you throw your paper on the ground yesterday?",
+        keyVocab: [{ fr: "pourquoi", en: "why" }, { fr: "par terre", en: "on the ground" }]
+      },
+      {
+        id: 38,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Présent d'habitude : « Chaque été, nous _____ avec des <strong>pancartes</strong> pour protéger l'océan. »",
+        spokenSentence: "Chaque été, nous manifestons avec des pancartes pour protéger l'océan.",
+        options: ["avons manifesté", "manifestons", "manifestent", "manifestez"],
+        correctIndex: 1,
+        explanationHtml: "<strong>Chaque été</strong> (every summer) = habitual present. With <strong>nous</strong>, use <strong>manifestons</strong>.",
+        englishSentence: "Every summer, we protest with placards to protect the ocean.",
+        keyVocab: [{ fr: "chaque été", en: "every summer" }, { fr: "protéger", en: "to protect" }]
+      },
+      {
+        id: 39,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Passé Composé : « L’année dernière, cette usine _____ la rivière. »",
+        spokenSentence: "L'année dernière, cette usine a pollué la rivière.",
+        options: ["pollue", "a pollué", "est polluée", "ont pollué"],
+        correctIndex: 1,
+        explanationHtml: "<strong>L’année dernière</strong> = Passé Composé. Singular subject <em>cette usine</em> takes <strong>a pollué</strong>.",
+        englishSentence: "Last year, this factory polluted the river.",
+        keyVocab: [{ fr: "cette usine", en: "this factory" }, { fr: "la rivière", en: "the river" }]
+      },
+      {
+        id: 40,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Conjugaison de <em>trier</em> : « Nous _____ nos déchets avant de sortir les poubelles. »",
+        spokenSentence: "Nous trions nos déchets avant de sortir les poubelles.",
+        options: ["trieons", "trions", "trient", "avons trié"],
+        correctIndex: 1,
+        explanationHtml: "With <strong>nous</strong>, the stem of <em>trier</em> is <em>tri-</em> + <em>-ons</em> = <strong>trions</strong>.",
+        englishSentence: "We sort our rubbish before taking out the bins.",
+        keyVocab: [{ fr: "avant de", en: "before" }, { fr: "les poubelles", en: "the bins / trash cans" }]
+      },
+      {
+        id: 41,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Présent continu / habitude : « Ma sœur _____ sa chambre tous les samedis. »",
+        spokenSentence: "Ma sœur nettoie sa chambre tous les samedis.",
+        options: ["nettoye", "nettoie", "nettoyons", "a nettoyé"],
+        correctIndex: 1,
+        explanationHtml: "<strong>Tous les samedis</strong> = present habit. With <em>ma sœur</em> (<strong>elle</strong>), 'y' changes to 'i': <strong>nettoie</strong>.",
+        englishSentence: "My sister cleans her bedroom every Saturday.",
+        keyVocab: [{ fr: "sa chambre", en: "her bedroom" }, { fr: "tous les samedis", en: "every Saturday" }]
+      },
+      {
+        id: 42,
+        category: "Tense & Conjugation Trap",
+        promptHtml: "Passé Composé : « Hier après-midi, j’_____ les journaux dans la poubelle bleue. »",
+        spokenSentence: "Hier après-midi, j'ai jeté les journaux dans la poubelle bleue.",
+        options: ["jette", "ai jeté", "ai jetté", "suis jeté"],
+        correctIndex: 1,
+        explanationHtml: "<strong>Hier après-midi</strong> = Passé Composé. Use <strong>j’ai jeté</strong>.",
+        englishSentence: "Yesterday afternoon, I threw the newspapers into the blue bin.",
+        keyVocab: [{ fr: "hier après-midi", en: "yesterday afternoon" }, { fr: "les journaux", en: "the newspapers" }]
+      },
 
-    // Load best French voice available in browser
-    function loadFrenchVoice() {
+      // --- PART C: DIFFICULT VOCABULARY & CONTEXTUAL NUANCE (Questions 43–60) ---
+      {
+        id: 43,
+        category: "Advanced Vocabulary",
+        promptHtml: "Que signifie l'adjectif <strong>réputée</strong> dans : « Une ville qui est <strong>réputée</strong> pour sa <strong>gastronomie</strong> » ?",
+        spokenSentence: "Une ville qui est réputée pour sa gastronomie.",
+        options: ["Célèbre et reconnue pour sa qualité", "Complètement isolée et inconnue", "Très polluée par les usines", "Située au bord d'un lac"],
+        correctIndex: 0,
+        explanationHtml: "<strong>Réputée</strong> means famous, renowned, or well-known for a positive quality.",
+        englishSentence: "A city that is famous for its food.",
+        keyVocab: [{ fr: "réputée", en: "famous / renowned" }, { fr: "pour", en: "for" }]
+      },
+      {
+        id: 44,
+        category: "Advanced Vocabulary",
+        promptHtml: "Quel mot désigne l'art de la bonne cuisine et les spécialités culinaires d'une région ?",
+        spokenSentence: "Cette région est célèbre pour sa gastronomie.",
+        options: ["la pancarte", "la gastronomie", "les déchets", "la piscine"],
+        correctIndex: 1,
+        explanationHtml: "<strong>La gastronomie</strong> refers to fine food, culinary art, and traditional dishes.",
+        englishSentence: "This region is famous for its gastronomy.",
+        keyVocab: [{ fr: "la gastronomie", en: "gastronomy / fine food" }, { fr: "célèbre", en: "famous" }]
+      },
+      {
+        id: 45,
+        category: "Advanced Vocabulary",
+        promptHtml: "Que signifie le verbe <strong>émerveiller</strong> dans : « Une ville qui va vous <strong>émerveiller</strong> » ?",
+        spokenSentence: "Une ville qui va vous émerveiller.",
+        options: ["Vous remplir d'admiration et de surprise", "Vous fatiguer énormément", "Vous ennuyer pendant les vacances", "Vous obliger à travailler"],
+        correctIndex: 0,
+        explanationHtml: "<strong>Émerveiller</strong> means to amaze, dazzle, or fill someone with wonder.",
+        englishSentence: "A city that is going to amaze you.",
+        keyVocab: [{ fr: "émerveiller", en: "to amaze / fill with wonder" }]
+      },
+      {
+        id: 46,
+        category: "Advanced Vocabulary",
+        promptHtml: "Qu'est-ce que les manifestants portent dans les mains pour afficher leurs slogans ?",
+        spokenSentence: "Mes cousins manifestent en groupe avec des pancartes.",
+        options: ["des déchets", "des pancartes", "des centres de données", "des jardins"],
+        correctIndex: 1,
+        explanationHtml: "<strong>Des pancartes</strong> are placards, protest signs, or banners carried during demonstrations.",
+        englishSentence: "My cousins protest in a group with placards.",
+        keyVocab: [{ fr: "des pancartes", en: "placards / protest signs" }, { fr: "manifester", en: "to protest" }]
+      },
+      {
+        id: 47,
+        category: "Advanced Vocabulary",
+        promptHtml: "Complétez avec le bon terme : « Les _____ consomment beaucoup d'électricité et <strong>polluent</strong> l'environnement. »",
+        spokenSentence: "Les centres de données consomment beaucoup d'électricité et polluent l'environnement.",
+        options: ["pancartes", "centres de données", "gastronomies", "piscines"],
+        correctIndex: 1,
+        explanationHtml: "<strong>Les centres de données</strong> translates to 'data centres'.",
+        englishSentence: "Data centres consume a lot of electricity and pollute the environment.",
+        keyVocab: [{ fr: "les centres de données", en: "data centres" }, { fr: "consomment", en: "consume" }]
+      },
+      {
+        id: 48,
+        category: "Advanced Vocabulary",
+        promptHtml: "Que signifie l'expression <strong>par terre</strong> dans : « Des gens qui jettent leurs papiers <strong>par terre</strong> » ?",
+        spokenSentence: "Des gens qui jettent leurs papiers par terre.",
+        options: ["Sur le sol", "Dans la poubelle de tri", "Dans la mer", "Sur le toit"],
+        correctIndex: 0,
+        explanationHtml: "<strong>Par terre</strong> means on the ground or on the floor.",
+        englishSentence: "People who throw their papers on the ground.",
+        keyVocab: [{ fr: "par terre", en: "on the ground" }, { fr: "leurs papiers", en: "their papers" }]
+      },
+      {
+        id: 49,
+        category: "Advanced Vocabulary",
+        promptHtml: "Quel mot désigne les ordures et les restes que l'on ramasse sur la plage ?",
+        spokenSentence: "Mon frère et mon père ramassent les déchets.",
+        options: ["les déchets", "les collègues", "les concerts", "les pancartes"],
+        correctIndex: 0,
+        explanationHtml: "<strong>Les déchets</strong> means rubbish, waste, or trash.",
+        englishSentence: "My brother and my father pick up the rubbish.",
+        keyVocab: [{ fr: "les déchets", en: "rubbish / waste" }, { fr: "ramasser", en: "to pick up" }]
+      },
+      {
+        id: 50,
+        category: "Advanced Vocabulary",
+        promptHtml: "Que signifie le verbe <strong>transformer</strong> dans : « Une petite maison que nous allons <strong>transformer</strong> » ?",
+        spokenSentence: "Une petite maison que nous allons transformer.",
+        options: ["Rénover et modifier l'apparence", "Détruire complètement", "Vendre immédiatement", "Oublier"],
+        correctIndex: 0,
+        explanationHtml: "<strong>Transformer</strong> means to transform, remodel, or renovate.",
+        englishSentence: "A small house that we are going to transform.",
+        keyVocab: [{ fr: "transformer", en: "to transform / renovate" }]
+      },
+      {
+        id: 51,
+        category: "Advanced Vocabulary",
+        promptHtml: "Où est située la maison dans : « Une maison qui se trouve <strong>au bord de la mer</strong> » ?",
+        spokenSentence: "Une maison qui se trouve au bord de la mer.",
+        options: ["Juste à côté de la côte / de l'océan", "Au centre d'une grande forêt", "En haut d'une montagne enneigée", "Dans un quartier industriel"],
+        correctIndex: 0,
+        explanationHtml: "<strong>Au bord de la mer</strong> means by the sea or at the seaside.",
+        englishSentence: "A house that is by the sea.",
+        keyVocab: [{ fr: "au bord de la mer", en: "by the sea" }, { fr: "se trouve", en: "is located" }]
+      },
+      {
+        id: 52,
+        category: "Advanced Vocabulary",
+        promptHtml: "Que signifie « Nos amis qui <strong>viennent d’arriver</strong> » ?",
+        spokenSentence: "Nos amis qui viennent d'arriver.",
+        options: ["Our friends who have just arrived", "Our friends who are leaving tomorrow", "Our friends who arrived last year", "Our friends who never come"],
+        correctIndex: 0,
+        explanationHtml: "<strong>Venir de + infinitive</strong> expresses the recent past ('to have just done something').",
+        englishSentence: "Our friends who have just arrived.",
+        keyVocab: [{ fr: "viennent d’arriver", en: "have just arrived" }]
+      },
+      {
+        id: 53,
+        category: "Advanced Vocabulary",
+        promptHtml: "Quel verbe utilise-t-on pour séparer le plastique, le verre et le papier à la maison ?",
+        spokenSentence: "Je trie le plastique, le verre et le papier chez moi.",
+        options: ["trier", "polluer", "émerveiller", "manifester"],
+        correctIndex: 0,
+        explanationHtml: "<strong>Trier</strong> means to sort (especially recycling waste).",
+        englishSentence: "I sort plastic, glass and paper at home.",
+        keyVocab: [{ fr: "trier", en: "to sort" }, { fr: "le plastique / le verre", en: "plastic / glass" }]
+      },
+      {
+        id: 54,
+        category: "Advanced Vocabulary",
+        promptHtml: "Choisissez l'adjectif bien accordé : « Ces régions sont très _____ pour leur cuisine. »",
+        spokenSentence: "Ces régions sont très réputées pour leur cuisine.",
+        options: ["réputé", "réputée", "réputés", "réputées"],
+        correctIndex: 3,
+        explanationHtml: "<em>Ces régions</em> is feminine plural, so the adjective <strong>réputée</strong> takes an <strong>-s</strong>: <strong>réputées</strong>.",
+        englishSentence: "These regions are very famous for their cuisine.",
+        keyVocab: [{ fr: "ces régions", en: "these regions (f.pl)" }, { fr: "réputées", en: "famous (f.pl)" }]
+      },
+      {
+        id: 55,
+        category: "Advanced Vocabulary",
+        promptHtml: "Complétez la phrase : « Lyon est située à l'_____ de la France et est <strong>réputée</strong> pour sa <strong>gastronomie</strong>. »",
+        spokenSentence: "Lyon est située à l'est de la France et est réputée pour sa gastronomie.",
+        options: ["est", "ouest", "nord", "sud"],
+        correctIndex: 0,
+        explanationHtml: "<strong>À l'est de la France</strong> means 'in the east of France'.",
+        englishSentence: "Lyon is located in the east of France and is famous for its food.",
+        keyVocab: [{ fr: "située à l’est", en: "located in the east" }]
+      },
+      {
+        id: 56,
+        category: "Mixed Challenge",
+        promptHtml: "Double défi (Pronom + Vocabulaire) : « C’est un monument _____ va vous <strong>émerveiller</strong> ! »",
+        spokenSentence: "C'est un monument qui va vous émerveiller !",
+        options: ["que", "qui", "qu’", "où"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>qui</strong> (subject before verb <strong>va</strong>) + <strong>émerveiller</strong> (to amaze).",
+        englishSentence: "It is a monument that is going to amaze you!",
+        keyVocab: [{ fr: "un monument", en: "a monument" }, { fr: "émerveiller", en: "to amaze" }]
+      },
+      {
+        id: 57,
+        category: "Mixed Challenge",
+        promptHtml: "Double défi (Pronom + Temps) : « Les <strong>déchets</strong> _____ nous _____ sur la plage hier. »",
+        spokenSentence: "Les déchets que nous avons ramassés sur la plage hier.",
+        options: ["qui / ramassons", "que / avons ramassés", "que / sommes ramassés", "qui / avons ramassé"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>que</strong> (followed by subject <strong>nous</strong>) and <strong>avons ramassés</strong> (with <em>-s</em> agreement because the direct object <em>que = les déchets</em> comes before <em>avoir</em>!).",
+        englishSentence: "The rubbish that we picked up on the beach yesterday.",
+        keyVocab: [{ fr: "les déchets", en: "the rubbish" }, { fr: "avons ramassés", en: "picked up" }]
+      },
+      {
+        id: 58,
+        category: "Mixed Challenge",
+        promptHtml: "Double défi (Pronom + Vocabulaire) : « La <strong>gastronomie</strong> _____ cette ville est <strong>réputée</strong> à l'étranger. »",
+        spokenSentence: "Cette ville est réputée à l'étranger pour sa gastronomie que tout le monde adore.",
+        options: ["pour laquelle", "qui", "qu’", "où"],
+        correctIndex: 0,
+        explanationHtml: "Since one is <em>réputée <strong>pour</strong> sa gastronomie</em>, the preposition <em>pour</em> + <em>laquelle</em> connects them cleanly!",
+        englishSentence: "The gastronomy for which this city is famous abroad.",
+        keyVocab: [{ fr: "à l’étranger", en: "abroad" }, { fr: "réputée pour", en: "famous for" }]
+      },
+      {
+        id: 59,
+        category: "Mixed Challenge",
+        promptHtml: "Complétez : « Des amis _____ aiment venir avec moi aux concerts de rock. »",
+        spokenSentence: "Des amis qui aiment venir avec moi aux concerts de rock.",
+        options: ["que", "qu’", "qui", "dont"],
+        correctIndex: 2,
+        explanationHtml: "Use <strong>qui</strong> before the verb <strong>aiment</strong> (never elide <em>qui</em>!).",
+        englishSentence: "Friends who like coming with me to rock concerts.",
+        keyVocab: [{ fr: "venir avec moi", en: "to come with me" }]
+      },
+      {
+        id: 60,
+        category: "Mixed Challenge",
+        promptHtml: "Complétez : « L’activité _____ je préfère, c’est écouter de la musique. »",
+        spokenSentence: "L'activité que je préfère, c'est écouter de la musique.",
+        options: ["qui", "que", "qu’", "où"],
+        correctIndex: 1,
+        explanationHtml: "Use <strong>que</strong> because it is immediately followed by the subject pronoun <strong>je</strong>.",
+        englishSentence: "The activity that I prefer is listening to music.",
+        keyVocab: [{ fr: "écouter de la musique", en: "to listen to music" }, { fr: "préférer", en: "to prefer" }]
+      }
+    ];
+
+    // =========================================================================
+    // 3. APPLICATION STATE & SMART VOICE SELECTION
+    // =========================================================================
+    let currentMode = 'flashcards'; // 'flashcards' | 'quiz' | 'mistakes'
+    let autoAudioEnabled = true;
+
+    // Flashcard state
+    let fcIndex = 0;
+    let fcFlipped = false;
+
+    // 3-Round Quiz state (60 questions split into 3 rounds of 20)
+    let rounds = [[], [], []];
+    let roundCompleted = [false, false, false];
+    let roundScores = [0, 0, 0];
+    let activeRound = 0; // 0, 1, or 2
+    let currentQIndex = 0;
+    let currentScore = 0;
+    let hasAnsweredCurrent = false;
+    let shuffleToastMessage = "";
+
+    // Missed questions tracker
+    let missedQuestions = [];
+    let mistakeIndex = 0;
+    let mistakeAnswered = false;
+
+    // Find the clearest native French voice available on the user's device
+    let bestFrenchVoice = null;
+    function loadFrenchVoices() {
       if (!('speechSynthesis' in window)) return;
       const voices = window.speechSynthesis.getVoices();
-      frenchVoice =
-        voices.find(v => v.lang === 'fr-FR' && (v.name.includes('Google') || v.name.includes('Thomas') || v.name.includes('Amélie') || v.name.includes('Natural'))) ||
-        voices.find(v => v.lang === 'fr-FR') ||
-        voices.find(v => v.lang.startsWith('fr')) ||
-        null;
+      const frVoices = voices.filter(v => v.lang.toLowerCase().startsWith('fr'));
+      if (frVoices.length > 0) {
+        // Prioritize natural/premium voices (Thomas, Amélie, Google français, Microsoft Denise/Henri, etc.)
+        bestFrenchVoice =
+          frVoices.find(v => /google|natural|premium|enhanced|thomas|amélie|denise|henri/i.test(v.name) && v.lang.includes('FR')) ||
+          frVoices.find(v => v.lang === 'fr-FR') ||
+          frVoices[0];
+      }
     }
 
     if ('speechSynthesis' in window) {
-      loadFrenchVoice();
-      window.speechSynthesis.onvoiceschanged = loadFrenchVoice;
+      loadFrenchVoices();
+      window.speechSynthesis.onvoiceschanged = loadFrenchVoices;
     }
 
-    // Speak French text via Web Speech API
-    function speakFrench(text, buttonEl = null) {
-      if (!('speechSynthesis' in window) || !text) return;
-      try {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'fr-FR';
-        utterance.rate = speechRate;
-        if (frenchVoice) {
-          utterance.voice = frenchVoice;
-        }
-
-        if (buttonEl) {
-          buttonEl.classList.add('speaking-pulse');
-          utterance.onend = () => buttonEl.classList.remove('speaking-pulse');
-          utterance.onerror = () => buttonEl.classList.remove('speaking-pulse');
-        }
-
-        window.speechSynthesis.speak(utterance);
-      } catch (err) {
-        console.error('Speech synthesis error:', err);
+    function speakFrench(text, rate = 0.9) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'fr-FR';
+      if (bestFrenchVoice) {
+        utterance.voice = bestFrenchVoice;
       }
+      utterance.rate = rate;
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
     }
 
-    function replayCurrentFrench() {
-      const q = activeQuestions[currentIndex];
-      const btn = document.getElementById('replayAudioBtn');
-      if (q) {
-        speakFrench(q.frenchAudioText, btn);
-      }
-    }
-
-    function toggleSpeechRate() {
-      speechRate = speechRate === 1.0 ? 0.75 : 1.0;
-      const btn = document.getElementById('speedToggleBtn');
-      btn.textContent = speechRate === 1.0 ? '🐢 1.0x Speed' : '🐢 0.75x Slow';
-      if (answeredCurrent && activeQuestions[currentIndex]) {
-        speakFrench(activeQuestions[currentIndex].frenchAudioText, document.getElementById('replayAudioBtn'));
-      }
-    }
-
-    function toggleAutoSpeak() {
-      autoSpeak = !autoSpeak;
-      const btn = document.getElementById('autoSpeakBtn');
-      if (autoSpeak) {
-        btn.textContent = '🔊 Auto-Speak: ON';
-        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition';
+    function toggleAudio() {
+      autoAudioEnabled = !autoAudioEnabled;
+      const icon = document.getElementById('audio-status-icon');
+      const txt = document.getElementById('audio-status-text');
+      if (autoAudioEnabled) {
+        icon.textContent = '🔊';
+        txt.textContent = 'Auto-Audio: ON';
       } else {
-        btn.textContent = '🔇 Auto-Speak: OFF';
-        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 bg-slate-50 text-slate-600 hover:bg-slate-100 transition';
-        if ('speechSynthesis' in window) {
-          window.speechSynthesis.cancel();
-        }
+        icon.textContent = '🔇';
+        txt.textContent = 'Auto-Audio: OFF';
+        window.speechSynthesis.cancel();
       }
     }
 
-    // Shuffle helper using Fisher-Yates algorithm
-    function shuffleArray(arr) {
-      const copy = [...arr];
-      for (let i = copy.length - 1; i > 0; i--) {
+    // Shuffle helper (Fisher-Yates)
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
+        [arr[i], arr[j]] = [arr[j], arr[i]];
       }
-      return copy;
+      return arr;
     }
 
-    // Build a randomized round of up to 20 questions
-    function buildQuestionSet(mode) {
-      if (mode === 'all') {
-        return shuffleArray(ALL_QUESTIONS).slice(0, SESSION_QUESTION_LIMIT);
-      } else if (mode === 'tricky') {
-        const trickyPool = ALL_QUESTIONS.filter(q => q.tricky);
-        return shuffleArray(trickyPool).slice(0, SESSION_QUESTION_LIMIT);
+    // Build 3 non-overlapping rounds of 20 questions covering all 60 questions
+    function buildThreeRounds(showBanner = false) {
+      const shuffled60 = shuffleArray(all60Questions);
+      rounds = [
+        shuffled60.slice(0, 20),
+        shuffled60.slice(20, 40),
+        shuffled60.slice(40, 60)
+      ];
+      roundCompleted = [false, false, false];
+      roundScores = [0, 0, 0];
+      activeRound = 0;
+      currentQIndex = 0;
+      currentScore = 0;
+      hasAnsweredCurrent = false;
+      if (showBanner) {
+        shuffleToastMessage = "🎉 All 3 rounds (60 questions) were reviewed! The deck has been automatically reshuffled into 3 fresh rounds.";
+      } else {
+        shuffleToastMessage = "";
       }
-      return shuffleArray(ALL_QUESTIONS).slice(0, SESSION_QUESTION_LIMIT);
     }
 
-    // Switch Quiz Mode
-    function setQuizMode(mode) {
+    // Initialize the 3 rounds on load
+    buildThreeRounds(false);
+
+    // =========================================================================
+    // 4. NAVIGATION & MODE SWITCHING
+    // =========================================================================
+    function switchMode(mode) {
       currentMode = mode;
-      const allBtn = document.getElementById('modeAllBtn');
-      const trickyBtn = document.getElementById('modeTrickyBtn');
+      const tabs = {
+        flashcards: document.getElementById('tab-flashcards'),
+        quiz: document.getElementById('tab-quiz'),
+        mistakes: document.getElementById('tab-mistakes')
+      };
 
-      if (mode === 'all') {
-        activeQuestions = buildQuestionSet('all');
-        allBtn.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-blue-700 shadow-sm transition";
-        trickyBtn.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition";
-      } else if (mode === 'tricky') {
-        activeQuestions = buildQuestionSet('tricky');
-        trickyBtn.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-amber-700 shadow-sm transition";
-        allBtn.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition";
-      }
-
-      resetQuizState();
-    }
-
-    function resetQuizState() {
-      currentIndex = 0;
-      score = 0;
-      answeredCurrent = false;
-      userHistory = [];
-
-      document.getElementById('summaryScreen').classList.add('hidden');
-      document.getElementById('quizCard').classList.remove('hidden');
-      document.getElementById('quizControlsBar').classList.remove('hidden');
-      document.getElementById('progressBarWrapper').classList.remove('hidden');
-
-      renderQuestion();
-    }
-
-    function restartCurrentMode() {
-      if (currentMode === 'missed') {
-        setQuizMode('all');
-      } else {
-        activeQuestions = buildQuestionSet(currentMode);
-        resetQuizState();
-      }
-    }
-
-    function retryMissedQuestions() {
-      const missed = userHistory.filter(item => !item.isCorrect).map(item => item.questionObj);
-      if (missed.length === 0) return;
-      currentMode = 'missed';
-      activeQuestions = shuffleArray(missed);
-      resetQuizState();
-    }
-
-    // Render current question and shuffled choices
-    function renderQuestion() {
-      answeredCurrent = false;
-      const q = activeQuestions[currentIndex];
-      const total = activeQuestions.length;
-
-      document.getElementById('scoreDisplay').textContent = score;
-      document.getElementById('progressText').textContent = `${currentIndex + 1} / ${total}`;
-      document.getElementById('progressBar').style.width = `${((currentIndex + 1) / total) * 100}%`;
-
-      document.getElementById('questionCategory').textContent = q.category;
-      const trickyBadge = document.getElementById('trickyBadge');
-      if (q.tricky) {
-        trickyBadge.classList.remove('hidden');
-      } else {
-        trickyBadge.classList.add('hidden');
-      }
-
-      document.getElementById('questionText').textContent = q.question;
-
-      const feedbackBox = document.getElementById('feedbackBox');
-      feedbackBox.classList.add('hidden');
-
-      const optionsContainer = document.getElementById('optionsContainer');
-      optionsContainer.innerHTML = '';
-
-      const letters = ['A', 'B', 'C', 'D'];
-      const shuffledOptions = shuffleArray(q.options);
-
-      shuffledOptions.forEach((optionText, idx) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.dataset.option = optionText;
-        btn.className =
-          'w-full text-left p-4 rounded-xl border-2 border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/40 transition flex items-center gap-3.5 group focus:outline-none';
-
-        const badge = document.createElement('span');
-        badge.className =
-          'w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-blue-100 text-slate-700 group-hover:text-blue-700 font-bold text-sm flex items-center justify-center shrink-0 transition';
-        badge.textContent = letters[idx];
-
-        const label = document.createElement('span');
-        label.className = 'text-sm sm:text-base font-medium text-slate-800 flex-1';
-        label.textContent = optionText;
-
-        btn.appendChild(badge);
-        btn.appendChild(label);
-
-        btn.addEventListener('click', () => handleOptionSelect(optionText));
-        optionsContainer.appendChild(btn);
-      });
-
-      const nextBtn = document.getElementById('nextBtn');
-      nextBtn.textContent = currentIndex === total - 1 ? 'See Results 🎉' : 'Next Question →';
-    }
-
-    // Handle user answer selection and automatically speak the correct French phrase
-    function handleOptionSelect(selectedOption) {
-      if (answeredCurrent) return;
-      answeredCurrent = true;
-
-      const q = activeQuestions[currentIndex];
-      const isCorrect = selectedOption === q.correctAnswer;
-
-      if (isCorrect) {
-        score++;
-        document.getElementById('scoreDisplay').textContent = score;
-      }
-
-      userHistory.push({
-        questionObj: q,
-        userAnswer: selectedOption,
-        isCorrect
-      });
-
-      // Highlight selected and correct options
-      const buttons = document.querySelectorAll('#optionsContainer button');
-      buttons.forEach(btn => {
-        btn.disabled = true;
-        const opt = btn.dataset.option;
-        const badge = btn.querySelector('span:first-child');
-
-        if (opt === q.correctAnswer) {
-          btn.className =
-            'w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-950 flex items-center gap-3.5 transition';
-          badge.className =
-            'w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center shrink-0';
-          badge.textContent = '✓';
-        } else if (opt === selectedOption && !isCorrect) {
-          btn.className =
-            'w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-50 text-rose-950 flex items-center gap-3.5 transition';
-          badge.className =
-            'w-8 h-8 rounded-lg bg-rose-600 text-white font-bold text-sm flex items-center justify-center shrink-0';
-          badge.textContent = '✕';
+      Object.keys(tabs).forEach(key => {
+        if (key === mode) {
+          tabs[key].className = "flex-1 py-3.5 px-4 text-sm font-bold text-indigo-600 bg-white border-b-2 border-indigo-600 transition whitespace-nowrap flex items-center justify-center gap-2";
         } else {
-          btn.className =
-            'w-full text-left p-4 rounded-xl border-2 border-slate-200 bg-slate-50/70 opacity-60 flex items-center gap-3.5 transition';
+          tabs[key].className = "flex-1 py-3.5 px-4 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition whitespace-nowrap flex items-center justify-center gap-2";
         }
       });
 
-      // Populate and display feedback box
-      const feedbackBox = document.getElementById('feedbackBox');
-      const feedbackHeader = document.getElementById('feedbackHeader');
-      document.getElementById('correctFrenchPhrase').textContent = q.frenchAudioText;
-      document.getElementById('explanationText').textContent = q.explanation;
+      updateMistakesBadge();
+      renderWorkspace();
+    }
+
+    function updateMistakesBadge() {
+      const label = document.getElementById('mistakes-tab-label');
+      if (label) {
+        label.textContent = `3. Missed Review (${missedQuestions.length})`;
+      }
+    }
+
+    function renderWorkspace() {
+      const workspace = document.getElementById('app-workspace');
+      if (currentMode === 'flashcards') {
+        renderFlashcardsMode(workspace);
+      } else if (currentMode === 'quiz') {
+        renderQuizMode(workspace);
+      } else if (currentMode === 'mistakes') {
+        renderMistakesMode(workspace);
+      }
+    }
+
+    // =========================================================================
+    // 5. FLASHCARD STUDY MODE RENDERER
+    // =========================================================================
+    function renderFlashcardsMode(container) {
+      const card = flashcardsData[fcIndex];
+      const safeWord = card.french.replace(/'/g, "\\'");
+      const safeEx = card.exampleFr.replace(/'/g, "\\'");
+
+      container.innerHTML = `
+        <div class="flex flex-col items-center animate-fade-in">
+          <!-- Top Bar: Counter & Category Jump -->
+          <div class="w-full max-w-xl flex flex-wrap items-center justify-between gap-2 mb-4">
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+              ${card.category}
+            </span>
+            <span class="text-sm font-semibold text-slate-500">
+              Card ${fcIndex + 1} of ${flashcardsData.length}
+            </span>
+          </div>
+
+          <!-- 3D Flip Card -->
+          <div class="w-full max-w-xl h-80 sm:h-84 perspective-1000 cursor-pointer select-none" onclick="flipFlashcard()">
+            <div class="relative w-full h-full transform-style-3d ${fcFlipped ? 'rotate-y-180' : ''}">
+              
+              <!-- FRONT OF CARD -->
+              <div class="absolute inset-0 backface-hidden bg-gradient-to-br from-white to-slate-50 border-2 border-slate-200 hover:border-indigo-300 rounded-2xl shadow-sm p-6 sm:p-8 flex flex-col items-center justify-center text-center transition">
+                <span class="text-xs font-medium text-slate-400 uppercase tracking-widest mb-3">French Term / Pattern</span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-indigo-700 mb-2">${card.french}</h2>
+                <div class="text-sm sm:text-base font-mono text-slate-500 bg-slate-100 px-3 py-1 rounded-lg mb-5">
+                  ${card.phonetic}
+                </div>
+
+                <!-- Audio Buttons on Front -->
+                <div class="flex flex-wrap items-center justify-center gap-2.5 mb-4" onclick="event.stopPropagation()">
+                  <button onclick="speakFrench('${safeWord}', 0.9)" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs sm:text-sm font-semibold shadow-sm hover:bg-indigo-700 transition">
+                    <span>🔊</span> Normal (0.9x)
+                  </button>
+                  <button onclick="speakFrench('${safeWord}', 0.5)" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-700 text-white text-xs sm:text-sm font-semibold shadow-sm hover:bg-slate-800 transition">
+                    <span>🐢</span> Slow (0.5x)
+                  </button>
+                </div>
+
+                <p class="text-xs font-medium text-indigo-500 mt-auto">Tap anywhere on card to flip for English & Examples ↻</p>
+              </div>
+
+              <!-- BACK OF CARD -->
+              <div class="absolute inset-0 backface-hidden rotate-y-180 bg-indigo-50/40 border-2 border-indigo-200 rounded-2xl shadow-sm p-6 sm:p-7 flex flex-col justify-between text-left overflow-y-auto">
+                <div>
+                  <div class="flex items-center justify-between border-b border-indigo-100 pb-2.5 mb-3">
+                    <div>
+                      <span class="text-xs font-bold uppercase text-indigo-500">English Meaning</span>
+                      <h3 class="text-lg sm:text-xl font-extrabold text-slate-900">${card.english}</h3>
+                    </div>
+                    <button onclick="event.stopPropagation(); speakFrench('${safeEx}', 0.85)" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 transition shrink-0">
+                      🔊 Hear Sentence
+                    </button>
+                  </div>
+
+                  <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 mb-3">
+                    <p class="text-sm font-semibold text-slate-800 mb-1">🇫🇷 ${card.exampleFr}</p>
+                    <p class="text-xs sm:text-sm text-slate-500 italic">🇬🇧 ${card.exampleEn}</p>
+                  </div>
+
+                  <div class="bg-amber-50/90 border border-amber-200/80 rounded-xl p-3 text-xs sm:text-sm text-amber-950">
+                    <span class="font-bold">💡 Grammar & Usage Note:</span> ${card.grammarNote}
+                  </div>
+                </div>
+
+                <p class="text-xs text-center text-slate-400 mt-2">Tap card to flip back ↺</p>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Navigation Controls -->
+          <div class="w-full max-w-xl flex items-center justify-between gap-3 mt-6">
+            <button onclick="prevFlashcard()" class="flex-1 py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition">
+              ← Previous
+            </button>
+            <button onclick="flipFlashcard()" class="py-3 px-5 rounded-xl border-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50 font-bold text-sm transition">
+              Flip Card
+            </button>
+            <button onclick="nextFlashcard()" class="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-sm transition">
+              Next Card →
+            </button>
+          </div>
+
+          <!-- Quick Jump Pills -->
+          <div class="w-full max-w-xl mt-6 pt-5 border-t border-slate-200">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2.5">Quick Jump to Card:</p>
+            <div class="flex flex-wrap gap-1.5">
+              ${flashcardsData.map((c, i) => `
+                <button onclick="jumpToFlashcard(${i})" class="px-2.5 py-1 rounded-lg text-xs font-semibold transition ${i === fcIndex ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                  ${c.french}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function flipFlashcard() {
+      fcFlipped = !fcFlipped;
+      if (fcFlipped && autoAudioEnabled) {
+        speakFrench(flashcardsData[fcIndex].exampleFr, 0.9);
+      }
+      renderWorkspace();
+    }
+
+    function nextFlashcard() {
+      fcFlipped = false;
+      fcIndex = (fcIndex + 1) % flashcardsData.length;
+      if (autoAudioEnabled) {
+        speakFrench(flashcardsData[fcIndex].french, 0.9);
+      }
+      renderWorkspace();
+    }
+
+    function prevFlashcard() {
+      fcFlipped = false;
+      fcIndex = (fcIndex - 1 + flashcardsData.length) % flashcardsData.length;
+      if (autoAudioEnabled) {
+        speakFrench(flashcardsData[fcIndex].french, 0.9);
+      }
+      renderWorkspace();
+    }
+
+    function jumpToFlashcard(idx) {
+      fcFlipped = false;
+      fcIndex = idx;
+      if (autoAudioEnabled) {
+        speakFrench(flashcardsData[fcIndex].french, 0.9);
+      }
+      renderWorkspace();
+    }
+
+    // =========================================================================
+    // 6. 60-QUESTION QUIZ ARENA (3 ROUNDS OF 20 QUESTIONS)
+    // =========================================================================
+    function renderQuizMode(container) {
+      const currentRoundDeck = rounds[activeRound];
+      const completedCount = roundCompleted.filter(Boolean).length;
+
+      // Top Round Selector & Progress Header
+      let headerHtml = `
+        <div class="mb-5">
+          ${shuffleToastMessage ? `
+            <div class="mb-4 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold flex items-center justify-between gap-2 animate-fade-in">
+              <span>${shuffleToastMessage}</span>
+              <button onclick="shuffleToastMessage=''; renderWorkspace();" class="text-emerald-600 hover:text-emerald-900 font-bold px-2">✕</button>
+            </div>
+          ` : ''}
+
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+            <div class="flex flex-wrap items-center gap-2">
+              ${[0, 1, 2].map(rIdx => {
+                const isActive = activeRound === rIdx;
+                const isDone = roundCompleted[rIdx];
+                return `
+                  <button onclick="selectRound(${rIdx})" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold border transition flex items-center gap-1.5 ${
+                    isActive
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                      : isDone
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                  }">
+                    <span>Round ${rIdx + 1} (20 Qs)</span>
+                    ${isDone ? `<span>✓ (${roundScores[rIdx]}/20)</span>` : ''}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            <button onclick="manualReshuffleAll()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5">
+              <span>🎲</span> Reshuffle All 60 Qs
+            </button>
+          </div>
+
+          <!-- Cycle Coverage Bar -->
+          <div class="flex items-center justify-between text-xs text-slate-500 bg-slate-50 px-3.5 py-2 rounded-lg border border-slate-200/70">
+            <span>60-Question Cycle Coverage: <strong>${completedCount} / 3 Rounds Reviewed</strong> (${completedCount * 20} / 60 unique questions)</span>
+            <span class="hidden sm:inline text-indigo-600 font-medium">Auto-shuffles after all 3 rounds!</span>
+          </div>
+        </div>
+      `;
+
+      // Check if current round is finished
+      if (currentQIndex >= currentRoundDeck.length) {
+        const allThreeDone = roundCompleted.every(Boolean);
+        const totalScoreAllRounds = roundScores.reduce((a, b) => a + b, 0);
+
+        container.innerHTML = headerHtml + `
+          <div class="text-center py-8 px-4 bg-slate-50 rounded-2xl border border-slate-200 animate-fade-in">
+            <div class="text-4xl mb-3">${allThreeDone ? '🏆' : '🎉'}</div>
+            <h2 class="text-2xl font-extrabold text-slate-900 mb-2">
+              Round ${activeRound + 1} Complete!
+            </h2>
+            <p class="text-base text-slate-600 mb-6">
+              You scored <strong class="text-indigo-600 text-xl">${currentScore} / 20</strong> in this round.
+              ${allThreeDone ? `<br><span class="text-emerald-700 font-semibold mt-2 inline-block">You have reviewed all 60 questions across all 3 rounds! Total Cycle Score: ${totalScoreAllRounds} / 60</span>` : ''}
+            </p>
+
+            <div class="flex flex-wrap items-center justify-center gap-3">
+              ${allThreeDone ? `
+                <button onclick="finishCycleAndShuffle()" class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm transition">
+                  🔄 Start New Shuffled 3-Round Cycle
+                </button>
+              ` : `
+                <button onclick="goToNextUnfinishedRound()" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-sm transition">
+                  Continue to Next Round →
+                </button>
+              `}
+              <button onclick="retakeCurrentRound()" class="px-5 py-3 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold text-sm transition">
+                Retake Round ${activeRound + 1}
+              </button>
+              ${missedQuestions.length > 0 ? `
+                <button onclick="switchMode('mistakes')" class="px-5 py-3 rounded-xl bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 font-bold text-sm transition">
+                  📌 Review Missed (${missedQuestions.length})
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // Render Active Question
+      const q = currentRoundDeck[currentQIndex];
+      const progressPct = (currentQIndex / currentRoundDeck.length) * 100;
+
+      container.innerHTML = headerHtml + `
+        <div class="animate-fade-in">
+          <!-- Question Meta & Progress -->
+          <div class="flex items-center justify-between text-xs sm:text-sm font-semibold text-slate-500 mb-2">
+            <span class="text-indigo-600 font-bold">${q.category}</span>
+            <span>Question ${currentQIndex + 1} of 20 • Score: <strong class="text-slate-800">${currentScore}</strong></span>
+          </div>
+          <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden mb-6">
+            <div class="h-full bg-indigo-600 transition-all duration-300" style="width: ${progressPct}%"></div>
+          </div>
+
+          <!-- Question Prompt -->
+          <div class="bg-slate-50/80 border border-slate-200 rounded-2xl p-5 sm:p-6 mb-5">
+            <h2 class="text-lg sm:text-xl font-bold text-slate-900 leading-relaxed">
+              ${q.promptHtml}
+            </h2>
+          </div>
+
+          <!-- 4 Option Buttons -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+            ${q.options.map((opt, idx) => {
+              const letter = ['A', 'B', 'C', 'D'][idx];
+              return `
+                <button id="quiz-opt-${idx}" onclick="submitQuizAnswer(${idx})" class="w-full text-left p-4 rounded-xl border-2 border-slate-200 bg-white hover:border-indigo-400 hover:bg-indigo-50/40 font-semibold text-slate-800 transition flex items-center gap-3">
+                  <span class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center shrink-0">${letter}</span>
+                  <span>${opt}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Post-Answer Feedback Panel (Hidden until answered) -->
+          <div id="quiz-feedback-panel" class="hidden animate-fade-in"></div>
+        </div>
+      `;
+    }
+
+    function submitQuizAnswer(selectedIdx) {
+      if (hasAnsweredCurrent) return;
+      hasAnsweredCurrent = true;
+
+      const currentRoundDeck = rounds[activeRound];
+      const q = currentRoundDeck[currentQIndex];
+      const isCorrect = selectedIdx === q.correctIndex;
 
       if (isCorrect) {
-        feedbackBox.className = 'mt-6 rounded-xl p-4 sm:p-5 border border-emerald-200 bg-emerald-50/70 transition-all';
-        feedbackHeader.className = 'font-bold text-base mb-1 text-emerald-800';
-        feedbackHeader.textContent = '✓ Très bien ! Correct!';
+        currentScore++;
       } else {
-        feedbackBox.className = 'mt-6 rounded-xl p-4 sm:p-5 border border-rose-200 bg-rose-50/70 transition-all';
-        feedbackHeader.className = 'font-bold text-base mb-1 text-rose-800';
-        feedbackHeader.textContent = '✕ Not quite — listen closely to the correct French:';
+        // Add to missed questions if not already tracked
+        if (!missedQuestions.some(item => item.id === q.id)) {
+          missedQuestions.push(q);
+          updateMistakesBadge();
+        }
       }
 
-      feedbackBox.classList.remove('hidden');
-
-      // Pronounce the correct French phrase automatically
-      if (autoSpeak) {
-        speakFrench(q.frenchAudioText, document.getElementById('replayAudioBtn'));
-      }
-    }
-
-    function nextQuestion() {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
-      if (currentIndex < activeQuestions.length - 1) {
-        currentIndex++;
-        renderQuestion();
-      } else {
-        showSummary();
-      }
-    }
-
-    // Show end-of-round summary and full review with audio buttons
-    function showSummary() {
-      document.getElementById('quizCard').classList.add('hidden');
-      document.getElementById('quizControlsBar').classList.add('hidden');
-      document.getElementById('progressBarWrapper').classList.add('hidden');
-      document.getElementById('summaryScreen').classList.remove('hidden');
-
-      const total = activeQuestions.length;
-      const missedCount = total - score;
-      const accuracy = Math.round((score / total) * 100);
-
-      document.getElementById('finalScore').textContent = `${score}/${total}`;
-      document.getElementById('finalAccuracy').textContent = `${accuracy}%`;
-      document.getElementById('finalMissed').textContent = missedCount;
-
-      const subtitle = document.getElementById('summarySubtitle');
-      if (accuracy === 100) {
-        subtitle.textContent = 'Parfait ! You mastered every single question in this round!';
-      } else if (accuracy >= 80) {
-        subtitle.textContent = 'Excellent travail ! Great command of French holiday vocabulary and verbs.';
-      } else {
-        subtitle.textContent = 'Bon effort ! Click the speaker buttons below to practice the pronunciations.';
-      }
-
-      const retryMissedBtn = document.getElementById('retryMissedBtn');
-      if (missedCount > 0) {
-        retryMissedBtn.classList.remove('hidden');
-        retryMissedBtn.textContent = `🔁 Retry Missed Questions (${missedCount})`;
-      } else {
-        retryMissedBtn.classList.add('hidden');
-      }
-
-      const reviewList = document.getElementById('reviewList');
-      reviewList.innerHTML = '';
-
-      userHistory.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = `p-4 rounded-xl border ${
-          item.isCorrect ? 'border-emerald-200 bg-emerald-50/40' : 'border-rose-200 bg-rose-50/40'
-        } flex flex-wrap items-start justify-between gap-3`;
-
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'flex-1 min-w-[220px]';
-
-        const qTitle = document.createElement('div');
-        qTitle.className = 'text-sm font-bold text-slate-900 mb-1';
-        qTitle.textContent = `${index + 1}. ${item.questionObj.question}`;
-
-        const answerLine = document.createElement('div');
-        answerLine.className = 'text-xs sm:text-sm text-slate-700 space-y-0.5';
-        answerLine.innerHTML = item.isCorrect
-          ? `<span class="text-emerald-700 font-semibold">✓ Your answer:</span> ${item.userAnswer}`
-          : `<span class="text-rose-700 font-semibold">✕ Your answer:</span> ${item.userAnswer}<br><span class="text-emerald-700 font-semibold">✓ Correct answer:</span> ${item.questionObj.correctAnswer}`;
-
-        const frenchLine = document.createElement('div');
-        frenchLine.className = 'text-xs font-semibold text-blue-700 mt-1.5';
-        frenchLine.textContent = `French Audio: "${item.questionObj.frenchAudioText}"`;
-
-        infoDiv.appendChild(qTitle);
-        infoDiv.appendChild(answerLine);
-        infoDiv.appendChild(frenchLine);
-
-        const speakBtn = document.createElement('button');
-        speakBtn.type = 'button';
-        speakBtn.className =
-          'relative px-3.5 py-2 rounded-xl bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold shadow-sm transition shrink-0';
-        speakBtn.textContent = '🔊 Pronounce';
-        speakBtn.addEventListener('click', () => speakFrench(item.questionObj.frenchAudioText, speakBtn));
-
-        card.appendChild(infoDiv);
-        card.appendChild(speakBtn);
-        reviewList.appendChild(card);
+      // Style option buttons
+      q.options.forEach((_, idx) => {
+        const btn = document.getElementById(`quiz-opt-${idx}`);
+        btn.disabled = true;
+        if (idx === q.correctIndex) {
+          btn.className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 font-bold text-emerald-900 flex items-center gap-3";
+        } else if (idx === selectedIdx) {
+          btn.className = "w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-50 font-bold text-rose-900 flex items-center gap-3";
+        } else {
+          btn.className = "w-full text-left p-4 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-400 flex items-center gap-3 opacity-70";
+        }
       });
+
+      // Speak French sentence if auto-audio is enabled
+      if (autoAudioEnabled) {
+        speakFrench(q.spokenSentence, 0.9);
+      }
+
+      const safeSpoken = q.spokenSentence.replace(/'/g, "\\'");
+      const feedbackPanel = document.getElementById('quiz-feedback-panel');
+      feedbackPanel.classList.remove('hidden');
+      feedbackPanel.innerHTML = `
+        <div class="rounded-2xl border-2 ${isCorrect ? 'border-emerald-200 bg-emerald-50/40' : 'border-rose-200 bg-rose-50/40'} p-5 sm:p-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <span class="text-base font-extrabold ${isCorrect ? 'text-emerald-700' : 'text-rose-700'}">
+              ${isCorrect ? '✅ Correct ! Très bien !' : '❌ Incorrect — Regardez l’explication :'}
+            </span>
+            <div class="flex items-center gap-2">
+              <button onclick="speakFrench('${safeSpoken}', 0.9)" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 transition">
+                🔊 Normal (0.9x)
+              </button>
+              <button onclick="speakFrench('${safeSpoken}', 0.5)" class="px-3 py-1.5 rounded-lg bg-slate-700 text-white text-xs font-semibold hover:bg-slate-800 transition">
+                🐢 Slow (0.5x)
+              </button>
+            </div>
+          </div>
+
+          <!-- Full French & English Sentence Translation -->
+          <div class="bg-white rounded-xl p-3.5 border border-slate-200/80 mb-3">
+            <p class="text-sm font-bold text-slate-900 mb-1">🇫🇷 ${q.spokenSentence}</p>
+            <p class="text-sm text-slate-600 italic">🇬🇧 ${q.englishSentence}</p>
+          </div>
+
+          <!-- Detailed English Grammar/Vocab Explanation -->
+          <p class="text-sm text-slate-800 leading-relaxed mb-3">
+            <strong>Explanation:</strong> ${q.explanationHtml}
+          </p>
+
+          <!-- Key Vocabulary Bullet List -->
+          <div class="bg-white/80 rounded-xl p-3.5 border border-slate-200/60">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Key Vocabulary (French → English):</p>
+            <ul class="list-disc list-inside text-xs sm:text-sm text-slate-700 space-y-1">
+              ${q.keyVocab.map(v => `<li><strong>${v.fr}</strong> — ${v.en}</li>`).join('')}
+            </ul>
+          </div>
+
+          <!-- Next Question Button -->
+          <div class="mt-5 flex justify-end">
+            <button onclick="advanceQuizQuestion()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-sm transition">
+              ${currentQIndex + 1 === 20 ? 'Finish Round ' + (activeRound + 1) + ' →' : 'Next Question →'}
+            </button>
+          </div>
+        </div>
+      `;
     }
 
-    // Boot App with a fresh randomized 20-question round
-    window.addEventListener('DOMContentLoaded', () => {
-      activeQuestions = buildQuestionSet('all');
-      renderQuestion();
-    });
+    function advanceQuizQuestion() {
+      hasAnsweredCurrent = false;
+      currentQIndex++;
+
+      // Check if we just finished the 20th question of the active round
+      if (currentQIndex >= rounds[activeRound].length) {
+        roundCompleted[activeRound] = true;
+        roundScores[activeRound] = currentScore;
+
+        // If ALL 3 rounds (all 60 questions) have now been reviewed, automatically reshuffle!
+        if (roundCompleted.every(Boolean)) {
+          // Keep user on completion view or auto-reshuffle when they click or right away
+        }
+      }
+      renderWorkspace();
+    }
+
+    function selectRound(rIdx) {
+      activeRound = rIdx;
+      currentQIndex = 0;
+      currentScore = 0;
+      hasAnsweredCurrent = false;
+      shuffleToastMessage = "";
+      renderWorkspace();
+    }
+
+    function retakeCurrentRound() {
+      currentQIndex = 0;
+      currentScore = 0;
+      hasAnsweredCurrent = false;
+      renderWorkspace();
+    }
+
+    function goToNextUnfinishedRound() {
+      const nextUnfinished = roundCompleted.findIndex(done => !done);
+      if (nextUnfinished !== -1) {
+        selectRound(nextUnfinished);
+      } else {
+        finishCycleAndShuffle();
+      }
+    }
+
+    function finishCycleAndShuffle() {
+      buildThreeRounds(true);
+      renderWorkspace();
+    }
+
+    function manualReshuffleAll() {
+      buildThreeRounds(false);
+      shuffleToastMessage = "🎲 All 60 questions have been freshly shuffled into 3 new rounds of 20!";
+      renderWorkspace();
+    }
+
+    // =========================================================================
+    // 7. MISSED QUESTIONS REVIEW TRACKER
+    // =========================================================================
+    function renderMistakesMode(container) {
+      if (missedQuestions.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 px-4 animate-fade-in">
+            <div class="text-4xl mb-3">🌟</div>
+            <h2 class="text-xl font-extrabold text-slate-900 mb-2">Zero Missed Questions!</h2>
+            <p class="text-sm text-slate-500 max-w-md mx-auto mb-6">
+              Any question you miss in the 60-Question Quiz Arena automatically appears here so you can practice and master it.
+            </p>
+            <button onclick="switchMode('quiz')" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-sm transition">
+              Go to 60-Question Quiz
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      if (mistakeIndex >= missedQuestions.length) {
+        mistakeIndex = 0;
+      }
+
+      const q = missedQuestions[mistakeIndex];
+      const safeSpoken = q.spokenSentence.replace(/'/g, "\\'");
+
+      container.innerHTML = `
+        <div class="animate-fade-in">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-200">
+            <div>
+              <span class="text-xs font-bold uppercase text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
+                Needs Practice (${mistakeIndex + 1} of ${missedQuestions.length})
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="markMistakeMastered(${q.id})" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">
+                ✓ Mark as Mastered
+              </button>
+              <button onclick="clearAllMistakes()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold transition">
+                Clear All
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-5">
+            <span class="text-xs font-semibold text-indigo-600 block mb-1">${q.category}</span>
+            <h2 class="text-lg sm:text-xl font-bold text-slate-900 leading-relaxed">${q.promptHtml}</h2>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+            ${q.options.map((opt, idx) => `
+              <button id="mistake-opt-${idx}" onclick="submitMistakePractice(${idx})" class="w-full text-left p-4 rounded-xl border-2 border-slate-200 bg-white hover:border-indigo-400 font-semibold text-slate-800 transition">
+                ${opt}
+              </button>
+            `).join('')}
+          </div>
+
+          <div id="mistake-feedback-box" class="hidden mb-5"></div>
+
+          <div class="flex items-center justify-between pt-4 border-t border-slate-200">
+            <button onclick="prevMistakeItem()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition">
+              ← Previous
+            </button>
+            <button onclick="speakFrench('${safeSpoken}', 0.85)" class="px-4 py-2.5 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-bold text-sm transition">
+              🔊 Listen
+            </button>
+            <button onclick="nextMistakeItem()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition">
+              Next Mistake →
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function submitMistakePractice(selectedIdx) {
+      if (mistakeAnswered) return;
+      mistakeAnswered = true;
+
+      const q = missedQuestions[mistakeIndex];
+      const isCorrect = selectedIdx === q.correctIndex;
+
+      q.options.forEach((_, idx) => {
+        const btn = document.getElementById(`mistake-opt-${idx}`);
+        btn.disabled = true;
+        if (idx === q.correctIndex) {
+          btn.className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 font-bold text-emerald-900";
+        } else if (idx === selectedIdx) {
+          btn.className = "w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-50 font-bold text-rose-900";
+        }
+      });
+
+      if (autoAudioEnabled) {
+        speakFrench(q.spokenSentence, 0.9);
+      }
+
+      const box = document.getElementById('mistake-feedback-box');
+      box.classList.remove('hidden');
+      box.innerHTML = `
+        <div class="p-4 rounded-xl border ${isCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'} text-sm">
+          <p class="font-bold ${isCorrect ? 'text-emerald-800' : 'text-rose-800'} mb-1">
+            ${isCorrect ? '✅ Nailed it! You can click "Mark as Mastered" above.' : '❌ Still tricky! Review the rule below:'}
+          </p>
+          <p class="text-slate-700 mb-1"><strong>🇬🇧 Translation:</strong> ${q.englishSentence}</p>
+          <p class="text-slate-700">${q.explanationHtml}</p>
+        </div>
+      `;
+    }
+
+    function nextMistakeItem() {
+      mistakeAnswered = false;
+      mistakeIndex = (mistakeIndex + 1) % missedQuestions.length;
+      renderWorkspace();
+    }
+
+    function prevMistakeItem() {
+      mistakeAnswered = false;
+      mistakeIndex = (mistakeIndex - 1 + missedQuestions.length) % missedQuestions.length;
+      renderWorkspace();
+    }
+
+    function markMistakeMastered(id) {
+      missedQuestions = missedQuestions.filter(q => q.id !== id);
+      mistakeAnswered = false;
+      updateMistakesBadge();
+      renderWorkspace();
+    }
+
+    function clearAllMistakes() {
+      missedQuestions = [];
+      mistakeAnswered = false;
+      updateMistakesBadge();
+      renderWorkspace();
+    }
+
+    // Initial Render
+    renderWorkspace();
   </script>
 </body>
 </html>
