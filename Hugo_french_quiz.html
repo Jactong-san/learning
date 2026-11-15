@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>French Holiday & Verbs Audio Quiz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      70% { transform: scale(1.15); opacity: 0; }
+      100% { transform: scale(0.95); opacity: 0; }
+    }
+    .speaking-pulse::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 9999px;
+      border: 2px solid #2563eb;
+      animation: pulseRing 1.2s infinite;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Top Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
+    <div class="max-w-4xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-blue-700 text-white flex items-center justify-center font-extrabold text-sm shadow-sm">
+          FR
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+            French Holiday & Verbs Audio Quiz
+          </h1>
+          <p class="text-xs text-slate-500">Auto-pronounces the correct French on every answer</p>
+        </div>
+      </div>
+
+      <!-- Audio & Speed Settings -->
+      <div class="flex items-center gap-2">
+        <button
+          id="speedToggleBtn"
+          onclick="toggleSpeechRate()"
+          title="Toggle normal or slow French pronunciation"
+          class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700 transition"
+        >
+          🐢 1.0x Speed
+        </button>
+        <button
+          id="autoSpeakBtn"
+          onclick="toggleAutoSpeak()"
+          title="Toggle automatic pronunciation when clicking an answer"
+          class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
+        >
+          🔊 Auto-Speak: ON
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-6 sm:py-8">
+
+    <!-- Filter & Stats Bar -->
+    <div id="quizControlsBar" class="mb-5 flex flex-wrap items-center justify-between gap-3">
+      <div class="inline-flex rounded-xl bg-slate-200/70 p-1">
+        <button
+          id="modeAllBtn"
+          onclick="setQuizMode('all')"
+          class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-blue-700 shadow-sm transition"
+        >
+          🎲 Random 20 (from 40)
+        </button>
+        <button
+          id="modeTrickyBtn"
+          onclick="setQuizMode('tricky')"
+          class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition"
+        >
+          ⚡ Tricky Only (18)
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3 text-sm font-semibold">
+        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+          Score: <span id="scoreDisplay">0</span>
+        </span>
+        <span class="text-slate-500" id="progressText">1 / 20</span>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div id="progressBarWrapper" class="w-full bg-slate-200 rounded-full h-2.5 mb-6 overflow-hidden">
+      <div id="progressBar" class="bg-blue-700 h-2.5 rounded-full transition-all duration-300" style="width: 5%"></div>
+    </div>
+
+    <!-- Active Question Card -->
+    <section id="quizCard" class="bg-white rounded-2xl shadow-md border border-slate-200/80 p-5 sm:p-8">
+      <!-- Category & Tricky Badge -->
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+        <span id="questionCategory" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
+          Vocabulary
+        </span>
+        <span id="trickyBadge" class="hidden px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300">
+          ⚡ Tricky Conjugation / Grammar
+        </span>
+      </div>
+
+      <!-- Question Text -->
+      <h2 id="questionText" class="text-lg sm:text-2xl font-bold text-slate-900 mb-6 leading-snug">
+        Loading question...
+      </h2>
+
+      <!-- Options Container -->
+      <div id="optionsContainer" class="space-y-3"></div>
+
+      <!-- Feedback & French Audio Bar (Shown after answering) -->
+      <div id="feedbackBox" class="hidden mt-6 rounded-xl p-4 sm:p-5 border transition-all">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div class="flex-1 min-w-[200px]">
+            <div id="feedbackHeader" class="font-bold text-base mb-1"></div>
+            <div class="text-sm font-semibold text-slate-900 mb-1.5">
+              Correct French: <span id="correctFrenchPhrase" class="text-blue-700 underline decoration-blue-300"></span>
+            </div>
+            <p id="explanationText" class="text-sm text-slate-600 leading-relaxed"></p>
+          </div>
+
+          <!-- Replay Audio Button -->
+          <button
+            id="replayAudioBtn"
+            onclick="replayCurrentFrench()"
+            class="relative inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold shadow-sm transition shrink-0"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H2v6h4l5 4V5zm4.54 3.46a5 5 0 010 7.07m2.83-9.9a9 9 0 010 12.73" />
+            </svg>
+            <span>Listen Again</span>
+          </button>
+        </div>
+
+        <!-- Next Question Button -->
+        <div class="mt-5 pt-4 border-t border-slate-200/70 flex justify-end">
+          <button
+            id="nextBtn"
+            onclick="nextQuestion()"
+            class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm shadow-sm transition"
+          >
+            Next Question →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- End-of-Quiz Summary Screen -->
+    <section id="summaryScreen" class="hidden space-y-6">
+      <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 sm:p-8 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center mx-auto mb-4 text-3xl">
+          🎉
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">Quiz Complete!</h2>
+        <p id="summarySubtitle" class="text-slate-600 mb-6">Here is how you performed on your French practice.</p>
+
+        <!-- Score Metrics -->
+        <div class="grid grid-cols-3 gap-3 max-w-md mx-auto mb-7">
+          <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200">
+            <div id="finalScore" class="text-2xl font-extrabold text-blue-700">0/20</div>
+            <div class="text-xs font-medium text-slate-500 mt-0.5">Score</div>
+          </div>
+          <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200">
+            <div id="finalAccuracy" class="text-2xl font-extrabold text-emerald-600">0%</div>
+            <div class="text-xs font-medium text-slate-500 mt-0.5">Accuracy</div>
+          </div>
+          <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200">
+            <div id="finalMissed" class="text-2xl font-extrabold text-rose-600">0</div>
+            <div class="text-xs font-medium text-slate-500 mt-0.5">To Review</div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <button
+            id="retryMissedBtn"
+            onclick="retryMissedQuestions()"
+            class="hidden px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-sm shadow-sm transition"
+          >
+            🔁 Retry Missed Questions
+          </button>
+          <button
+            onclick="restartCurrentMode()"
+            class="px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-semibold text-sm shadow-sm transition"
+          >
+            🎲 New Random 20
+          </button>
+        </div>
+      </div>
+
+      <!-- Full Review List with Audio Replay -->
+      <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-5 sm:p-6">
+        <h3 class="text-lg font-bold text-slate-900 mb-4">Full Review & Pronunciation</h3>
+        <div id="reviewList" class="space-y-3"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Complete 40-question pool based strictly on your French holiday destinations & verbs notes
+    const ALL_QUESTIONS = [
+      {
+        id: 1,
+        category: "Sentence Translation",
+        tricky: false,
+        question: 'How do you translate "We are going to the mountains" into French?',
+        options: [
+          "Nous allons à la montagne.",
+          "Vous allez à la montagne.",
+          "Nous allons à la mer.",
+          "On va dans la forêt."
+        ],
+        correctAnswer: "Nous allons à la montagne.",
+        frenchAudioText: "Nous allons à la montagne.",
+        explanation: '"Nous allons" means "We are going", and "à la montagne" means "to the mountains".'
+      },
+      {
+        id: 2,
+        category: "Sentence Translation",
+        tricky: false,
+        question: 'Which sentence correctly translates "She is fishing in the river"?',
+        options: [
+          "Elle pêche dans la rivière.",
+          "Elles pêchent dans la rivière.",
+          "Il pêche dans la rivière.",
+          "Elle nage dans le lac."
+        ],
+        correctAnswer: "Elle pêche dans la rivière.",
+        frenchAudioText: "Elle pêche dans la rivière.",
+        explanation: '"Elle" (she) takes the singular ending "-e" ("pêche"), whereas "Elles" (they, feminine) takes "-ent" ("pêchent").'
+      },
+      {
+        id: 3,
+        category: "Verb Conjugation",
+        tricky: false,
+        question: 'What is the correct conjugation of the verb "nager" (to swim) for "nous" (we)?',
+        options: [
+          "nous nageons",
+          "nous nagons",
+          "nous nagent",
+          "nous nagez"
+        ],
+        correctAnswer: "nous nageons",
+        frenchAudioText: "nous nageons",
+        explanation: 'Verbs ending in "-ger" keep an "e" before "-ons" in the "nous" form ("nous nageons").'
+      },
+      {
+        id: 4,
+        category: "Sentence Translation",
+        tricky: false,
+        question: 'How do you say "You live on an island" using the informal singular "tu" form?',
+        options: [
+          "Tu habites sur une île.",
+          "J’habite sur une île.",
+          "Il habite sur une île.",
+          "Tu habite sur une île."
+        ],
+        correctAnswer: "Tu habites sur une île.",
+        frenchAudioText: "Tu habites sur une île.",
+        explanation: 'With "tu", regular "-er" verbs like "habiter" always end in "-es" ("tu habites").'
+      },
+      {
+        id: 5,
+        category: "Comprehension",
+        tricky: false,
+        question: 'What does the French phrase "Ils vont en ville" mean in English?',
+        options: [
+          "They are going into town.",
+          "We are going into town.",
+          "They are going to the countryside.",
+          "He is going into town."
+        ],
+        correctAnswer: "They are going into town.",
+        frenchAudioText: "Ils vont en ville.",
+        explanation: '"Ils vont" means "They are going" (masculine or mixed group), and "en ville" means "into town".'
+      },
+      {
+        id: 6,
+        category: "Verb Conjugation",
+        tricky: false,
+        question: 'Which pronoun and verb form correctly translates "You go (formal / plural)"?',
+        options: [
+          "vous allez",
+          "tu vas",
+          "nous allons",
+          "ils vont"
+        ],
+        correctAnswer: "vous allez",
+        frenchAudioText: "vous allez",
+        explanation: '"Vous" is used for formal singular "you" or plural "you all", paired with "allez".'
+      },
+      {
+        id: 7,
+        category: "Vocabulary",
+        tricky: false,
+        question: 'What is the English translation for "la forêt"?',
+        options: [
+          "the forest",
+          "the river",
+          "the sea",
+          "the countryside"
+        ],
+        correctAnswer: "the forest",
+        frenchAudioText: "la forêt",
+        explanation: '"La forêt" means "the forest". Notice the circumflex accent (^) over the "e".'
+      },
+      {
+        id: 8,
+        category: "Verb Conjugation",
+        tricky: false,
+        question: 'How do you conjugate the verb "pêcher" (to fish) for "ils/elles" (they)?',
+        options: [
+          "ils/elles pêchent",
+          "ils/elles pêchons",
+          "ils/elles pêche",
+          "ils/elles pêches"
+        ],
+        correctAnswer: "ils/elles pêchent",
+        frenchAudioText: "ils pêchent",
+        explanation: 'For "ils/elles", regular "-er" verbs take the silent "-ent" ending ("pêchent").'
+      },
+      {
+        id: 9,
+        category: "Sentence Translation",
+        tricky: false,
+        question: 'Which option translates "He is going into the forest"?',
+        options: [
+          "Il va dans la forêt.",
+          "Elle va dans la forêt.",
+          "On va dans la forêt.",
+          "Ils vont dans la forêt."
+        ],
+        correctAnswer: "Il va dans la forêt.",
+        frenchAudioText: "Il va dans la forêt.",
+        explanation: '"Il va" means "He goes / He is going", followed by "dans la forêt" (into the forest).'
+      },
+      {
+        id: 10,
+        category: "Vocabulary",
+        tricky: false,
+        question: 'What does "une île" mean?',
+        options: [
+          "an island",
+          "a lake",
+          "a city",
+          "a mountain"
+        ],
+        correctAnswer: "an island",
+        frenchAudioText: "une île",
+        explanation: '"Une île" is feminine and means "an island".'
+      },
+      {
+        id: 11,
+        category: "Verb Conjugation",
+        tricky: false,
+        question: 'Choose the correct conjugation of "habiter" (to live) for "nous" (we):',
+        options: [
+          "nous habitons",
+          "nous habitez",
+          "nous habitent",
+          "nous habite"
+        ],
+        correctAnswer: "nous habitons",
+        frenchAudioText: "nous habitons",
+        explanation: 'Remove "-er" from "habiter" and add "-ons" for "nous": "nous habitons".'
+      },
+      {
+        id: 12,
+        category: "Sentence Translation",
+        tricky: false,
+        question: 'How do you say "They (feminine) are going to the countryside"?',
+        options: [
+          "Elles vont à la campagne.",
+          "Ils vont à la campagne.",
+          "Elles vont à la montagne.",
+          "Elles va à la campagne."
+        ],
+        correctAnswer: "Elles vont à la campagne.",
+        frenchAudioText: "Elles vont à la campagne.",
+        explanation: '"Elles" refers to an all-feminine "they", and "vont" is the 3rd-person plural of "aller".'
+      },
+      {
+        id: 13,
+        category: "Conjugation Trap",
+        tricky: true,
+        question: 'TRICKY: What is the correct "tu" conjugation for "nager" (remember: tu always takes an -s)?',
+        options: [
+          "tu nages",
+          "tu nage",
+          "tu nageons",
+          "tu nagent"
+        ],
+        correctAnswer: "tu nages",
+        frenchAudioText: "tu nages",
+        explanation: 'Even though "tu nages" sounds identical to "je nage", you must write the "-s" with "tu"!'
+      },
+      {
+        id: 14,
+        category: "Conjugation Trap",
+        tricky: true,
+        question: 'TRICKY: Which sentence accurately translates "You swim in the lake" (informal singular)?',
+        options: [
+          "Tu nages dans le lac.",
+          "Tu nage dans le lac.",
+          "Tu nages dans la rivière.",
+          "Vous nagez dans le lac."
+        ],
+        correctAnswer: "Tu nages dans le lac.",
+        frenchAudioText: "Tu nages dans le lac.",
+        explanation: 'Watch out for the missing "-s" in "Tu nage"! With "tu", it must be spelled "Tu nages".'
+      },
+      {
+        id: 15,
+        category: "Vocabulary",
+        tricky: false,
+        question: 'What is the English translation for "la campagne"?',
+        options: [
+          "the countryside",
+          "the town / the city",
+          "the sea",
+          "the lake"
+        ],
+        correctAnswer: "the countryside",
+        frenchAudioText: "la campagne",
+        explanation: '"La campagne" means "the countryside" (not to be confused with "camping").'
+      },
+      {
+        id: 16,
+        category: "Spelling & Phonetics",
+        tricky: true,
+        question: 'TRICKY: Why is the spelling "nous nageons" correct instead of "nous nagons"?',
+        options: [
+          "To keep the soft 'g' sound before the 'o' of the '-ons' ending.",
+          "Because 'nager' is an irregular verb like 'aller'.",
+          "Because 'nous' always adds an extra 'e' to all verbs.",
+          "To make it plural for feminine subjects."
+        ],
+        correctAnswer: "To keep the soft 'g' sound before the 'o' of the '-ons' ending.",
+        frenchAudioText: "nous nageons",
+        explanation: 'In French, "g" followed by "o" makes a hard "g" sound (like "go"). Adding "e" preserves the soft "j" sound in "nous nageons".'
+      },
+      {
+        id: 17,
+        category: "Sentence Translation",
+        tricky: false,
+        question: 'How do you translate "We fish in the river"?',
+        options: [
+          "Nous pêchons dans la rivière.",
+          "Nous pêchent dans la rivière.",
+          "On pêchons dans la rivière.",
+          "Nous nageons dans la rivière."
+        ],
+        correctAnswer: "Nous pêchons dans la rivière.",
+        frenchAudioText: "Nous pêchons dans la rivière.",
+        explanation: '"Nous" takes "-ons" ("pêchons"), and "in the river" is "dans la rivière".'
+      },
+      {
+        id: 18,
+        category: "Grammar Trap",
+        tricky: true,
+        question: 'TRICKY: Which subject pronoun means "we" casually, yet uses the exact same singular verb form as "il" and "elle"?',
+        options: [
+          "on",
+          "ils",
+          "nous",
+          "vous"
+        ],
+        correctAnswer: "on",
+        frenchAudioText: "il va, elle va, on va",
+        explanation: '"On" means "we/one" in everyday French, but grammatically it conjugates in the 3rd-person singular ("on va", "on nage").'
+      },
+      {
+        id: 19,
+        category: "Vocabulary",
+        tricky: false,
+        question: 'What does "aller en vacances" mean?',
+        options: [
+          "to go on holiday",
+          "to live on an island",
+          "to swim in the sea",
+          "to go into town"
+        ],
+        correctAnswer: "to go on holiday",
+        frenchAudioText: "aller en vacances",
+        explanation: '"Aller en vacances" is the infinitive phrase for "to go on holiday / vacation".'
+      },
+      {
+        id: 20,
+        category: "Elision Trap",
+        tricky: true,
+        question: 'TRICKY: Choose the correct conjugation of "habiter" for "je" (I):',
+        options: [
+          "j'habite",
+          "je habite",
+          "j'habites",
+          "je habitons"
+        ],
+        correctAnswer: "j'habite",
+        frenchAudioText: "j'habite",
+        explanation: 'Because "habiter" begins with a silent "h" (h muet), "je" drops its "e" and contracts to "j’habite".'
+      },
+      {
+        id: 21,
+        category: "Pronunciation Trap",
+        tricky: true,
+        question: 'TRICKY: Which form of "pêcher" is pronounced DIFFERENTLY from the other three?',
+        options: [
+          "nous pêchons",
+          "je pêche",
+          "tu pêches",
+          "ils pêchent"
+        ],
+        correctAnswer: "nous pêchons",
+        frenchAudioText: "nous pêchons",
+        explanation: '"Je pêche", "tu pêches", and "ils pêchent" all sound identical ("pêsh") because "-e", "-es", and "-ent" are silent! Only "nous pêchons" sounds different.'
+      },
+      {
+        id: 22,
+        category: "Irregular Verb Trap",
+        tricky: true,
+        question: 'TRICKY: Select the correct present-tense form of the irregular verb "aller" for "il", "elle", and "on":',
+        options: [
+          "va",
+          "vas",
+          "vais",
+          "vont"
+        ],
+        correctAnswer: "va",
+        frenchAudioText: "il va, elle va, on va",
+        explanation: 'Careful! "Tu vas" ends in "-s", while "il/elle/on va" has NO "-s" at the end.'
+      },
+      {
+        id: 23,
+        category: "Question Formation",
+        tricky: false,
+        question: 'How do you ask "Where are you going on holiday?" using the informal "tu" form?',
+        options: [
+          "Où tu vas en vacances ?",
+          "Où tu va en vacances ?",
+          "Où vous allez en vacances ?",
+          "Où il va en vacances ?"
+        ],
+        correctAnswer: "Où tu vas en vacances ?",
+        frenchAudioText: "Où tu vas en vacances ?",
+        explanation: '"Où" means "Where", and "tu vas" requires the "-s" on "vas".'
+      },
+      {
+        id: 24,
+        category: "Preposition Trap",
+        tricky: true,
+        question: 'TRICKY: Which preposition is correctly paired with "une île" to say "on an island"?',
+        options: [
+          "sur une île",
+          "dans une île",
+          "en une île",
+          "à une île"
+        ],
+        correctAnswer: "sur une île",
+        frenchAudioText: "sur une île",
+        explanation: 'In French, you live ON an island ("sur une île"), unlike "dans la forêt" (in the forest) or "en ville" (in town).'
+      },
+      {
+        id: 25,
+        category: "Conjugation Trap",
+        tricky: true,
+        question: 'TRICKY: What is the correct conjugation of "habiter" for "ils/elles" (they)?',
+        options: [
+          "ils/elles habitent",
+          "ils/elles habites",
+          "ils/elles habite",
+          "ils/elles habitons"
+        ],
+        correctAnswer: "ils/elles habitent",
+        frenchAudioText: "ils habitent",
+        explanation: 'For 3rd-person plural ("ils/elles"), regular "-er" verbs always end in "-ent" ("habitent"), never "-es".'
+      },
+      {
+        id: 26,
+        category: "Vocabulary",
+        tricky: false,
+        question: 'What is the French word for "the sea"?',
+        options: [
+          "la mer",
+          "le lac",
+          "la rivière",
+          "la montagne"
+        ],
+        correctAnswer: "la mer",
+        frenchAudioText: "la mer",
+        explanation: '"La mer" means "the sea" (feminine).'
+      },
+      {
+        id: 27,
+        category: "Vocabulary",
+        tricky: false,
+        question: 'What is the French word for "the lake"?',
+        options: [
+          "le lac",
+          "la mer",
+          "la rivière",
+          "la ville"
+        ],
+        correctAnswer: "le lac",
+        frenchAudioText: "le lac",
+        explanation: '"Le lac" is masculine and means "the lake".'
+      },
+      {
+        id: 28,
+        category: "Vocabulary",
+        tricky: false,
+        question: 'What does "la ville" mean in English?',
+        options: [
+          "the town / the city",
+          "the countryside",
+          "the forest",
+          "an island"
+        ],
+        correctAnswer: "the town / the city",
+        frenchAudioText: "la ville",
+        explanation: '"La ville" means "the town" or "the city".'
+      },
+      {
+        id: 29,
+        category: "Vocabulary",
+        tricky: false,
+        question: 'Which French infinitive verb means "to fish"?',
+        options: [
+          "pêcher",
+          "nager",
+          "habiter",
+          "aller"
+        ],
+        correctAnswer: "pêcher",
+        frenchAudioText: "pêcher",
+        explanation: '"Pêcher" means "to fish" (written with a circumflex accent: ê).'
+      },
+      {
+        id: 30,
+        category: "Sentence Translation",
+        tricky: false,
+        question: 'How do you translate "I’m going to the sea" into French?',
+        options: [
+          "Je vais à la mer.",
+          "Je va à la mer.",
+          "Tu vas à la mer.",
+          "Nous allons à la mer."
+        ],
+        correctAnswer: "Je vais à la mer.",
+        frenchAudioText: "Je vais à la mer.",
+        explanation: '"Je vais" means "I go / I am going", and "à la mer" means "to the sea".'
+      },
+      {
+        id: 31,
+        category: "Sentence Translation",
+        tricky: false,
+        question: 'Which sentence translates "You’re going to the countryside" (informal singular)?',
+        options: [
+          "Tu vas à la campagne.",
+          "Vous allez à la campagne.",
+          "Tu vais à la campagne.",
+          "Il va à la campagne."
+        ],
+        correctAnswer: "Tu vas à la campagne.",
+        frenchAudioText: "Tu vas à la campagne.",
+        explanation: '"Tu vas" means "You go / You are going", and "à la campagne" means "to the countryside".'
+      },
+      {
+        id: 32,
+        category: "Sentence Translation",
+        tricky: false,
+        question: 'What does "On nage dans le lac" mean in English?',
+        options: [
+          "We swim in the lake.",
+          "They swim in the lake.",
+          "You swim in the lake.",
+          "We fish in the river."
+        ],
+        correctAnswer: "We swim in the lake.",
+        frenchAudioText: "On nage dans le lac.",
+        explanation: '"On" is commonly used in spoken French to mean "We", so "On nage dans le lac" translates to "We swim in the lake."'
+      },
+      {
+        id: 33,
+        category: "Sentence Translation",
+        tricky: false,
+        question: 'How do you translate "I live on an island" into French?',
+        options: [
+          "J’habite sur une île.",
+          "Il habite sur une île.",
+          "Tu habites sur une île.",
+          "Je habite dans une île."
+        ],
+        correctAnswer: "J’habite sur une île.",
+        frenchAudioText: "J’habite sur une île.",
+        explanation: '"J’habite" means "I live", and "sur une île" means "on an island".'
+      },
+      {
+        id: 34,
+        category: "Sentence Translation",
+        tricky: false,
+        question: 'Which sentence translates "They swim in the lake" (masculine/mixed group)?',
+        options: [
+          "Ils nagent dans le lac.",
+          "Ils nageons dans le lac.",
+          "Ils nage dans le lac.",
+          "Ils pêchent dans la rivière."
+        ],
+        correctAnswer: "Ils nagent dans le lac.",
+        frenchAudioText: "Ils nagent dans le lac.",
+        explanation: '"Ils" takes the "-ent" ending ("nagent"), and "dans le lac" means "in the lake".'
+      },
+      {
+        id: 35,
+        category: "Irregular Verb Trap",
+        tricky: true,
+        question: 'TRICKY: Which form of "aller" (to go) pairs with "je" (I)?',
+        options: [
+          "je vais",
+          "je vas",
+          "je va",
+          "j'alle"
+        ],
+        correctAnswer: "je vais",
+        frenchAudioText: "je vais",
+        explanation: '"Aller" is completely irregular: "je vais" ends in "-is", whereas "tu vas" ends in "-as".'
+      },
+      {
+        id: 36,
+        category: "Conjugation Trap",
+        tricky: true,
+        question: 'TRICKY: Spot the mistake! Why is "Nous nagons dans le lac" spelled wrong?',
+        options: [
+          "It is missing the 'e' after 'g'; it must be 'nous nageons'.",
+          "It should end in '-ent' instead of '-ons'.",
+          "'Lac' is feminine so it must be 'dans la lac'.",
+          "'Nous' requires 'va' instead of a conjugated verb."
+        ],
+        correctAnswer: "It is missing the 'e' after 'g'; it must be 'nous nageons'.",
+        frenchAudioText: "Nous nageons dans le lac.",
+        explanation: 'All "-ger" verbs add an "e" before "-ons" in the "nous" form: "nous nageons".'
+      },
+      {
+        id: 37,
+        category: "Pronunciation Trap",
+        tricky: true,
+        question: 'TRICKY: Which of these conjugations of "nager" sounds DIFFERENT when spoken aloud?',
+        options: [
+          "nous nageons",
+          "je nage",
+          "tu nages",
+          "ils nagent"
+        ],
+        correctAnswer: "nous nageons",
+        frenchAudioText: "nous nageons",
+        explanation: '"Je nage", "tu nages", and "ils nagent" are all pronounced identically ("nazh"). Only "nous nageons" ("na-zhon") is pronounced differently!'
+      },
+      {
+        id: 38,
+        category: "Preposition Trap",
+        tricky: true,
+        question: 'TRICKY: Which preposition is used with "ville" to say "into town / to town"?',
+        options: [
+          "en ville",
+          "sur ville",
+          "à la ville",
+          "dans ville"
+        ],
+        correctAnswer: "en ville",
+        frenchAudioText: "On va en ville.",
+        explanation: 'In your notes, "into town" is expressed without an article using "en": "en ville" (e.g., "Ils vont en ville" / "On va en ville").'
+      },
+      {
+        id: 39,
+        category: "Pronunciation Trap",
+        tricky: true,
+        question: 'TRICKY: Which form of "habiter" is pronounced DIFFERENTLY from the other three?',
+        options: [
+          "nous habitons",
+          "j’habite",
+          "tu habites",
+          "ils habitent"
+        ],
+        correctAnswer: "nous habitons",
+        frenchAudioText: "nous habitons",
+        explanation: '"J’habite", "tu habites", and "ils habitent" all sound identical ("a-beet"). Only "nous habitons" ("a-bee-ton") sounds different!'
+      },
+      {
+        id: 40,
+        category: "Preposition Trap",
+        tricky: true,
+        question: 'TRICKY: Compare the prepositions in your notes: "à la mer", "à la montagne", "à la campagne", versus "___ la forêt" and "___ la rivière". Which preposition goes in both blanks?',
+        options: [
+          "dans",
+          "sur",
+          "en",
+          "à"
+        ],
+        correctAnswer: "dans",
+        frenchAudioText: "dans la forêt, dans la rivière",
+        explanation: 'You go "à la" mer/montagne/campagne, "en" ville, "sur" une île, and "dans" la forêt / la rivière / le lac!'
+      }
+    ];
+
+    const SESSION_QUESTION_LIMIT = 20;
+
+    // App State
+    let currentMode = 'all'; // 'all' | 'tricky' | 'missed'
+    let activeQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let answeredCurrent = false;
+    let userHistory = []; // Stores { questionObj, userAnswer, isCorrect }
+    let autoSpeak = true;
+    let speechRate = 1.0;
+    let frenchVoice = null;
+
+    // Load best French voice available in browser
+    function loadFrenchVoice() {
+      if (!('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      frenchVoice =
+        voices.find(v => v.lang === 'fr-FR' && (v.name.includes('Google') || v.name.includes('Thomas') || v.name.includes('Amélie') || v.name.includes('Natural'))) ||
+        voices.find(v => v.lang === 'fr-FR') ||
+        voices.find(v => v.lang.startsWith('fr')) ||
+        null;
+    }
+
+    if ('speechSynthesis' in window) {
+      loadFrenchVoice();
+      window.speechSynthesis.onvoiceschanged = loadFrenchVoice;
+    }
+
+    // Speak French text via Web Speech API
+    function speakFrench(text, buttonEl = null) {
+      if (!('speechSynthesis' in window) || !text) return;
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'fr-FR';
+        utterance.rate = speechRate;
+        if (frenchVoice) {
+          utterance.voice = frenchVoice;
+        }
+
+        if (buttonEl) {
+          buttonEl.classList.add('speaking-pulse');
+          utterance.onend = () => buttonEl.classList.remove('speaking-pulse');
+          utterance.onerror = () => buttonEl.classList.remove('speaking-pulse');
+        }
+
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.error('Speech synthesis error:', err);
+      }
+    }
+
+    function replayCurrentFrench() {
+      const q = activeQuestions[currentIndex];
+      const btn = document.getElementById('replayAudioBtn');
+      if (q) {
+        speakFrench(q.frenchAudioText, btn);
+      }
+    }
+
+    function toggleSpeechRate() {
+      speechRate = speechRate === 1.0 ? 0.75 : 1.0;
+      const btn = document.getElementById('speedToggleBtn');
+      btn.textContent = speechRate === 1.0 ? '🐢 1.0x Speed' : '🐢 0.75x Slow';
+      if (answeredCurrent && activeQuestions[currentIndex]) {
+        speakFrench(activeQuestions[currentIndex].frenchAudioText, document.getElementById('replayAudioBtn'));
+      }
+    }
+
+    function toggleAutoSpeak() {
+      autoSpeak = !autoSpeak;
+      const btn = document.getElementById('autoSpeakBtn');
+      if (autoSpeak) {
+        btn.textContent = '🔊 Auto-Speak: ON';
+        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition';
+      } else {
+        btn.textContent = '🔇 Auto-Speak: OFF';
+        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 bg-slate-50 text-slate-600 hover:bg-slate-100 transition';
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+      }
+    }
+
+    // Shuffle helper using Fisher-Yates algorithm
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    // Build a randomized round of up to 20 questions
+    function buildQuestionSet(mode) {
+      if (mode === 'all') {
+        return shuffleArray(ALL_QUESTIONS).slice(0, SESSION_QUESTION_LIMIT);
+      } else if (mode === 'tricky') {
+        const trickyPool = ALL_QUESTIONS.filter(q => q.tricky);
+        return shuffleArray(trickyPool).slice(0, SESSION_QUESTION_LIMIT);
+      }
+      return shuffleArray(ALL_QUESTIONS).slice(0, SESSION_QUESTION_LIMIT);
+    }
+
+    // Switch Quiz Mode
+    function setQuizMode(mode) {
+      currentMode = mode;
+      const allBtn = document.getElementById('modeAllBtn');
+      const trickyBtn = document.getElementById('modeTrickyBtn');
+
+      if (mode === 'all') {
+        activeQuestions = buildQuestionSet('all');
+        allBtn.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-blue-700 shadow-sm transition";
+        trickyBtn.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition";
+      } else if (mode === 'tricky') {
+        activeQuestions = buildQuestionSet('tricky');
+        trickyBtn.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-amber-700 shadow-sm transition";
+        allBtn.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition";
+      }
+
+      resetQuizState();
+    }
+
+    function resetQuizState() {
+      currentIndex = 0;
+      score = 0;
+      answeredCurrent = false;
+      userHistory = [];
+
+      document.getElementById('summaryScreen').classList.add('hidden');
+      document.getElementById('quizCard').classList.remove('hidden');
+      document.getElementById('quizControlsBar').classList.remove('hidden');
+      document.getElementById('progressBarWrapper').classList.remove('hidden');
+
+      renderQuestion();
+    }
+
+    function restartCurrentMode() {
+      if (currentMode === 'missed') {
+        setQuizMode('all');
+      } else {
+        activeQuestions = buildQuestionSet(currentMode);
+        resetQuizState();
+      }
+    }
+
+    function retryMissedQuestions() {
+      const missed = userHistory.filter(item => !item.isCorrect).map(item => item.questionObj);
+      if (missed.length === 0) return;
+      currentMode = 'missed';
+      activeQuestions = shuffleArray(missed);
+      resetQuizState();
+    }
+
+    // Render current question and shuffled choices
+    function renderQuestion() {
+      answeredCurrent = false;
+      const q = activeQuestions[currentIndex];
+      const total = activeQuestions.length;
+
+      document.getElementById('scoreDisplay').textContent = score;
+      document.getElementById('progressText').textContent = `${currentIndex + 1} / ${total}`;
+      document.getElementById('progressBar').style.width = `${((currentIndex + 1) / total) * 100}%`;
+
+      document.getElementById('questionCategory').textContent = q.category;
+      const trickyBadge = document.getElementById('trickyBadge');
+      if (q.tricky) {
+        trickyBadge.classList.remove('hidden');
+      } else {
+        trickyBadge.classList.add('hidden');
+      }
+
+      document.getElementById('questionText').textContent = q.question;
+
+      const feedbackBox = document.getElementById('feedbackBox');
+      feedbackBox.classList.add('hidden');
+
+      const optionsContainer = document.getElementById('optionsContainer');
+      optionsContainer.innerHTML = '';
+
+      const letters = ['A', 'B', 'C', 'D'];
+      const shuffledOptions = shuffleArray(q.options);
+
+      shuffledOptions.forEach((optionText, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.option = optionText;
+        btn.className =
+          'w-full text-left p-4 rounded-xl border-2 border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/40 transition flex items-center gap-3.5 group focus:outline-none';
+
+        const badge = document.createElement('span');
+        badge.className =
+          'w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-blue-100 text-slate-700 group-hover:text-blue-700 font-bold text-sm flex items-center justify-center shrink-0 transition';
+        badge.textContent = letters[idx];
+
+        const label = document.createElement('span');
+        label.className = 'text-sm sm:text-base font-medium text-slate-800 flex-1';
+        label.textContent = optionText;
+
+        btn.appendChild(badge);
+        btn.appendChild(label);
+
+        btn.addEventListener('click', () => handleOptionSelect(optionText));
+        optionsContainer.appendChild(btn);
+      });
+
+      const nextBtn = document.getElementById('nextBtn');
+      nextBtn.textContent = currentIndex === total - 1 ? 'See Results 🎉' : 'Next Question →';
+    }
+
+    // Handle user answer selection and automatically speak the correct French phrase
+    function handleOptionSelect(selectedOption) {
+      if (answeredCurrent) return;
+      answeredCurrent = true;
+
+      const q = activeQuestions[currentIndex];
+      const isCorrect = selectedOption === q.correctAnswer;
+
+      if (isCorrect) {
+        score++;
+        document.getElementById('scoreDisplay').textContent = score;
+      }
+
+      userHistory.push({
+        questionObj: q,
+        userAnswer: selectedOption,
+        isCorrect
+      });
+
+      // Highlight selected and correct options
+      const buttons = document.querySelectorAll('#optionsContainer button');
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const opt = btn.dataset.option;
+        const badge = btn.querySelector('span:first-child');
+
+        if (opt === q.correctAnswer) {
+          btn.className =
+            'w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-950 flex items-center gap-3.5 transition';
+          badge.className =
+            'w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center shrink-0';
+          badge.textContent = '✓';
+        } else if (opt === selectedOption && !isCorrect) {
+          btn.className =
+            'w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-50 text-rose-950 flex items-center gap-3.5 transition';
+          badge.className =
+            'w-8 h-8 rounded-lg bg-rose-600 text-white font-bold text-sm flex items-center justify-center shrink-0';
+          badge.textContent = '✕';
+        } else {
+          btn.className =
+            'w-full text-left p-4 rounded-xl border-2 border-slate-200 bg-slate-50/70 opacity-60 flex items-center gap-3.5 transition';
+        }
+      });
+
+      // Populate and display feedback box
+      const feedbackBox = document.getElementById('feedbackBox');
+      const feedbackHeader = document.getElementById('feedbackHeader');
+      document.getElementById('correctFrenchPhrase').textContent = q.frenchAudioText;
+      document.getElementById('explanationText').textContent = q.explanation;
+
+      if (isCorrect) {
+        feedbackBox.className = 'mt-6 rounded-xl p-4 sm:p-5 border border-emerald-200 bg-emerald-50/70 transition-all';
+        feedbackHeader.className = 'font-bold text-base mb-1 text-emerald-800';
+        feedbackHeader.textContent = '✓ Très bien ! Correct!';
+      } else {
+        feedbackBox.className = 'mt-6 rounded-xl p-4 sm:p-5 border border-rose-200 bg-rose-50/70 transition-all';
+        feedbackHeader.className = 'font-bold text-base mb-1 text-rose-800';
+        feedbackHeader.textContent = '✕ Not quite — listen closely to the correct French:';
+      }
+
+      feedbackBox.classList.remove('hidden');
+
+      // Pronounce the correct French phrase automatically
+      if (autoSpeak) {
+        speakFrench(q.frenchAudioText, document.getElementById('replayAudioBtn'));
+      }
+    }
+
+    function nextQuestion() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (currentIndex < activeQuestions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        showSummary();
+      }
+    }
+
+    // Show end-of-round summary and full review with audio buttons
+    function showSummary() {
+      document.getElementById('quizCard').classList.add('hidden');
+      document.getElementById('quizControlsBar').classList.add('hidden');
+      document.getElementById('progressBarWrapper').classList.add('hidden');
+      document.getElementById('summaryScreen').classList.remove('hidden');
+
+      const total = activeQuestions.length;
+      const missedCount = total - score;
+      const accuracy = Math.round((score / total) * 100);
+
+      document.getElementById('finalScore').textContent = `${score}/${total}`;
+      document.getElementById('finalAccuracy').textContent = `${accuracy}%`;
+      document.getElementById('finalMissed').textContent = missedCount;
+
+      const subtitle = document.getElementById('summarySubtitle');
+      if (accuracy === 100) {
+        subtitle.textContent = 'Parfait ! You mastered every single question in this round!';
+      } else if (accuracy >= 80) {
+        subtitle.textContent = 'Excellent travail ! Great command of French holiday vocabulary and verbs.';
+      } else {
+        subtitle.textContent = 'Bon effort ! Click the speaker buttons below to practice the pronunciations.';
+      }
+
+      const retryMissedBtn = document.getElementById('retryMissedBtn');
+      if (missedCount > 0) {
+        retryMissedBtn.classList.remove('hidden');
+        retryMissedBtn.textContent = `🔁 Retry Missed Questions (${missedCount})`;
+      } else {
+        retryMissedBtn.classList.add('hidden');
+      }
+
+      const reviewList = document.getElementById('reviewList');
+      reviewList.innerHTML = '';
+
+      userHistory.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = `p-4 rounded-xl border ${
+          item.isCorrect ? 'border-emerald-200 bg-emerald-50/40' : 'border-rose-200 bg-rose-50/40'
+        } flex flex-wrap items-start justify-between gap-3`;
+
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'flex-1 min-w-[220px]';
+
+        const qTitle = document.createElement('div');
+        qTitle.className = 'text-sm font-bold text-slate-900 mb-1';
+        qTitle.textContent = `${index + 1}. ${item.questionObj.question}`;
+
+        const answerLine = document.createElement('div');
+        answerLine.className = 'text-xs sm:text-sm text-slate-700 space-y-0.5';
+        answerLine.innerHTML = item.isCorrect
+          ? `<span class="text-emerald-700 font-semibold">✓ Your answer:</span> ${item.userAnswer}`
+          : `<span class="text-rose-700 font-semibold">✕ Your answer:</span> ${item.userAnswer}<br><span class="text-emerald-700 font-semibold">✓ Correct answer:</span> ${item.questionObj.correctAnswer}`;
+
+        const frenchLine = document.createElement('div');
+        frenchLine.className = 'text-xs font-semibold text-blue-700 mt-1.5';
+        frenchLine.textContent = `French Audio: "${item.questionObj.frenchAudioText}"`;
+
+        infoDiv.appendChild(qTitle);
+        infoDiv.appendChild(answerLine);
+        infoDiv.appendChild(frenchLine);
+
+        const speakBtn = document.createElement('button');
+        speakBtn.type = 'button';
+        speakBtn.className =
+          'relative px-3.5 py-2 rounded-xl bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold shadow-sm transition shrink-0';
+        speakBtn.textContent = '🔊 Pronounce';
+        speakBtn.addEventListener('click', () => speakFrench(item.questionObj.frenchAudioText, speakBtn));
+
+        card.appendChild(infoDiv);
+        card.appendChild(speakBtn);
+        reviewList.appendChild(card);
+      });
+    }
+
+    // Boot App with a fresh randomized 20-question round
+    window.addEventListener('DOMContentLoaded', () => {
+      activeQuestions = buildQuestionSet('all');
+      renderQuestion();
+    });
+  </script>
+</body>
+</html>
