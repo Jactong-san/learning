@@ -77,13 +77,13 @@
         </div>
         <div>
           <h1 class="font-serif font-bold text-lg md:text-xl text-stone-900 tracking-wide">LingoAce 互動中文學習</h1>
-          <p class="text-xs text-stone-500 font-medium">Level 1 U5-U8 階段複習與筆劃練習系統</p>
-        </div>
-      </div>
-
-      <!-- Quick Switch back to Little Monk App with exact GitHub Pages URL -->
+      <!-- Quick Switch back to Master Directory & Little Monk App with exact /learning/ URLs -->
       <div class="flex items-center space-x-2">
-        <a href="https://jactong-san.github.io/mandarin/" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-colors border border-amber-300 shadow-sm">
+        <a href="https://jactong-san.github.io/learning/" class="bg-stone-800 hover:bg-stone-900 text-white px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-colors shadow-sm">
+          <span>🏠</span>
+          <span>返回總目錄 Directory</span>
+        </a>
+        <a href="https://jactong-san.github.io/learning/little-monk.html" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-colors border border-amber-300 shadow-sm">
           <span>🧘‍♂️</span>
           <span>切換至小和尚故事</span>
         </a>
@@ -107,9 +107,6 @@
           </button>
           <button onclick="switchTab('vocab')" id="navTab-vocab" class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all text-stone-600 hover:text-stone-900">
             🧠 詞彙
-          </button>
-          <button onclick="switchTab('strokes')" id="navTab-strokes" class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all text-stone-600 hover:text-stone-900">
-            ✍️ 筆劃練習
           </button>
           <button onclick="switchTab('quiz')" id="navTab-quiz" class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all text-stone-600 hover:text-stone-900">
             🎯 測驗
@@ -280,86 +277,19 @@
       <div id="vocabSubMode-list" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4"></div>
     </section>
 
-    <!-- ================= TAB 3: STROKE & WRITING EXERCISE (筆劃練習) ================= -->
-    <section id="tabContent-strokes" class="hidden space-y-6">
-      <div class="bg-white rounded-2xl shadow-md border border-stone-200 p-6 md:p-8 space-y-6">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-stone-200 pb-4">
-          <div>
-            <h2 class="font-serif font-bold text-2xl text-stone-900">✍️ 漢字筆劃與書寫練習</h2>
-            <p class="text-sm text-stone-500">選擇漢字，學習筆順分解、觀看動態示範、並在米字格上練習！</p>
-          </div>
-          <div class="flex items-center space-x-2 flex-wrap gap-2" id="strokeCharButtons"></div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-          <!-- Left: Character Card & Stroke Breakdown -->
-          <div class="md:col-span-5 space-y-4">
-            <div class="bg-gradient-to-br from-amber-50 to-stone-50 rounded-2xl p-6 border border-amber-200 text-center space-y-4 shadow-sm">
-              <div class="inline-block relative">
-                <div id="strokeCharDisplay" class="w-36 h-36 mx-auto mizige border-2 border-amber-600 rounded-2xl flex items-center justify-center font-serif text-8xl font-bold text-stone-900 shadow-inner bg-white/80">
-                  日
-                </div>
-              </div>
-              <div class="space-y-1">
-                <h3 id="strokeCharTitle" class="font-serif font-bold text-xl text-stone-900">日 (rì)</h3>
-                <p id="strokeCharInfo" class="text-xs text-amber-800 font-semibold">總筆劃數：4劃 | 結構：獨體字</p>
-                <p id="strokeCharMeaning" class="text-sm text-stone-600 font-medium">釋義：Sun / Day</p>
-              </div>
-              <div class="flex justify-center space-x-2 pt-2">
-                <button onclick="playCurrentStrokeAudio()" class="bg-amber-700 hover:bg-amber-800 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow flex items-center space-x-1.5">
-                  <span>🔊</span>
-                  <span>讀音示範</span>
-                </button>
-                <button onclick="animateStrokeStepByStep()" class="bg-stone-800 hover:bg-stone-900 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow flex items-center space-x-1.5">
-                  <span>▶</span>
-                  <span>筆順演示</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Stroke Steps Explanation -->
-            <div class="bg-white p-4 rounded-xl border border-stone-200 space-y-2">
-              <h4 class="font-serif font-bold text-sm text-stone-800">📝 筆順與寫法說明：</h4>
-              <p id="strokeStepsDesc" class="text-xs text-stone-600 leading-relaxed font-mono">1. 豎 (shù)<br>2. 橫折 (héng zhé)<br>3. 橫 (héng)<br>4. 橫 (héng)</p>
-            </div>
-          </div>
-
-          <!-- Right: Interactive Canvas Drawing / Tracing Pad with Animated Video Demo -->
-          <div class="md:col-span-7 space-y-4">
-            <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm space-y-4 text-center">
-              <div class="flex items-center justify-between">
-                <span class="font-serif font-bold text-stone-800 text-sm">✍️ 米字格互動練習與動態筆順演示</span>
-                <div class="space-x-2">
-                  <button onclick="playStrokeAnimationVideo()" class="text-xs text-amber-800 hover:text-amber-900 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200 font-semibold shadow-sm">
-                    🎬 播放筆順動畫示範
-                  </button>
-                  <button onclick="clearCanvas()" class="text-xs text-rose-700 hover:text-rose-800 bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-200 font-medium">
-                    🗑️ 清除重寫
-                  </button>
-                </div>
-              </div>
-
-              <!-- Canvas for Writing & Animation -->
-              <div class="relative w-full aspect-square max-w-[320px] mx-auto mizige border-4 border-amber-700/80 rounded-3xl shadow-lg bg-white overflow-hidden cursor-crosshair">
-                <canvas id="writingCanvas" class="w-full h-full touch-none"></canvas>
-                <!-- Ghost Guide Character -->
-                <div id="ghostChar" class="absolute inset-0 flex items-center justify-center font-serif text-[180px] font-bold text-stone-200/50 pointer-events-none select-none">日</div>
-                <!-- Animated Stroke Cursor/Trace Overlay -->
-                <div id="strokeAnimOverlay" class="absolute inset-0 pointer-events-none flex items-center justify-center font-serif text-[180px] font-bold text-amber-600 opacity-0 transition-opacity duration-300">日</div>
-              </div>
-
-              <div class="flex items-center justify-center space-x-4 pt-2">
-                <span id="strokeAnimStatus" class="text-xs text-amber-800 font-semibold">💡 點擊上方「播放筆順動畫示範」觀看動態筆劃寫法！</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= TAB 4: AUDIO QUIZ VIEW ================= -->
+    <!-- ================= TAB 3: AUDIO QUIZ VIEW ================= -->
     <section id="tabContent-quiz" class="hidden space-y-6">
       <div class="bg-white rounded-2xl shadow-md border border-stone-200 p-6 md:p-8 space-y-6 text-center">
+        <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+          <button onclick="switchTab('story')" class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-3.5 py-2 rounded-xl text-xs font-semibold border border-stone-300 flex items-center space-x-1.5">
+            <span>←</span>
+            <span>返回故事 Back to Story</span>
+          </button>
+          <a href="https://jactong-san.github.io/learning/" class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-3.5 py-2 rounded-xl text-xs font-semibold border border-stone-300 flex items-center space-x-1.5">
+            <span>🏠</span>
+            <span>主目錄 Directory</span>
+          </a>
+        </div>
         <div class="max-w-md mx-auto space-y-3">
           <div class="w-16 h-16 bg-amber-100 text-amber-800 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner">
             🎯
@@ -590,43 +520,50 @@
 
     function speakText(text, onEndCallback = null) {
       unlockAudioEngine();
-      stopCurrentAudio();
       const reqId = ++currentSpeakRequestId;
 
-      playBeepFeedback(520, 0.12);
-
       if (!window.speechSynthesis) {
+        playBeepFeedback(520, 0.12);
         if (onEndCallback) onEndCallback();
         return;
       }
 
       if (!selectedTwVoice) loadTaiwaneseVoice();
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      activeUtterance = utterance;
-      if (selectedTwVoice) {
-        utterance.voice = selectedTwVoice;
-      }
-      utterance.lang = 'zh-TW';
-      utterance.rate = currentAudioRate;
-      utterance.pitch = 1.0;
+      // Cancel previous utterance cleanly with a brief delay for iPhone Safari & Chrome WebKit
+      window.speechSynthesis.cancel();
 
-      utterance.onend = () => {
-        if (reqId === currentSpeakRequestId) {
-          activeUtterance = null;
-          if (onEndCallback) onEndCallback();
+      const triggerUtterance = () => {
+        if (reqId !== currentSpeakRequestId) return;
+        const utterance = new SpeechSynthesisUtterance(text);
+        activeUtterance = utterance;
+        if (selectedTwVoice) {
+          utterance.voice = selectedTwVoice;
         }
+        utterance.lang = 'zh-TW';
+        utterance.rate = currentAudioRate;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+
+        utterance.onend = () => {
+          if (reqId === currentSpeakRequestId) {
+            activeUtterance = null;
+            if (onEndCallback) onEndCallback();
+          }
+        };
+
+        utterance.onerror = () => {
+          if (reqId === currentSpeakRequestId) {
+            activeUtterance = null;
+            if (onEndCallback) onEndCallback();
+          }
+        };
+
+        window.speechSynthesis.resume();
+        window.speechSynthesis.speak(utterance);
       };
 
-      utterance.onerror = () => {
-        if (reqId === currentSpeakRequestId) {
-          activeUtterance = null;
-          if (onEndCallback) onEndCallback();
-        }
-      };
-
-      window.speechSynthesis.resume();
-      window.speechSynthesis.speak(utterance);
+      setTimeout(triggerUtterance, 50);
     }
 
     function showToast(message, icon = "✨") {
@@ -643,7 +580,7 @@
       stopAutoPlayStory();
       stopCurrentAudio();
 
-      ['story', 'vocab', 'strokes', 'quiz'].forEach(t => {
+      ['story', 'vocab', 'quiz'].forEach(t => {
         const sec = document.getElementById(`tabContent-${t}`);
         const nav = document.getElementById(`navTab-${t}`);
         if (t === tabId) {
@@ -658,8 +595,6 @@
       if (tabId === 'vocab') {
         renderFlashcard();
         renderVocabDirectory();
-      } else if (tabId === 'strokes') {
-        initStrokePracticeTab();
       } else if (tabId === 'quiz') {
         startQuiz();
       }
@@ -1319,11 +1254,6 @@
     window.onload = function() {
       document.getElementById('translationBtnText').textContent = '顯示英文';
       renderStoryStep(false);
-      setupWritingCanvas();
-    };
-
-    window.onresize = function() {
-      setupWritingCanvas();
     };
   </script>
 </body>
