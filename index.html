@@ -114,7 +114,7 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
         <!-- Hugo Card -->
-        <button onclick="goToStep2Subject('hugo')" class="group bg-white hover:bg-amber-50/70 rounded-3xl p-8 shadow-md border-2 border-stone-200 hover:border-amber-500 transition-all text-center space-y-4">
+        <button onclick="goToStep2Subject('hugo')" class="group bg-white hover:bg-amber-50/70 rounded-3xl p-8 shadow-md border-2 border-stone-200 hover:border-amber-500 transition-all text-center space-y-4 cursor-pointer">
           <div class="w-20 h-20 rounded-3xl bg-amber-100 text-4xl flex items-center justify-center mx-auto group-hover:scale-105 transition-transform">👦</div>
           <div>
             <h3 class="font-serif font-bold text-3xl text-stone-900">Hugo</h3>
@@ -124,7 +124,7 @@
         </button>
 
         <!-- Hazel Card -->
-        <button onclick="goToStep2Subject('hazel')" class="group bg-white hover:bg-rose-50/70 rounded-3xl p-8 shadow-md border-2 border-stone-200 hover:border-rose-500 transition-all text-center space-y-4">
+        <button onclick="goToStep2Subject('hazel')" class="group bg-white hover:bg-rose-50/70 rounded-3xl p-8 shadow-md border-2 border-stone-200 hover:border-rose-500 transition-all text-center space-y-4 cursor-pointer">
           <div class="w-20 h-20 rounded-3xl bg-rose-100 text-4xl flex items-center justify-center mx-auto group-hover:scale-105 transition-transform">👧</div>
           <div>
             <h3 class="font-serif font-bold text-3xl text-stone-900">Hazel</h3>
@@ -678,35 +678,6 @@
 
       // Small delay prevents iOS WebKit speechSynthesis.cancel() from swallowing the next speak() call
       setTimeout(triggerUtterance, 50);
-    }
-
-      if (!selectedTwVoice) loadTaiwaneseVoice();
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      activeUtterance = utterance;
-      if (selectedTwVoice) {
-        utterance.voice = selectedTwVoice;
-      }
-      utterance.lang = 'zh-TW';
-      utterance.rate = currentAudioRate;
-      utterance.pitch = 1.0;
-
-      utterance.onend = () => {
-        if (reqId === currentSpeakRequestId) {
-          activeUtterance = null;
-          if (onEndCallback) onEndCallback();
-        }
-      };
-
-      utterance.onerror = () => {
-        if (reqId === currentSpeakRequestId) {
-          activeUtterance = null;
-          if (onEndCallback) onEndCallback();
-        }
-      };
-
-      window.speechSynthesis.resume();
-      window.speechSynthesis.speak(utterance);
     }
 
     function showToast(message, icon = "✨") {
