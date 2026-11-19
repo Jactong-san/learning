@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ma chambre (French Passage 6) - Interactive French Learning</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Noto Serif TC', 'Georgia', 'serif'],
+            sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+            mono: ['Plus Jakarta Sans', 'Inter', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+    }
+    .keyword-tooltip {
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+    }
+    .has-tooltip:hover .keyword-tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-indigo-50/40 text-stone-800 font-sans min-h-screen flex flex-col selection:bg-indigo-200 selection:text-indigo-950">
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed top-4 right-4 z-50 transform translate-y-[-200%] transition-transform duration-300 bg-stone-900 text-white px-5 py-2.5 rounded-2xl shadow-xl flex items-center space-x-2.5 text-xs md:text-sm font-medium">
+    <span id="toastIcon">🇫🇷</span>
+    <span id="toastMessage">Message</span>
+  </div>
+
+  <!-- Compact Single-Line Header -->
+  <header class="bg-white border-b border-indigo-200/70 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-5xl mx-auto px-3 py-2 flex items-center justify-between gap-2">
+      <!-- Brand -->
+      <div class="flex items-center space-x-2 shrink-0">
+        <div class="w-7 h-7 rounded-lg bg-indigo-700 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+          FR
+        </div>
+        <h1 class="font-serif font-bold text-sm md:text-base text-stone-900 tracking-wide">學習中心 Learning Portal</h1>
+      </div>
+
+      <!-- Directory Return -->
+      <a href="https://jactong-san.github.io/learning/" class="bg-stone-800 hover:bg-stone-900 text-white px-2.5 py-1 rounded-lg text-[11px] font-semibold flex items-center space-x-1 transition-colors shadow-sm shrink-0">
+        <span>🏠</span>
+        <span class="hidden sm:inline">返回總目錄</span>
+        <span>Directory</span>
+      </a>
+
+      <!-- Controls & Tabs -->
+      <div class="flex items-center space-x-1.5 shrink-0">
+        <div class="hidden sm:flex items-center space-x-1 bg-stone-100 px-2 py-1 rounded-lg border border-stone-200 text-xs font-semibold text-stone-700">
+          <span>🔊</span>
+          <select id="audioSpeedSelect" onchange="changeAudioSpeed(this.value)" class="bg-transparent font-medium text-indigo-900 outline-none cursor-pointer text-xs">
+            <option value="0.7">0.7x</option>
+            <option value="0.9" selected>0.9x</option>
+            <option value="1.15">1.15x</option>
+          </select>
+        </div>
+
+        <div class="flex items-center space-x-1 bg-stone-100 p-0.5 rounded-lg border border-stone-200">
+          <button onclick="switchTab('passage')" id="navTab-passage" class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all bg-white text-indigo-900 shadow-sm">
+            📖 短文
+          </button>
+          <button onclick="switchTab('vocab')" id="navTab-vocab" class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all text-stone-600 hover:text-stone-900">
+            🧠 詞彙
+          </button>
+          <button onclick="switchTab('quiz')" id="navTab-quiz" class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all text-stone-600 hover:text-stone-900">
+            🎯 測驗
+          </button>
+          <button onclick="switchTab('qa')" id="navTab-qa" class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all text-stone-600 hover:text-stone-900">
+            ❓ 問答
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4 md:p-6 space-y-5">
+
+    <!-- Sub-banner -->
+    <div class="bg-white rounded-2xl border border-indigo-200/80 px-4 py-3 flex flex-wrap items-center justify-between gap-2 shadow-sm">
+      <div class="flex items-center space-x-2.5">
+        <span class="bg-indigo-700 text-white text-xs font-bold px-2.5 py-1 rounded-lg">A1 Level · Passage 6</span>
+        <div>
+          <h2 class="font-serif font-bold text-base md:text-lg text-stone-900">Ma chambre <span class="text-xs font-sans font-normal text-stone-500">(Describing my room · 我的房間)</span></h2>
+        </div>
+      </div>
+      <div id="voiceStatusBadge" class="text-[11px] font-medium px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-800 border border-indigo-200">
+        🇫🇷 Voice: French (fr-FR)
+      </div>
+    </div>
+
+    <!-- ================= TAB 1: PASSAGE READING ================= -->
+    <section id="tabContent-passage" class="space-y-5">
+      <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-3.5 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center space-x-2">
+          <button onclick="toggleStoryMode()" class="bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold px-3.5 py-2 rounded-xl transition-all border border-stone-300">
+            <span id="overviewBtnText">📜 全文總覽 Full Text</span>
+          </button>
+          <button onclick="toggleEnglishTranslation()" class="bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold px-3.5 py-2 rounded-xl transition-all border border-stone-300">
+            <span id="translationBtnText">顯示英文 Show English</span>
+          </button>
+        </div>
+
+        <button onclick="toggleAutoPlayStory()" id="autoPlayStoryBtn" class="bg-indigo-700 hover:bg-indigo-800 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow transition-all flex items-center space-x-1.5">
+          <span id="autoPlayIcon">▶</span>
+          <span id="autoPlayLabel">連續朗讀 Auto-Play</span>
+        </button>
+      </div>
+
+      <!-- Full Text Overview -->
+      <div id="fullStoryOverview" class="hidden bg-white rounded-2xl shadow-md border border-stone-200 p-5 md:p-6 space-y-4">
+        <div class="flex items-center justify-between border-b border-stone-200 pb-3">
+          <h3 class="font-serif font-bold text-lg text-stone-900">Ma chambre — Full Passage</h3>
+          <button onclick="speakFullStory()" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-900 px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5">
+            <span>🔊</span>
+            <span>朗讀全部 Read All</span>
+          </button>
+        </div>
+        <div id="fullStoryContentList" class="space-y-3"></div>
+      </div>
+
+      <!-- Sequential Sentence Card -->
+      <div id="sequentialCardWrapper" class="bg-white rounded-2xl shadow-md border border-stone-200 overflow-hidden">
+        <div class="w-full bg-stone-100 h-2">
+          <div id="storyProgressBar" class="bg-indigo-600 h-2 transition-all duration-300" style="width: 10%;"></div>
+        </div>
+
+        <div class="p-5 md:p-8 space-y-5">
+          <div class="flex items-center justify-between text-xs text-stone-500 font-medium border-b border-stone-100 pb-2.5">
+            <span id="storyStepIndicator" class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-semibold">Sentence 1 / 10</span>
+            <span>💡 點擊藍色底線單字可聽發音 Tap highlighted words</span>
+          </div>
+
+          <!-- Bedroom Scene Illustration -->
+          <div id="sceneIllustrationContainer" class="w-full h-48 md:h-56 bg-gradient-to-b from-indigo-50/70 to-amber-50/40 rounded-2xl border border-indigo-100 flex items-center justify-center p-3 shadow-inner overflow-hidden"></div>
+
+          <!-- French Sentence -->
+          <div class="text-center py-2">
+            <h2 id="storyFrText" class="font-serif text-xl md:text-2xl font-bold text-stone-900 leading-relaxed flex items-center justify-center flex-wrap gap-1"></h2>
+          </div>
+
+          <!-- English & Chinese Meaning -->
+          <div id="storyEnBox" class="hidden bg-indigo-50/70 border-l-4 border-indigo-600 p-3.5 rounded-r-xl text-stone-700 text-sm italic"></div>
+
+          <!-- Navigation -->
+          <div class="flex items-center justify-between gap-2 pt-3 border-t border-stone-100">
+            <button onclick="prevSentence()" id="prevSentenceBtn" class="px-4 py-2.5 rounded-xl border border-stone-300 text-stone-700 hover:bg-stone-50 text-xs md:text-sm font-medium disabled:opacity-40">
+              ← 上一句 Prev
+            </button>
+
+            <button onclick="playCurrentSentence()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-5 py-2.5 rounded-xl text-xs md:text-sm font-semibold shadow flex items-center space-x-2">
+              <span>🔊</span>
+              <span>朗讀本句 Listen</span>
+            </button>
+
+            <button onclick="nextSentence()" id="nextSentenceBtn" class="px-4 py-2.5 rounded-xl border border-stone-300 text-stone-700 hover:bg-stone-50 text-xs md:text-sm font-medium disabled:opacity-40">
+              下一句 Next →
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: VOCABULARY & FLASHCARDS ================= -->
+    <section id="tabContent-vocab" class="hidden space-y-5">
+      <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-3.5 flex items-center justify-between">
+        <span class="font-serif font-bold text-stone-900 text-sm md:text-base">Vocabulaire utile (20 Words)</span>
+        <div class="flex items-center space-x-2">
+          <button onclick="switchVocabMode('flashcard')" id="vocabModeBtn-flashcard" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-700 text-white shadow">
+            🃏 互動字卡 Cards
+          </button>
+          <button onclick="switchVocabMode('list')" id="vocabModeBtn-list" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-stone-100 text-stone-700 hover:bg-stone-200">
+            📚 詞彙表 List
+          </button>
+        </div>
+      </div>
+
+      <!-- Flashcard Sub-mode -->
+      <div id="vocabSubMode-flashcard" class="space-y-5">
+        <div class="max-w-lg mx-auto perspective-1000">
+          <div id="flashcardElement" onclick="flipFlashcard()" class="w-full h-72 bg-white rounded-3xl shadow-xl border border-stone-200 p-6 cursor-pointer relative transition-transform duration-500 transform-style-3d flex flex-col justify-between select-none hover:border-indigo-400">
+            <!-- Front -->
+            <div class="absolute inset-0 w-full h-full p-6 flex flex-col justify-between backface-hidden bg-white rounded-3xl">
+              <div class="w-full flex items-center justify-between text-stone-400 text-xs font-semibold">
+                <span id="fcCounter">Card 1 / 20</span>
+                <span>點擊翻面 Tap to Flip</span>
+              </div>
+              <div class="space-y-3 text-center my-auto">
+                <div id="fcIcon" class="text-5xl">🛏️</div>
+                <h3 id="fcFrontWord" class="font-serif text-3xl md:text-4xl font-bold text-stone-900"></h3>
+                <p id="fcFrontGender" class="text-xs font-semibold text-indigo-700 uppercase tracking-wider"></p>
+              </div>
+              <div class="text-center text-xs text-stone-400">🔄 Tap anywhere for English & Chinese</div>
+            </div>
+
+            <!-- Back -->
+            <div class="absolute inset-0 w-full h-full bg-indigo-50/70 text-stone-900 rounded-3xl p-6 flex flex-col justify-between backface-hidden rotate-y-180 shadow-2xl border-2 border-indigo-200">
+              <div class="w-full flex items-center justify-between text-stone-500 text-xs font-semibold">
+                <span>Meaning 釋義</span>
+                <span id="fcBackWord" class="font-serif font-bold text-indigo-800 text-sm"></span>
+              </div>
+              <div class="space-y-2 text-center my-auto">
+                <p id="fcBackEnDef" class="font-serif text-2xl md:text-3xl font-bold text-stone-900"></p>
+                <p id="fcBackZhDef" class="text-base text-indigo-900 font-semibold"></p>
+              </div>
+              <div class="flex items-center justify-between pt-2 border-t border-indigo-200/70">
+                <button onclick="event.stopPropagation(); speakCurrentFlashcard()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1">
+                  <span>🔊</span>
+                  <span>Écouter Listen</span>
+                </button>
+                <span class="text-xs text-stone-500">Tap to flip back</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-3 max-w-lg mx-auto">
+          <button onclick="prevFlashcard()" class="px-4 py-2.5 bg-white hover:bg-stone-50 border border-stone-300 rounded-2xl text-xs font-semibold text-stone-700">
+            ← Prev
+          </button>
+          <button onclick="markFlashcardMastered()" id="masteredBtn" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-semibold shadow">
+            ✓ Learned 已學會
+          </button>
+          <button onclick="nextFlashcard()" class="px-4 py-2.5 bg-white hover:bg-stone-50 border border-stone-300 rounded-2xl text-xs font-semibold text-stone-700">
+            Next →
+          </button>
+        </div>
+      </div>
+
+      <!-- Vocab List Sub-mode -->
+      <div id="vocabSubMode-list" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+    </section>
+
+    <!-- ================= TAB 3: AUDIO QUIZ ================= -->
+    <section id="tabContent-quiz" class="hidden space-y-5">
+      <div class="bg-white rounded-2xl shadow-md border border-stone-200 p-5 md:p-7 space-y-5 text-center">
+        <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+          <button onclick="switchTab('passage')" class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-3 py-1.5 rounded-xl text-xs font-semibold border border-stone-300">
+            ← 返回短文 Back
+          </button>
+          <a href="https://jactong-san.github.io/learning/" class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-3 py-1.5 rounded-xl text-xs font-semibold border border-stone-300">
+            🏠 主目錄 Directory
+          </a>
+        </div>
+
+        <div class="max-w-md mx-auto space-y-2">
+          <div class="w-14 h-14 bg-indigo-100 text-indigo-800 rounded-full flex items-center justify-center text-2xl mx-auto">🎯</div>
+          <h2 class="font-serif font-bold text-xl md:text-2xl text-stone-900">Écoute & Vocabulaire · Listening Quiz</h2>
+          <p class="text-xs md:text-sm text-stone-500">Listen to the French audio and choose the matching word.</p>
+        </div>
+
+        <div id="quizGameArea" class="space-y-5">
+          <div class="bg-indigo-50/80 border-2 border-indigo-200 rounded-2xl p-5 max-w-lg mx-auto space-y-3">
+            <span class="text-xs uppercase tracking-wider bg-indigo-200 text-indigo-950 px-3 py-1 rounded-full font-bold">Question <span id="quizCurrentNum">1</span> / 10</span>
+            <div>
+              <button onclick="playQuizAudio()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-7 py-3.5 rounded-2xl font-bold shadow-lg transition-transform hover:scale-105 flex items-center justify-center space-x-2.5 mx-auto text-base">
+                <span class="text-xl">🔊</span>
+                <span>Écouter Replay Audio</span>
+              </button>
+            </div>
+
+            <!-- Review Box on Mistake -->
+            <div id="quizFeedbackBox" class="hidden bg-rose-50 border border-rose-300 text-rose-900 p-4 rounded-xl text-xs md:text-sm space-y-2">
+              <p id="quizFeedbackText"></p>
+              <div onclick="playQuizAudio()" class="bg-white rounded-xl p-3 border border-rose-200 cursor-pointer">
+                <div class="font-serif text-xl font-bold text-stone-900" id="quizMiniWord"></div>
+                <div class="text-xs text-indigo-800 font-semibold" id="quizMiniMeaning"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="quizOptionsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto"></div>
+
+          <div id="quizNextActionArea" class="hidden pt-1">
+            <button onclick="proceedToNextQuestion()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-7 py-2.5 rounded-2xl font-bold shadow">
+              Question suivante Next →
+            </button>
+          </div>
+        </div>
+
+        <div id="quizScoreArea" class="hidden py-6 space-y-4">
+          <div class="text-5xl">🏆</div>
+          <h3 class="font-serif font-bold text-2xl text-stone-900">Bravo ! Quiz Complete!</h3>
+          <p id="quizFinalScoreText" class="text-base text-stone-600 font-semibold"></p>
+          <div id="quizReviewContainer" class="max-w-lg mx-auto text-left space-y-2 pt-2">
+            <h4 class="font-bold text-stone-800 text-sm border-b pb-1">📋 Review Mistakes</h4>
+            <div id="quizReviewList" class="space-y-2"></div>
+          </div>
+          <button onclick="startQuiz()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-7 py-2.5 rounded-2xl font-semibold shadow">
+            Rejouer Play Again
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 4: QUESTIONS DE COMPRÉHENSION ================= -->
+    <section id="tabContent-qa" class="hidden space-y-4">
+      <div class="bg-white rounded-2xl shadow-md border border-stone-200 p-5 md:p-7 space-y-5">
+        <div class="border-b border-stone-200 pb-3 flex items-center justify-between">
+          <div>
+            <h2 class="font-serif font-bold text-xl text-stone-900">Questions de compréhension</h2>
+            <p class="text-xs text-stone-500">Tap any question to listen in French and reveal the model answer.</p>
+          </div>
+          <span class="bg-pink-100 text-pink-900 text-xs font-bold px-3 py-1 rounded-full">5 Questions</span>
+        </div>
+
+        <div id="comprehensionList" class="space-y-3"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-white border-t border-stone-200 py-4 text-center text-xs text-stone-500">
+    <p>French Passage Series A1 · Ma chambre · Strict French (fr-FR) Speech Engine</p>
+  </footer>
+
+  <script>
+    /* ==========================================================
+       1. PASSAGE, VOCABULARY & COMPREHENSION DATA
+       ========================================================== */
+    const STORY_SENTENCES = [
+      { id: 1, fr: "Je m'appelle Emma et voici ma chambre.", en: "My name is Emma and here is my room. (我叫艾瑪，這是我的房間。)", scene: "intro" },
+      { id: 2, fr: "Ma chambre est assez grande et lumineuse.", en: "My room is quite big and bright. (我的房間相當大而且很明亮。)", scene: "bright" },
+      { id: 3, fr: "Il y a un lit près de la fenêtre.", en: "There is a bed near the window. (窗戶旁邊有一張床。)", scene: "bed" },
+      { id: 4, fr: "Sur le lit, il y a des coussins et une couverture bleue.", en: "On the bed, there are cushions and a blue blanket. (床上有一些靠墊和一條藍色的被子。)", scene: "bed" },
+      { id: 5, fr: "À côté du lit, il y a une table de nuit avec une lampe.", en: "Next to the bed, there is a bedside table with a lamp. (床旁邊有一個床頭櫃和一盞檯燈。)", scene: "nightstand" },
+      { id: 6, fr: "J'ai un bureau avec une chaise.", en: "I have a desk with a chair. (我有一張書桌和一把椅子。)", scene: "desk" },
+      { id: 7, fr: "Sur le bureau, il y a un ordinateur, quelques livres et un pot à crayons.", en: "On the desk, there is a computer, a few books, and a pencil holder. (書桌上有一台電腦、幾本書和一個筆筒。)", scene: "desk" },
+      { id: 8, fr: "Il y a aussi une armoire pour mes vêtements.", en: "There is also a wardrobe for my clothes. (還有一個放我衣服的衣櫃。)", scene: "wardrobe" },
+      { id: 9, fr: "Une étagère est sur le mur. Il y a des livres et des objets de décoration.", en: "A shelf is on the wall. There are books and decorative items. (牆上有一個架子，上面有書和裝飾品。)", scene: "shelf" },
+      { id: 10, fr: "J'aime ma chambre parce qu'elle est confortable, bien rangée et c'est un endroit calme pour étudier et me reposer.", en: "I love my room because it is comfortable, tidy, and it's a quiet place to study and rest. (我喜歡我的房間，因為它舒適、整潔，而且是一個安靜學習和休息的地方。)", scene: "happy" }
+    ];
+
+    const VOCAB_DATA = [
+      { id: 1, word: "chambre", type: "n.f.", enDef: "room / bedroom", zhDef: "房間", icon: "🛏️" },
+      { id: 2, word: "lit", type: "n.m.", enDef: "bed", zhDef: "床", icon: "🛌" },
+      { id: 3, word: "fenêtre", type: "n.f.", enDef: "window", zhDef: "窗戶", icon: "🪟" },
+      { id: 4, word: "coussin", type: "n.m.", enDef: "cushion", zhDef: "靠墊", icon: "🛋️" },
+      { id: 5, word: "couverture", type: "n.f.", enDef: "blanket", zhDef: "被子 / 毯子", icon: "🧶" },
+      { id: 6, word: "table de nuit", type: "n.f.", enDef: "bedside table", zhDef: "床頭櫃", icon: "🪑" },
+      { id: 7, word: "lampe", type: "n.f.", enDef: "lamp", zhDef: "檯燈", icon: "💡" },
+      { id: 8, word: "bureau", type: "n.m.", enDef: "desk", zhDef: "書桌", icon: "🖥️" },
+      { id: 9, word: "chaise", type: "n.f.", enDef: "chair", zhDef: "椅子", icon: "💺" },
+      { id: 10, word: "ordinateur", type: "n.m.", enDef: "computer", zhDef: "電腦", icon: "💻" },
+      { id: 11, word: "livre", type: "n.m.", enDef: "book", zhDef: "書", icon: "📘" },
+      { id: 12, word: "pot à crayons", type: "n.m.", enDef: "pencil holder", zhDef: "筆筒", icon: "✏️" },
+      { id: 13, word: "armoire", type: "n.f.", enDef: "wardrobe", zhDef: "衣櫃", icon: "🚪" },
+      { id: 14, word: "vêtement", type: "n.m.", enDef: "clothes", zhDef: "衣服", icon: "👕" },
+      { id: 15, word: "étagère", type: "n.f.", enDef: "shelf", zhDef: "架子", icon: "📚" },
+      { id: 16, word: "objet de décoration", type: "n.m.", enDef: "decorative item", zhDef: "裝飾品", icon: "🪴" },
+      { id: 17, word: "lumineuse", type: "adj.f.", enDef: "bright", zhDef: "明亮的", icon: "☀️" },
+      { id: 18, word: "confortable", type: "adj.", enDef: "comfortable", zhDef: "舒適的", icon: "☁️" },
+      { id: 19, word: "bien rangée", type: "adj.f.", enDef: "tidy", zhDef: "整潔的", icon: "✨" },
+      { id: 20, word: "se reposer", type: "v.", enDef: "to rest", zhDef: "休息", icon: "😌" }
+    ];
+
+    const COMPREHENSION_QA = [
+      {
+        q: "1. Comment s'appelle la personne ?",
+        qEn: "What is the person's name?",
+        a: "Elle s'appelle Emma.",
+        aEn: "Her name is Emma."
+      },
+      {
+        q: "2. Où est le lit dans la chambre ?",
+        qEn: "Where is the bed in the room?",
+        a: "Le lit est près de la fenêtre.",
+        aEn: "The bed is near the window."
+      },
+      {
+        q: "3. Qu'est-ce qu'il y a sur le bureau ?",
+        qEn: "What is on the desk?",
+        a: "Sur le bureau, il y a un ordinateur, quelques livres et un pot à crayons.",
+        aEn: "On the desk, there is a computer, a few books, and a pencil holder."
+      },
+      {
+        q: "4. Que contient l'armoire ?",
+        qEn: "What does the wardrobe contain?",
+        a: "L'armoire contient ses vêtements (pour mes vêtements).",
+        aEn: "The wardrobe holds her clothes."
+      },
+      {
+        q: "5. Pourquoi est-ce qu'elle aime sa chambre ?",
+        qEn: "Why does she love her room?",
+        a: "Elle aime sa chambre parce qu'elle est confortable, bien rangée et c'est un endroit calme pour étudier et se reposer.",
+        aEn: "She loves her room because it is comfortable, tidy, and a quiet place to study and rest."
+      }
+    ];
+
+    /* ==========================================================
+       2. STRICT iMAC SAFARI / iOS FRENCH VOICE ENGINE
+       ========================================================== */
+    let currentAudioRate = 0.9;
+    let currentSentenceIdx = 0;
+    let isFullTextOverview = false;
+    let showEnglishTranslation = false;
+    let isAutoPlayingStory = false;
+    let currentSpeakRequestId = 0;
+    let selectedFrVoice = null;
+
+    let vocabSubMode = 'flashcard';
+    let flashcardIdx = 0;
+    let isFlashcardFlipped = false;
+    let masteredFlashcardIds = new Set();
+
+    let quizQuestions = [];
+    let quizCurrentIdx = 0;
+    let quizScore = 0;
+    let quizCurrentCorrectItem = null;
+    let quizWrongAnswersLog = [];
+    let isQuizLocked = false;
+
+    function loadFrenchVoice() {
+      if (!window.speechSynthesis) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return;
+
+      // Strictly filter ONLY French voices (fr-FR / fr-CA / fr) so macOS Safari NEVER falls back to English
+      const frenchVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('fr'));
+      selectedFrVoice =
+        frenchVoices.find(v => v.lang.toLowerCase() === 'fr-fr' && (v.name.includes('Thomas') || v.name.includes('Amélie') || v.name.includes('Audrey') || v.name.includes('Google') || v.name.includes('Enhanced'))) ||
+        frenchVoices.find(v => v.lang.toLowerCase() === 'fr-fr') ||
+        frenchVoices[0] ||
+        null;
+
+      const badge = document.getElementById('voiceStatusBadge');
+      if (badge) {
+        if (selectedFrVoice) {
+          badge.textContent = `🇫🇷 Voice: ${selectedFrVoice.name} (${selectedFrVoice.lang})`;
+        } else {
+          badge.textContent = `🇫🇷 Lang: fr-FR (Add French voice in Mac System Settings if needed)`;
+        }
+      }
+    }
+
+    if (window.speechSynthesis) {
+      loadFrenchVoice();
+      window.speechSynthesis.onvoiceschanged = loadFrenchVoice;
+    }
+
+    function stopCurrentAudio() {
+      currentSpeakRequestId++;
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function changeAudioSpeed(val) {
+      currentAudioRate = parseFloat(val);
+      showToast(`Vitesse audio : ${val}x`, "🔊");
+    }
+
+    function speakFrench(text, onEndCallback = null) {
+      const reqId = ++currentSpeakRequestId;
+      if (!window.speechSynthesis) {
+        if (onEndCallback) onEndCallback();
+        return;
+      }
+
+      if (!selectedFrVoice) loadFrenchVoice();
+
+      window.speechSynthesis.cancel();
+
+      setTimeout(() => {
+        if (reqId !== currentSpeakRequestId) return;
+        const utterance = new SpeechSynthesisUtterance(text);
+        if (selectedFrVoice) {
+          utterance.voice = selectedFrVoice;
+          utterance.lang = selectedFrVoice.lang;
+        } else {
+          utterance.lang = 'fr-FR';
+        }
+        utterance.rate = currentAudioRate;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+
+        utterance.onend = () => {
+          if (reqId === currentSpeakRequestId && onEndCallback) onEndCallback();
+        };
+        utterance.onerror = () => {
+          if (reqId === currentSpeakRequestId && onEndCallback) onEndCallback();
+        };
+
+        window.speechSynthesis.resume();
+        window.speechSynthesis.speak(utterance);
+      }, 60);
+    }
+
+    function showToast(msg, icon = "🇫🇷") {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').textContent = msg;
+      document.getElementById('toastIcon').textContent = icon;
+      toast.classList.remove('translate-y-[-200%]');
+      setTimeout(() => toast.classList.add('translate-y-[-200%]'), 2600);
+    }
+
+    /* ==========================================================
+       3. TABS & PASSAGE ILLUSTRATION
+       ========================================================== */
+    function switchTab(tabId) {
+      stopAutoPlayStory();
+      stopCurrentAudio();
+
+      ['passage', 'vocab', 'quiz', 'qa'].forEach(t => {
+        const sec = document.getElementById(`tabContent-${t}`);
+        const nav = document.getElementById(`navTab-${t}`);
+        if (t === tabId) {
+          sec.classList.remove('hidden');
+          nav.className = "px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all bg-white text-indigo-900 shadow-sm";
+        } else {
+          sec.classList.add('hidden');
+          nav.className = "px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all text-stone-600 hover:text-stone-900";
+        }
+      });
+
+      if (tabId === 'vocab') {
+        renderFlashcard();
+        renderVocabDirectory();
+      } else if (tabId === 'quiz') {
+        startQuiz();
+      } else if (tabId === 'qa') {
+        renderComprehensionQA();
+      }
+    }
+
+    function getBedroomSvg(scene) {
+      return `
+        <svg viewBox="0 0 380 210" class="w-full h-full">
+          <rect width="380" height="210" fill="#fefce8"/>
+          <polygon points="0,165 380,165 380,210 0,210" fill="#fde68a"/>
+          <!-- Window with pink curtains -->
+          <rect x="45" y="25" width="75" height="75" fill="#bae6fd" stroke="#78350f" stroke-width="3"/>
+          <line x1="82.5" y1="25" x2="82.5" y2="100" stroke="#78350f" stroke-width="2"/>
+          <line x1="45" y1="62.5" x2="120" y2="62.5" stroke="#78350f" stroke-width="2"/>
+          <rect x="38" y="22" width="14" height="82" rx="4" fill="#f472b6"/>
+          <rect x="113" y="22" width="14" height="82" rx="4" fill="#f472b6"/>
+          <!-- Shelf on wall -->
+          <rect x="165" y="55" width="75" height="6" fill="#b45309"/>
+          <rect x="175" y="37" width="8" height="18" fill="#ef4444"/>
+          <rect x="184" y="39" width="8" height="16" fill="#3b82f6"/>
+          <circle cx="215" cy="46" r="8" fill="#22c55e"/>
+          <!-- Wardrobe -->
+          <rect x="285" y="30" width="70" height="145" rx="4" fill="#d97706" stroke="#78350f" stroke-width="2.5"/>
+          <line x1="320" y1="30" x2="320" y2="175" stroke="#78350f" stroke-width="2"/>
+          <!-- Bed with blue blanket & cushions -->
+          <rect x="55" y="120" width="125" height="45" rx="6" fill="#60a5fa" stroke="#1e40af" stroke-width="2"/>
+          <rect x="62" y="110" width="32" height="16" rx="5" fill="#fbcfe8" stroke="#be185d" stroke-width="1.5"/>
+          <!-- Bedside table & lamp -->
+          <rect x="18" y="135" width="32" height="35" rx="3" fill="#b45309"/>
+          <polygon points="24,122 44,122 40,110 28,110" fill="#fde047" stroke="#ca8a04" stroke-width="1.5"/>
+          <line x1="34" y1="122" x2="34" y2="135" stroke="#78350f" stroke-width="2.5"/>
+          <!-- Desk, laptop & chair -->
+          <rect x="200" y="142" width="80" height="35" rx="3" fill="#d97706" stroke="#78350f" stroke-width="2"/>
+          <polygon points="232,142 256,142 262,126 238,126" fill="#94a3b8" stroke="#334155" stroke-width="1.5"/>
+          <rect x="210" y="128" width="10" height="14" fill="#a855f7"/>
+          <text x="190" y="20" font-size="11" font-weight="bold" fill="#4338ca" text-anchor="middle">Ma chambre · Emma's Bedroom</text>
+        </svg>
+      `;
+    }
+
+    function highlightFrenchKeywords(text) {
+      const sortedVocab = [...VOCAB_DATA].sort((a, b) => b.word.length - a.word.length);
+      let segments = [text];
+
+      sortedVocab.forEach(v => {
+        let newSegments = [];
+        const regex = new RegExp(`(${v.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}s?)`, 'gi');
+        segments.forEach(seg => {
+          if (typeof seg === 'object') {
+            newSegments.push(seg);
+            return;
+          }
+          const parts = seg.split(regex);
+          parts.forEach(part => {
+            if (!part) return;
+            if (part.toLowerCase().startsWith(v.word.toLowerCase())) {
+              const safeWord = part.replace(/'/g, "\\'");
+              const tooltipHtml = `<span class="keyword-tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 bg-stone-900 text-white text-xs rounded-xl p-2.5 shadow-xl z-30 pointer-events-none text-center font-sans"><strong class="text-indigo-300">${part}</strong> <span class="text-stone-400">(${v.type})</span><br><span class="text-white font-semibold">${v.enDef}</span><br><span class="text-amber-300">${v.zhDef}</span></span>`;
+              const spanHtml = `<span class="has-tooltip relative inline-block cursor-pointer text-indigo-800 border-b-2 border-dashed border-indigo-400 hover:bg-indigo-100/80 px-1 rounded transition-colors" onclick="speakFrench('${safeWord}'); event.stopPropagation();">${part}${tooltipHtml}</span>`;
+              newSegments.push({ __html: spanHtml });
+            } else {
+              newSegments.push(part);
+            }
+          });
+        });
+        segments = newSegments;
+      });
+
+      return segments.map(seg => (typeof seg === 'string' ? seg : seg.__html)).join('');
+    }
+
+    function renderStoryStep(autoPlay = true) {
+      const sentence = STORY_SENTENCES[currentSentenceIdx];
+      const pct = ((currentSentenceIdx + 1) / STORY_SENTENCES.length) * 100;
+      document.getElementById('storyProgressBar').style.width = `${pct}%`;
+      document.getElementById('storyStepIndicator').textContent = `Sentence ${currentSentenceIdx + 1} / ${STORY_SENTENCES.length}`;
+      document.getElementById('sceneIllustrationContainer').innerHTML = getBedroomSvg(sentence.scene);
+      document.getElementById('storyFrText').innerHTML = highlightFrenchKeywords(sentence.fr);
+
+      const enBox = document.getElementById('storyEnBox');
+      enBox.textContent = sentence.en;
+      if (showEnglishTranslation) enBox.classList.remove('hidden');
+      else enBox.classList.add('hidden');
+
+      document.getElementById('prevSentenceBtn').disabled = currentSentenceIdx === 0;
+      document.getElementById('nextSentenceBtn').disabled = currentSentenceIdx === STORY_SENTENCES.length - 1;
+
+      if (autoPlay) speakFrench(sentence.fr);
+    }
+
+    function nextSentence() {
+      if (currentSentenceIdx < STORY_SENTENCES.length - 1) {
+        currentSentenceIdx++;
+        renderStoryStep(true);
+      }
+    }
+
+    function prevSentence() {
+      if (currentSentenceIdx > 0) {
+        currentSentenceIdx--;
+        renderStoryStep(true);
+      }
+    }
+
+    function playCurrentSentence() {
+      speakFrench(STORY_SENTENCES[currentSentenceIdx].fr);
+    }
+
+    function toggleStoryMode() {
+      isFullTextOverview = !isFullTextOverview;
+      const overviewEl = document.getElementById('fullStoryOverview');
+      const seqEl = document.getElementById('sequentialCardWrapper');
+      const btnText = document.getElementById('overviewBtnText');
+
+      if (isFullTextOverview) {
+        overviewEl.classList.remove('hidden');
+        seqEl.classList.add('hidden');
+        btnText.textContent = '📖 逐句導覽 Step View';
+        renderFullStoryOverview();
+      } else {
+        overviewEl.classList.add('hidden');
+        seqEl.classList.remove('hidden');
+        btnText.textContent = '📜 全文總覽 Full Text';
+        renderStoryStep(false);
+      }
+    }
+
+    function toggleEnglishTranslation() {
+      showEnglishTranslation = !showEnglishTranslation;
+      document.getElementById('translationBtnText').textContent = showEnglishTranslation ? '隱藏英文 Hide English' : '顯示英文 Show English';
+      renderStoryStep(false);
+      if (isFullTextOverview) renderFullStoryOverview();
+    }
+
+    function renderFullStoryOverview() {
+      document.getElementById('fullStoryContentList').innerHTML = STORY_SENTENCES.map((s, i) => `
+        <div class="p-3.5 bg-stone-50 rounded-xl border border-stone-200 space-y-1.5">
+          <div class="flex items-center justify-between text-xs text-indigo-800 font-semibold">
+            <span>#${i + 1}</span>
+            <button onclick="speakFrench('${s.fr.replace(/'/g, "\\'")}')" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-900 px-2.5 py-1 rounded-lg">🔊 Écouter</button>
+          </div>
+          <p class="font-serif text-base md:text-lg font-bold text-stone-900">${highlightFrenchKeywords(s.fr)}</p>
+          ${showEnglishTranslation ? `<p class="text-xs md:text-sm text-stone-600 italic">${s.en}</p>` : ''}
+        </div>
+      `).join('');
+    }
+
+    function speakFullStory() {
+      speakFrench(STORY_SENTENCES.map(s => s.fr).join(' '));
+    }
+
+    function toggleAutoPlayStory() {
+      if (isAutoPlayingStory) {
+        stopAutoPlayStory();
+      } else {
+        if (isFullTextOverview) toggleStoryMode();
+        isAutoPlayingStory = true;
+        const btn = document.getElementById('autoPlayStoryBtn');
+        btn.className = "bg-rose-700 hover:bg-rose-800 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow flex items-center space-x-1.5";
+        document.getElementById('autoPlayIcon').textContent = '⏹';
+        document.getElementById('autoPlayLabel').textContent = '停止 Stop';
+
+        const playNext = () => {
+          if (!isAutoPlayingStory) return;
+          renderStoryStep(false);
+          speakFrench(STORY_SENTENCES[currentSentenceIdx].fr, () => {
+            if (!isAutoPlayingStory) return;
+            if (currentSentenceIdx < STORY_SENTENCES.length - 1) {
+              setTimeout(() => {
+                if (!isAutoPlayingStory) return;
+                currentSentenceIdx++;
+                playNext();
+              }, 700);
+            } else {
+              stopAutoPlayStory();
+              showToast("Lecture terminée !", "✨");
+            }
+          });
+        };
+        playNext();
+      }
+    }
+
+    function stopAutoPlayStory() {
+      isAutoPlayingStory = false;
+      stopCurrentAudio();
+      const btn = document.getElementById('autoPlayStoryBtn');
+      if (btn) {
+        btn.className = "bg-indigo-700 hover:bg-indigo-800 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow flex items-center space-x-1.5";
+        document.getElementById('autoPlayIcon').textContent = '▶';
+        document.getElementById('autoPlayLabel').textContent = '連續朗讀 Auto-Play';
+      }
+    }
+
+    /* ==========================================================
+       4. VOCABULARY & FLASHCARDS
+       ========================================================== */
+    function switchVocabMode(mode) {
+      vocabSubMode = mode;
+      const fcBtn = document.getElementById('vocabModeBtn-flashcard');
+      const listBtn = document.getElementById('vocabModeBtn-list');
+      const fcArea = document.getElementById('vocabSubMode-flashcard');
+      const listArea = document.getElementById('vocabSubMode-list');
+
+      if (mode === 'flashcard') {
+        fcBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-700 text-white shadow";
+        listBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-stone-100 text-stone-700 hover:bg-stone-200";
+        fcArea.classList.remove('hidden');
+        listArea.classList.add('hidden');
+        renderFlashcard();
+      } else {
+        listBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-700 text-white shadow";
+        fcBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-stone-100 text-stone-700 hover:bg-stone-200";
+        listArea.classList.remove('hidden');
+        fcArea.classList.add('hidden');
+        renderVocabDirectory();
+      }
+    }
+
+    function renderFlashcard() {
+      const item = VOCAB_DATA[flashcardIdx];
+      document.getElementById('fcCounter').textContent = `Card ${flashcardIdx + 1} / ${VOCAB_DATA.length}`;
+      document.getElementById('fcIcon').textContent = item.icon;
+      document.getElementById('fcFrontWord').textContent = item.word;
+      document.getElementById('fcFrontGender').textContent = item.type;
+      document.getElementById('fcBackWord').textContent = item.word;
+      document.getElementById('fcBackEnDef').textContent = item.enDef;
+      document.getElementById('fcBackZhDef').textContent = item.zhDef;
+
+      const masteredBtn = document.getElementById('masteredBtn');
+      if (masteredFlashcardIds.has(item.id)) {
+        masteredBtn.className = "px-5 py-2.5 bg-stone-300 text-stone-700 rounded-2xl text-xs font-semibold";
+        masteredBtn.textContent = "✓ Learned 已學會";
+      } else {
+        masteredBtn.className = "px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-semibold shadow";
+        masteredBtn.textContent = "✓ Mark Learned 標記學會";
+      }
+
+      isFlashcardFlipped = false;
+      document.getElementById('flashcardElement').classList.remove('rotate-y-180');
+      speakFrench(item.word);
+    }
+
+    function flipFlashcard() {
+      isFlashcardFlipped = !isFlashcardFlipped;
+      const el = document.getElementById('flashcardElement');
+      if (isFlashcardFlipped) el.classList.add('rotate-y-180');
+      else el.classList.remove('rotate-y-180');
+      speakFrench(VOCAB_DATA[flashcardIdx].word);
+    }
+
+    function nextFlashcard() {
+      flashcardIdx = (flashcardIdx + 1) % VOCAB_DATA.length;
+      renderFlashcard();
+    }
+
+    function prevFlashcard() {
+      flashcardIdx = (flashcardIdx - 1 + VOCAB_DATA.length) % VOCAB_DATA.length;
+      renderFlashcard();
+    }
+
+    function markFlashcardMastered() {
+      const item = VOCAB_DATA[flashcardIdx];
+      if (masteredFlashcardIds.has(item.id)) masteredFlashcardIds.delete(item.id);
+      else masteredFlashcardIds.add(item.id);
+      renderFlashcard();
+    }
+
+    function speakCurrentFlashcard() {
+      speakFrench(VOCAB_DATA[flashcardIdx].word);
+    }
+
+    function renderVocabDirectory() {
+      document.getElementById('vocabSubMode-list').innerHTML = VOCAB_DATA.map(item => `
+        <div onclick="speakFrench('${item.word.replace(/'/g, "\\'")}')" class="cursor-pointer bg-white p-4 rounded-2xl shadow-sm border border-stone-200 hover:border-indigo-400 transition-all flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <span class="text-2xl bg-indigo-50 p-2.5 rounded-xl">${item.icon}</span>
+            <div>
+              <div class="font-serif font-bold text-base text-stone-900">${item.word} <span class="text-xs font-sans font-normal text-stone-400">(${item.type})</span></div>
+              <div class="text-xs text-indigo-800 font-semibold">${item.enDef} · <span class="text-stone-600">${item.zhDef}</span></div>
+            </div>
+          </div>
+          <span class="text-indigo-700 text-base">🔊</span>
+        </div>
+      `).join('');
+    }
+
+    /* ==========================================================
+       5. LISTENING QUIZ
+       ========================================================== */
+    function startQuiz() {
+      quizCurrentIdx = 0;
+      quizScore = 0;
+      quizWrongAnswersLog = [];
+      isQuizLocked = false;
+      quizQuestions = [...VOCAB_DATA].sort(() => 0.5 - Math.random()).slice(0, 10);
+
+      document.getElementById('quizGameArea').classList.remove('hidden');
+      document.getElementById('quizScoreArea').classList.add('hidden');
+      document.getElementById('quizFeedbackBox').classList.add('hidden');
+      document.getElementById('quizNextActionArea').classList.add('hidden');
+      renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+      isQuizLocked = false;
+      const item = quizQuestions[quizCurrentIdx];
+      quizCurrentCorrectItem = item;
+      document.getElementById('quizCurrentNum').textContent = quizCurrentIdx + 1;
+      document.getElementById('quizFeedbackBox').classList.add('hidden');
+      document.getElementById('quizNextActionArea').classList.add('hidden');
+
+      const wrongOptions = VOCAB_DATA.filter(v => v.id !== item.id).sort(() => 0.5 - Math.random()).slice(0, 3);
+      const options = [...wrongOptions, item].sort(() => 0.5 - Math.random());
+
+      document.getElementById('quizOptionsGrid').innerHTML = options.map(opt => `
+        <button onclick="submitQuizAnswer(${opt.id})" data-id="${opt.id}" class="quiz-opt-btn p-4 bg-white hover:bg-indigo-50 border-2 border-stone-200 hover:border-indigo-500 rounded-2xl shadow-sm transition-all flex items-center justify-between text-left">
+          <div class="flex items-center space-x-3">
+            <span class="text-2xl">${opt.icon}</span>
+            <div>
+              <div class="font-serif font-bold text-lg md:text-xl text-stone-900">${opt.word}</div>
+              <div class="quiz-opt-meaning hidden text-xs text-indigo-700 font-semibold">${opt.enDef} (${opt.zhDef})</div>
+            </div>
+          </div>
+        </button>
+      `).join('');
+
+      playQuizAudio();
+    }
+
+    function playQuizAudio() {
+      if (quizCurrentCorrectItem) speakFrench(quizCurrentCorrectItem.word);
+    }
+
+    function submitQuizAnswer(selectedId) {
+      if (isQuizLocked) return;
+      isQuizLocked = true;
+      const item = quizCurrentCorrectItem;
+      const isCorrect = selectedId === item.id;
+
+      document.querySelectorAll('.quiz-opt-meaning').forEach(el => el.classList.remove('hidden'));
+      document.querySelectorAll('.quiz-opt-btn').forEach(btn => {
+        btn.disabled = true;
+        const btnId = parseInt(btn.getAttribute('data-id'), 10);
+        if (btnId === item.id) {
+          btn.className = "quiz-opt-btn p-4 bg-emerald-100 border-2 border-emerald-500 rounded-2xl shadow-sm flex items-center justify-between text-left";
+        } else if (btnId === selectedId && !isCorrect) {
+          btn.className = "quiz-opt-btn p-4 bg-rose-100 border-2 border-rose-500 rounded-2xl shadow-sm flex items-center justify-between text-left";
+        }
+      });
+
+      if (isCorrect) {
+        quizScore++;
+        showToast("Très bien ! Correct !", "✅");
+        speakFrench(item.word);
+      } else {
+        const chosen = VOCAB_DATA.find(v => v.id === selectedId);
+        quizWrongAnswersLog.push({ word: item.word, meaning: `${item.enDef} (${item.zhDef})`, chosen: chosen ? chosen.word : '' });
+        document.getElementById('quizFeedbackText').innerHTML = `La bonne réponse est <strong class="text-emerald-700">${item.word}</strong> :`;
+        document.getElementById('quizMiniWord').textContent = item.word;
+        document.getElementById('quizMiniMeaning').textContent = `${item.enDef} · ${item.zhDef}`;
+        document.getElementById('quizFeedbackBox').classList.remove('hidden');
+        speakFrench(item.word);
+      }
+
+      document.getElementById('quizNextActionArea').classList.remove('hidden');
+    }
+
+    function proceedToNextQuestion() {
+      if (quizCurrentIdx < quizQuestions.length - 1) {
+        quizCurrentIdx++;
+        renderQuizQuestion();
+      } else {
+        document.getElementById('quizGameArea').classList.add('hidden');
+        document.getElementById('quizScoreArea').classList.remove('hidden');
+        document.getElementById('quizFinalScoreText').textContent = `Score : ${quizScore} / ${quizQuestions.length}`;
+
+        const revContainer = document.getElementById('quizReviewContainer');
+        if (quizWrongAnswersLog.length > 0) {
+          revContainer.classList.remove('hidden');
+          document.getElementById('quizReviewList').innerHTML = quizWrongAnswersLog.map(w => `
+            <div class="p-3 bg-stone-50 rounded-xl border border-stone-200 text-xs flex items-center justify-between">
+              <div><strong class="text-stone-900 text-sm">${w.word}</strong> — ${w.meaning}</div>
+              <span class="text-rose-700 bg-rose-100 px-2 py-0.5 rounded">Your choice: ${w.chosen}</span>
+            </div>
+          `).join('');
+        } else {
+          revContainer.classList.add('hidden');
+        }
+      }
+    }
+
+    /* ==========================================================
+       6. COMPREHENSION Q&A
+       ========================================================== */
+    function renderComprehensionQA() {
+      document.getElementById('comprehensionList').innerHTML = COMPREHENSION_QA.map((item, idx) => `
+        <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2.5">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <h4 class="font-serif font-bold text-base text-stone-900">${item.q}</h4>
+              <p class="text-xs text-stone-500 italic">${item.qEn}</p>
+            </div>
+            <button onclick="speakFrench('${item.q.replace(/'/g, "\\'")}')" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-900 px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0">
+              🔊 Question
+            </button>
+          </div>
+          <div>
+            <button onclick="toggleQaAnswer(${idx}, '${item.a.replace(/'/g, "\\'")}')" class="text-xs font-semibold text-indigo-700 hover:text-indigo-900 underline">
+              Voir la réponse Show Answer
+            </button>
+            <div id="qaAnswerBox-${idx}" class="hidden mt-2 p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-2">
+              <div>
+                <p class="font-serif font-bold text-sm text-emerald-950">${item.a}</p>
+                <p class="text-xs text-emerald-800 italic">${item.aEn}</p>
+              </div>
+              <button onclick="speakFrench('${item.a.replace(/'/g, "\\'")}')" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-xs font-semibold shrink-0">
+                🔊 Réponse
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleQaAnswer(idx, answerFr) {
+      const box = document.getElementById(`qaAnswerBox-${idx}`);
+      box.classList.toggle('hidden');
+      if (!box.classList.contains('hidden')) {
+        speakFrench(answerFr);
+      }
+    }
+
+    window.onload = function() {
+      loadFrenchVoice();
+      renderStoryStep(false);
+    };
+  </script>
+</body>
+</html>
