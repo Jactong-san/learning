@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hugo French - TOUJOURS, JAMAIS, RIEN & Environnement</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; }
+  </style>
+</head>
+<body class="bg-indigo-50/40 text-stone-800 font-sans min-h-screen flex flex-col">
+
+  <!-- Toast -->
+  <div id="toastNotification" class="fixed top-4 right-4 z-50 transform translate-y-[-200%] transition-transform duration-300 bg-stone-900 text-white px-5 py-2.5 rounded-2xl shadow-xl flex items-center space-x-2 text-xs font-medium">
+    <span id="toastIcon">🇫🇷</span>
+    <span id="toastMessage">Message</span>
+  </div>
+
+  <!-- Compact Single-Line Header -->
+  <header class="bg-white border-b border-indigo-200/70 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-5xl mx-auto px-3 py-2 flex items-center justify-between gap-2">
+      <div class="flex items-center space-x-2 shrink-0">
+        <div class="w-7 h-7 rounded-lg bg-indigo-700 text-white flex items-center justify-center font-bold text-xs shadow-sm">FR</div>
+        <h1 class="font-serif font-bold text-sm md:text-base text-stone-900">學習中心 Learning Portal</h1>
+      </div>
+
+      <a href="https://jactong-san.github.io/learning/" class="bg-stone-800 hover:bg-stone-900 text-white px-2.5 py-1 rounded-lg text-[11px] font-semibold flex items-center space-x-1 shrink-0">
+        <span>🏠</span>
+        <span>Directory</span>
+      </a>
+
+      <div class="flex items-center space-x-1 bg-stone-100 p-0.5 rounded-lg border border-stone-200 shrink-0 overflow-x-auto">
+        <button onclick="switchTab('phrases')" id="navTab-phrases" class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-white text-indigo-900 shadow-sm">📖 Full Phrases</button>
+        <button onclick="switchTab('chunks')" id="navTab-chunks" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600">🧩 Chunks</button>
+        <button onclick="switchTab('keywords')" id="navTab-keywords" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600">🔑 Keywords</button>
+        <button onclick="switchTab('conjugation')" id="navTab-conjugation" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600">⚡ Conjugation</button>
+        <button onclick="switchTab('quiz')" id="navTab-quiz" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600">🎯 60-Q Quiz</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4 md:p-6 space-y-5">
+    <!-- Banner -->
+    <div class="bg-white rounded-2xl border border-indigo-200/80 px-4 py-3 flex flex-wrap items-center justify-between gap-2 shadow-sm">
+      <div class="flex items-center space-x-2.5">
+        <span class="bg-indigo-700 text-white text-xs font-bold px-2.5 py-1 rounded-lg">Hugo · French</span>
+        <h2 class="font-serif font-bold text-base md:text-lg text-stone-900">TOUJOURS, JAMAIS & RIEN <span class="text-xs font-sans font-normal text-stone-500">(Full Phrase · Chunks · Keywords · Conjugation · Trick Quiz)</span></h2>
+      </div>
+      <div id="voiceStatusBadge" class="text-[11px] font-medium px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-800 border border-indigo-200">
+        🇫🇷 Voice: French (fr-FR)
+      </div>
+    </div>
+
+    <!-- TAB 1: FULL PHRASES -->
+    <section id="tabContent-phrases" class="space-y-4">
+      <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-3.5 flex flex-wrap items-center justify-between gap-2">
+        <button onclick="toggleEnglish()" class="bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold px-3.5 py-2 rounded-xl border border-stone-300">
+          <span id="enToggleLabel">顯示英文 Show English</span>
+        </button>
+        <button onclick="readAllPhrases()" class="bg-indigo-700 hover:bg-indigo-800 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow flex items-center space-x-1.5">
+          <span>🔊</span>
+          <span>朗讀全部句子 Read All</span>
+        </button>
+      </div>
+      <div id="phrasesListContainer" class="space-y-3"></div>
+    </section>
+
+    <!-- TAB 2: PART OF THE PHRASE (CHUNKS & BUILDING BLOCKS) -->
+    <section id="tabContent-chunks" class="hidden space-y-4">
+      <div class="bg-white rounded-2xl shadow-md border border-stone-200 p-5 space-y-4">
+        <div class="border-b border-stone-200 pb-3">
+          <h3 class="font-serif font-bold text-lg text-stone-900">🧩 Part of the Phrase · 句型拆解與組合</h3>
+          <p class="text-xs text-stone-500">Tap each building block to hear how the full sentence is constructed!</p>
+        </div>
+        <div id="chunksListContainer" class="space-y-4"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: KEYWORDS & FLASHCARDS -->
+    <section id="tabContent-keywords" class="hidden space-y-5">
+      <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-3.5 flex items-center justify-between">
+        <span class="font-serif font-bold text-stone-900 text-sm md:text-base">🔑 Keywords & Grammar Markers (14)</span>
+        <div class="flex items-center space-x-2">
+          <button onclick="switchVocabMode('flashcard')" id="vocabModeBtn-flashcard" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-700 text-white shadow">🃏 字卡 Cards</button>
+          <button onclick="switchVocabMode('list')" id="vocabModeBtn-list" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-stone-100 text-stone-700">📚 列表 List</button>
+        </div>
+      </div>
+
+      <div id="vocabSubMode-flashcard" class="space-y-5">
+        <div class="max-w-lg mx-auto perspective-1000">
+          <div id="flashcardElement" onclick="flipFlashcard()" class="w-full h-64 bg-white rounded-3xl shadow-xl border border-stone-200 p-6 cursor-pointer relative transition-transform duration-500 transform-style-3d select-none hover:border-indigo-400">
+            <div class="absolute inset-0 w-full h-full p-6 flex flex-col justify-between backface-hidden bg-white rounded-3xl">
+              <div class="flex justify-between text-stone-400 text-xs font-semibold">
+                <span id="fcCounter">Card 1 / 14</span>
+                <span>Tap to Flip</span>
+              </div>
+              <div class="text-center my-auto space-y-2">
+                <h3 id="fcFrontWord" class="font-serif text-3xl md:text-4xl font-bold text-stone-900"></h3>
+                <p id="fcFrontType" class="text-xs font-semibold text-indigo-700 uppercase"></p>
+              </div>
+              <div class="text-center text-xs text-stone-400">🔄 Tap anywhere for English & Chinese</div>
+            </div>
+            <div class="absolute inset-0 w-full h-full bg-indigo-50/80 rounded-3xl p-6 flex flex-col justify-between backface-hidden rotate-y-180 border-2 border-indigo-200">
+              <div class="flex justify-between text-stone-500 text-xs font-semibold">
+                <span>Meaning</span>
+                <span id="fcBackWord" class="font-bold text-indigo-800"></span>
+              </div>
+              <div class="text-center my-auto space-y-2">
+                <p id="fcBackEn" class="font-serif text-2xl font-bold text-stone-900"></p>
+                <p id="fcBackZh" class="text-base text-indigo-900 font-semibold"></p>
+              </div>
+              <div class="flex justify-between items-center pt-2 border-t border-indigo-200">
+                <button onclick="event.stopPropagation(); speakFrench(VOCAB_DATA[flashcardIdx].word.replace('...', ''))" class="bg-indigo-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold">🔊 Écouter</button>
+                <span class="text-xs text-stone-500">Tap to flip back</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center gap-3">
+          <button onclick="prevFlashcard()" class="px-4 py-2.5 bg-white border border-stone-300 rounded-xl text-xs font-semibold">← Prev</button>
+          <button onclick="nextFlashcard()" class="px-4 py-2.5 bg-white border border-stone-300 rounded-xl text-xs font-semibold">Next →</button>
+        </div>
+      </div>
+
+      <div id="vocabSubMode-list" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+    </section>
+
+    <!-- TAB 4: CONJUGATION & GRAMMAR RULES -->
+    <section id="tabContent-conjugation" class="hidden space-y-4">
+      <div class="bg-white rounded-2xl shadow-md border border-stone-200 p-5 space-y-4">
+        <div class="border-b border-stone-200 pb-3">
+          <h3 class="font-serif font-bold text-lg text-stone-900">⚡ Conjugation & Grammar Traps (動詞變化與文法重點)</h3>
+          <p class="text-xs text-stone-500">Tap any verb form to hear the pronunciation and notice silent endings!</p>
+        </div>
+        <div id="conjugationGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- TAB 5: TRICK QUIZ ("TRICK THEM") -->
+    <section id="tabContent-quiz" class="hidden space-y-5">
+      <div class="bg-white rounded-2xl shadow-md border border-stone-200 p-5 md:p-7 space-y-5 text-center">
+        <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+          <button onclick="switchTab('phrases')" class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-3 py-1.5 rounded-xl text-xs font-semibold border border-stone-300">← 返回整句 Back</button>
+          <a href="https://jactong-san.github.io/learning/" class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-3 py-1.5 rounded-xl text-xs font-semibold border border-stone-300">🏠 Directory</a>
+        </div>
+
+        <div id="quizGameArea" class="space-y-5">
+          <!-- Studio Quiz Top Control Bar (Auto-Audio + 3 Rounds + Missed Review + Reshuffle) -->
+          <div class="bg-stone-50 border border-stone-200 rounded-2xl p-3.5 space-y-3 text-left">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <button onclick="selectQuizRound(1)" id="roundBtn-1" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-700 text-white shadow">Round 1 (20 Qs)</button>
+                <button onclick="selectQuizRound(2)" id="roundBtn-2" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-stone-700 border border-stone-300">Round 2 (20 Qs)</button>
+                <button onclick="selectQuizRound(3)" id="roundBtn-3" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-stone-700 border border-stone-300">Round 3 (20 Qs)</button>
+                <button onclick="toggleMissedReviewPanel()" id="missedReviewToggleBtn" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-900 border border-rose-200 flex items-center space-x-1">
+                  <span>📌</span>
+                  <span>Missed Review (<span id="missedTabCount">0</span>)</span>
+                </button>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button onclick="toggleAutoAudio()" id="autoAudioBtn" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-100 text-indigo-900 border border-indigo-200 flex items-center space-x-1">
+                  <span>🔊</span>
+                  <span id="autoAudioLabel">Auto-Audio: ON</span>
+                </button>
+                <button onclick="reshuffleAll60Questions()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white hover:bg-stone-100 text-stone-700 border border-stone-300 flex items-center space-x-1">
+                  <span>🎲</span>
+                  <span>Reshuffle All 60 Qs</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Collapsible Missed Review Panel Down Here -->
+            <div id="missedReviewPanel" class="hidden bg-white border border-rose-200 rounded-2xl p-4 space-y-3 shadow-sm">
+              <div class="flex items-center justify-between border-b border-rose-100 pb-2">
+                <h4 class="font-bold text-xs md:text-sm text-rose-950">📌 Missed Review (All Missed Quiz Questions)</h4>
+                <div class="flex items-center space-x-2">
+                  <button onclick="clearMissedReview()" class="text-[11px] font-semibold text-stone-600 hover:text-stone-900 bg-stone-100 px-2.5 py-1 rounded-lg">Clear</button>
+                  <button onclick="toggleMissedReviewPanel()" class="text-[11px] font-semibold text-rose-800 hover:text-rose-950 bg-rose-100 px-2.5 py-1 rounded-lg">Hide</button>
+                </div>
+              </div>
+              <div id="missedReviewTabList" class="space-y-2.5 max-h-64 overflow-y-auto pr-1"></div>
+            </div>
+
+            <!-- 60-Question Cycle Progress Bar -->
+            <div class="space-y-1">
+              <div class="flex items-center justify-between text-[11px] font-semibold text-stone-600">
+                <span id="cycleCoverageText">60-Question Cycle Coverage: <strong id="completedRoundsCount">0</strong> / 3 Rounds Reviewed (0 / 60 unique questions)</span>
+                <span class="text-indigo-700">Auto-shuffles after all 3 rounds!</span>
+              </div>
+              <div class="w-full h-2 bg-stone-200 rounded-full overflow-hidden">
+                <div id="cycleProgressBar" class="h-2 bg-indigo-600 transition-all duration-300" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Question Card -->
+          <div class="bg-white border-2 border-stone-200 rounded-2xl p-5 max-w-2xl mx-auto space-y-4 text-left shadow-sm">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-bold">
+              <span id="quizCategoryLabel" class="text-indigo-700 uppercase tracking-wide">Grammar & Negation Trap</span>
+              <span class="text-stone-600">Question <span id="quizCurrentNum">1</span> of <span id="quizTotalNum">20</span> • Score: <span id="quizScoreLive">0</span></span>
+            </div>
+
+            <p id="quizPromptText" class="text-base md:text-lg font-bold text-stone-900 leading-snug"></p>
+
+            <!-- A / B / C / D Options Grid -->
+            <div id="quizOptionsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1"></div>
+
+            <!-- Studio Feedback & Breakdown Panel (Shown after answering) -->
+            <div id="quizExplanationBox" class="hidden rounded-2xl border-2 p-4 md:p-5 space-y-3.5 transition-all">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div id="feedbackStatusHeader" class="font-bold text-sm md:text-base"></div>
+                <div class="flex items-center space-x-2">
+                  <button onclick="speakQuizSentence(0.9)" class="bg-indigo-700 hover:bg-indigo-800 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm flex items-center space-x-1">
+                    <span>🔊</span>
+                    <span>Normal (0.9x)</span>
+                  </button>
+                  <button onclick="speakQuizSentence(0.5)" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm flex items-center space-x-1">
+                    <span>🐢</span>
+                    <span>Slow (0.5x)</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Full French & English Sentence Box -->
+              <div class="bg-white/95 rounded-xl p-3.5 border border-stone-200/90 space-y-1">
+                <div class="text-xs md:text-sm font-bold text-stone-900">
+                  <span class="text-[10px] font-extrabold bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded mr-1.5">FR</span>
+                  <span id="feedbackFrSentence"></span>
+                </div>
+                <div class="text-xs text-stone-600 italic">
+                  <span class="text-[10px] font-bold bg-stone-200 text-stone-700 px-1.5 py-0.5 rounded not-italic mr-1.5">EN</span>
+                  <span id="feedbackEnSentence"></span>
+                </div>
+              </div>
+
+              <!-- Explanation Line -->
+              <div id="feedbackExplainLine" class="text-xs md:text-sm text-stone-800"></div>
+
+              <!-- Key Vocabulary (French -> English) Box -->
+              <div class="bg-white/95 rounded-xl p-3.5 border border-stone-200/90 space-y-1.5">
+                <div class="text-[11px] font-extrabold uppercase tracking-wider text-stone-500">KEY VOCABULARY (FRENCH → ENGLISH):</div>
+                <ul id="feedbackVocabList" class="list-disc list-inside text-xs text-stone-800 space-y-1"></ul>
+              </div>
+
+              <div class="flex justify-end pt-1">
+                <button onclick="proceedToNextQuestion()" id="quizNextBtn" class="bg-indigo-700 hover:bg-indigo-800 text-white px-6 py-2.5 rounded-xl text-xs md:text-sm font-bold shadow flex items-center space-x-1.5">
+                  <span>Next Question</span>
+                  <span>→</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="quizScoreArea" class="hidden py-6 space-y-5">
+          <div class="text-5xl">🏆</div>
+          <h3 id="quizCompleteTitle" class="font-serif font-bold text-2xl text-stone-900">Round Complete!</h3>
+          <p id="quizFinalScoreText" class="text-base text-stone-600 font-semibold"></p>
+
+          <!-- Mandatory Missed / Incorrect Answer Review List -->
+          <div id="quizMissedReviewSection" class="hidden max-w-xl mx-auto text-left bg-rose-50/70 border border-rose-200 rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="font-bold text-sm text-rose-950">📋 Missed / Incorrect Questions Review (必須複習錯題)</h4>
+              <span id="missedCountBadge" class="text-xs font-bold bg-rose-200 text-rose-950 px-2.5 py-0.5 rounded-full"></span>
+            </div>
+            <div id="quizMissedReviewList" class="space-y-2.5 max-h-72 overflow-y-auto pr-1"></div>
+            <label class="flex items-center space-x-2 text-xs font-semibold text-stone-800 pt-2 border-t border-rose-200 cursor-pointer select-none">
+              <input type="checkbox" id="confirmReviewedCheckbox" onchange="toggleFinishRoundEnabled()" class="w-4 h-4 accent-indigo-700 rounded">
+              <span>I have reviewed all missed/incorrect answers above (我已仔細複習所有錯題)</span>
+            </label>
+          </div>
+
+          <div class="flex flex-wrap justify-center gap-3 pt-1">
+            <button onclick="startQuiz()" class="bg-stone-200 hover:bg-stone-300 text-stone-800 px-6 py-2.5 rounded-2xl font-semibold">Replay Round</button>
+            <button onclick="goToNextRound()" id="nextRoundBtn" class="bg-indigo-700 hover:bg-indigo-800 disabled:opacity-40 disabled:cursor-not-allowed text-white px-7 py-2.5 rounded-2xl font-bold shadow">
+              Next Round →
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const PHRASES_DATA = [
+      {
+        id: 1,
+        fr: "Il faut toujours penser à recycler les déchets pour préserver notre planète.",
+        highlight: ["toujours", "pour"],
+        chunks: [
+          { fr: "Il faut toujours penser à", en: "One must always think about" },
+          { fr: "recycler les déchets", en: "recycling waste" },
+          { fr: "pour préserver notre planète.", en: "in order to preserve our planet." }
+        ],
+        en: "We must always think about recycling waste in order to preserve our planet.",
+        zh: "我們必須永遠記得回收垃圾以保護我們的星球。"
+      },
+      {
+        id: 2,
+        fr: "Il ne faut jamais oublier d'éteindre les lumières quand on quitte une pièce.",
+        highlight: ["ne", "jamais", "quand"],
+        chunks: [
+          { fr: "Il ne faut jamais oublier", en: "One must never forget" },
+          { fr: "d'éteindre les lumières", en: "to turn off the lights" },
+          { fr: "quand on quitte une pièce.", en: "when one leaves a room." }
+        ],
+        en: "We must never forget to turn off the lights when we leave a room.",
+        zh: "離開房間時千萬不要忘記關燈。"
+      },
+      {
+        id: 3,
+        fr: "Il ne faut rien jeter dans la nature pour protéger les espèces menacées.",
+        highlight: ["ne", "rien"],
+        chunks: [
+          { fr: "Il ne faut rien jeter", en: "One must not throw anything" },
+          { fr: "dans la nature", en: "into nature" },
+          { fr: "pour protéger les espèces menacées.", en: "to protect endangered species." }
+        ],
+        en: "We must not throw anything into nature in order to protect endangered species.",
+        zh: "我們不應該在自然界亂丟任何東西以保護瀕危物種。"
+      },
+      {
+        id: 4,
+        fr: "Tout le monde doit essayer de combattre le changement climatique.",
+        highlight: ["Tout", "combattre"],
+        chunks: [
+          { fr: "Tout le monde doit", en: "Everyone must (singular verb!)" },
+          { fr: "essayer de combattre", en: "try to fight against" },
+          { fr: "le changement climatique.", en: "climate change." }
+        ],
+        en: "Everyone must try to fight against climate change.",
+        zh: "每個人都應該努力對抗氣候變化。"
+      },
+      {
+        id: 5,
+        fr: "Toutes les actions pour l'environnement peuvent avoir un impact positif sur le futur de la planète.",
+        highlight: ["Toutes"],
+        chunks: [
+          { fr: "Toutes les actions", en: "All the actions (fem. plural!)" },
+          { fr: "pour l'environnement", en: "for the environment" },
+          { fr: "peuvent avoir un impact positif", en: "can have a positive impact" },
+          { fr: "sur le futur de la planète.", en: "on the future of the planet." }
+        ],
+        en: "All actions for the environment can have a positive impact on the future of the planet.",
+        zh: "所有保護環境的行動都能對地球的未來產生正面影響。"
+      },
+      {
+        id: 6,
+        fr: "Il ne faut jamais jeter de plastiques dans la nature, car cela pollue notre environnement.",
+        highlight: ["ne", "jamais", "car"],
+        chunks: [
+          { fr: "Il ne faut jamais jeter", en: "One must never throw" },
+          { fr: "de plastiques dans la nature,", en: "plastics into nature," },
+          { fr: "car cela pollue notre environnement.", en: "because that pollutes our environment." }
+        ],
+        en: "We must never throw plastics into nature, because this pollutes our environment.",
+        zh: "千萬不要在自然界丟棄塑膠，因為這會污染我們的環境。"
+      },
+      {
+        id: 7,
+        fr: "Je ferme toujours le robinet quand je me brosse les dents pour économiser l'eau.",
+        highlight: ["toujours", "robinet", "quand", "pour"],
+        chunks: [
+          { fr: "Je ferme toujours le robinet", en: "I always turn off the tap/faucet" },
+          { fr: "quand je me brosse les dents", en: "when I brush my teeth" },
+          { fr: "pour économiser l'eau.", en: "to save water." }
+        ],
+        en: "I always turn off the tap/faucet when I brush my teeth in order to save water.",
+        zh: "我刷牙時總是會關掉水龍頭以節約用水。"
+      }
+    ];
+
+    const VOCAB_DATA = [
+      { id: 1, word: "toujours", type: "adv.", en: "always", zh: "總是 / 永遠" },
+      { id: 2, word: "ne ... jamais", type: "adv.", en: "never", zh: "從不 / 千萬不要" },
+      { id: 3, word: "ne ... rien", type: "pron.", en: "nothing / not anything", zh: "沒有任何東西" },
+      { id: 4, word: "tout le monde", type: "pron. m.sg.", en: "everyone (takes singular verb!)", zh: "每個人（單數）" },
+      { id: 5, word: "toutes les actions", type: "n. f.pl.", en: "all the actions (fem. plural!)", zh: "所有的行動（陰性複數）" },
+      { id: 6, word: "recycler les déchets", type: "v.", en: "to recycle waste", zh: "回收垃圾" },
+      { id: 7, word: "préserver notre planète", type: "v.", en: "to preserve our planet", zh: "保護我們的星球" },
+      { id: 8, word: "éteindre les lumières", type: "v.", en: "to turn off the lights", zh: "關燈" },
+      { id: 9, word: "les espèces menacées", type: "n. f.pl.", en: "endangered species", zh: "瀕危物種" },
+      { id: 10, word: "combattre", type: "v.", en: "to fight against", zh: "對抗 / 戰鬥" },
+      { id: 11, word: "le changement climatique", type: "n. m.", en: "climate change", zh: "氣候變化" },
+      { id: 12, word: "car", type: "conj.", en: "because / for", zh: "因為" },
+      { id: 13, word: "le robinet", type: "n. m.", en: "tap / faucet", zh: "水龍頭" },
+      { id: 14, word: "économiser l'eau", type: "v.", en: "to save water", zh: "節約用水" }
+    ];
+
+    const CONJUGATIONS = [
+      {
+        verb: "falloir (must / to be necessary)",
+        note: "Impersonal verb — ONLY conjugates with 'il'!",
+        forms: [
+          { pron: "il", form: "il faut", meaning: "it is necessary / we must" },
+          { pron: "négation", form: "il ne faut jamais", meaning: "we must never" },
+          { pron: "négation", form: "il ne faut rien + inf.", meaning: "we must not [do] anything" }
+        ]
+      },
+      {
+        verb: "devoir (must / to have to)",
+        note: "Watch out: 'Tout le monde' is SINGULAR (doit), NOT plural!",
+        forms: [
+          { pron: "je / tu", form: "dois / dois", meaning: "I must / you must" },
+          { pron: "il / tout le monde", form: "doit", meaning: "he / everyone must" },
+          { pron: "ils / elles", form: "doivent", meaning: "they must" }
+        ]
+      },
+      {
+        verb: "pouvoir (can / to be able to)",
+        note: "'Toutes les actions' is FEMININE PLURAL → 'peuvent'!",
+        forms: [
+          { pron: "je / tu", form: "peux / peux", meaning: "I can / you can" },
+          { pron: "il / elle", form: "peut", meaning: "he / she can" },
+          { pron: "elles (toutes les actions)", form: "peuvent", meaning: "they can" }
+        ]
+      },
+      {
+        verb: "fermer & se brosser (-er & reflexive)",
+        note: "Present tense for daily habits with 'toujours'",
+        forms: [
+          { pron: "je", form: "je ferme / je me brosse", meaning: "I close / I brush" },
+          { pron: "tu", form: "tu fermes / tu te brosses", meaning: "you close / you brush" },
+          { pron: "on / il", form: "on quitte / il pollue", meaning: "one leaves / it pollutes" }
+        ]
+      }
+    ];
+
+    // Trick questions testing grammar traps, negation pairs, agreement (Tout vs Toutes), and conjugation
+    const TRICK_QUESTIONS = [
+      {
+        category: "Agreement & Subject Trap",
+        prompt: "Agreement Trap : « _____ le monde doit essayer de combattre le changement climatique. »",
+        audio: "Tout le monde doit essayer de combattre le changement climatique.",
+        en: "Everyone must try to fight against climate change.",
+        options: ["Tout", "Tous", "Toutes", "Toute"],
+        answer: "Tout",
+        explain: "'Le monde' is masculine singular! Always use 'Tout le monde' with a singular verb.",
+        vocab: [
+          { fr: "tout le monde", en: "everyone (singular)" },
+          { fr: "le changement climatique", en: "climate change" }
+        ]
+      },
+      {
+        category: "Gender & Number Trap",
+        prompt: "Feminine Plural : « _____ les actions pour l'environnement peuvent avoir un impact positif. »",
+        audio: "Toutes les actions pour l'environnement peuvent avoir un impact positif.",
+        en: "All actions for the environment can have a positive impact.",
+        options: ["Toutes", "Tout", "Tous", "Toute"],
+        answer: "Toutes",
+        explain: "'Action' is feminine (une action) and plural (les actions) → 'Toutes les actions'.",
+        vocab: [
+          { fr: "toutes les actions", en: "all the actions" },
+          { fr: "l'environnement", en: "the environment" }
+        ]
+      },
+      {
+        category: "Negation & Elision Trap",
+        prompt: "Negation Pair : « Il _____ faut _____ oublier d'éteindre les lumières. »",
+        audio: "Il ne faut jamais oublier d'éteindre les lumières.",
+        en: "We must never forget to turn off the lights.",
+        options: ["ne ... jamais", "ne ... toujours", "n' ... jamais", "pas ... jamais"],
+        answer: "ne ... jamais",
+        explain: "'faut' begins with a consonant (f), so use 'ne' + 'jamais' (never).",
+        vocab: [
+          { fr: "ne ... jamais", en: "never" },
+          { fr: "éteindre les lumières", en: "turn off the lights" }
+        ]
+      },
+      {
+        category: "Subject-Verb Agreement Trap",
+        prompt: "Singular vs Plural : « Tout le monde _____ essayer de combattre le changement climatique. »",
+        audio: "Tout le monde doit essayer de combattre le changement climatique.",
+        en: "Everyone must try to fight against climate change.",
+        options: ["doit", "doivent", "dois", "devoir"],
+        answer: "doit",
+        explain: "Even though 'everyone' refers to many people, 'Tout le monde' takes the 3rd-person singular 'doit'.",
+        vocab: [
+          { fr: "doit", en: "must (3rd person singular)" },
+          { fr: "combattre", en: "to fight against" }
+        ]
+      },
+      {
+        category: "Subject-Verb Agreement Trap",
+        prompt: "Plural Verb : « Toutes les actions _____ avoir un impact positif. »",
+        audio: "Toutes les actions peuvent avoir un impact positif.",
+        en: "All actions can have a positive impact.",
+        options: ["peuvent", "peut", "peux", "pouvoir"],
+        answer: "peuvent",
+        explain: "'Toutes les actions' is feminine plural (elles) → use 'peuvent'.",
+        vocab: [
+          { fr: "peuvent", en: "can / are able to (plural)" },
+          { fr: "un impact positif", en: "a positive impact" }
+        ]
+      },
+      {
+        category: "Negation Trap",
+        prompt: "Double Negation Rule : « Il ne faut _____ jeter dans la nature. »",
+        audio: "Il ne faut rien jeter dans la nature.",
+        en: "We must not throw anything into nature.",
+        options: ["rien", "toujours", "pas rien", "jamais rien"],
+        answer: "rien",
+        explain: "Never add 'pas' with 'rien'! 'Il ne faut rien jeter' = We must not throw anything.",
+        vocab: [
+          { fr: "ne ... rien", en: "nothing / not anything" },
+          { fr: "la nature", en: "nature" }
+        ]
+      },
+      {
+        category: "Reflexive Verb Trap",
+        prompt: "Reflexive Form : « Je ferme toujours le robinet quand je _____ les dents. »",
+        audio: "Je ferme toujours le robinet quand je me brosse les dents.",
+        en: "I always turn off the tap when I brush my teeth.",
+        options: ["me brosse", "se brosse", "brosse", "me brosses"],
+        answer: "me brosse",
+        explain: "With subject 'je', use reflexive pronoun 'me' and ending '-e': 'je me brosse'.",
+        vocab: [
+          { fr: "se brosser les dents", en: "to brush one's teeth" },
+          { fr: "le robinet", en: "tap / faucet" }
+        ]
+      },
+      {
+        category: "Preposition Trap",
+        prompt: "Verb + Preposition : « Il faut toujours penser _____ recycler les déchets. »",
+        audio: "Il faut toujours penser à recycler les déchets.",
+        en: "We must always think about recycling waste.",
+        options: ["à", "de", "pour", "en"],
+        answer: "à",
+        explain: "The fixed French structure is 'penser à + infinitive' (think about doing something).",
+        vocab: [
+          { fr: "penser à", en: "to think about" },
+          { fr: "les déchets", en: "waste / garbage" }
+        ]
+      },
+      {
+        category: "Preposition & Elision Trap",
+        prompt: "Elision Rule : « Il ne faut jamais oublier _____ éteindre les lumières. »",
+        audio: "Il ne faut jamais oublier d'éteindre les lumières.",
+        en: "We must never forget to turn off the lights.",
+        options: ["d'", "de", "à", "pour"],
+        answer: "d'",
+        explain: "'oublier de' contracts to 'd'' before a vowel sound ('éteindre').",
+        vocab: [
+          { fr: "oublier de", en: "to forget to" },
+          { fr: "les lumières", en: "the lights" }
+        ]
+      },
+      {
+        category: "Vocabulary Trap",
+        prompt: "Household Object : « Je ferme toujours le _____ pour économiser l'eau. »",
+        audio: "Je ferme toujours le robinet pour économiser l'eau.",
+        en: "I always turn off the tap to save water.",
+        options: ["robinet", "déchet", "futur", "impact"],
+        answer: "robinet",
+        explain: "'le robinet' means tap or faucet.",
+        vocab: [
+          { fr: "le robinet", en: "tap / faucet" },
+          { fr: "économiser l'eau", en: "to save water" }
+        ]
+      },
+      {
+        category: "Possessive Adjective Trap",
+        prompt: "Singular vs Plural : « Cela pollue _____ environnement. »",
+        audio: "Il ne faut jamais jeter de plastiques dans la nature, car cela pollue notre environnement.",
+        en: "We must never throw plastics into nature, because that pollutes our environment.",
+        options: ["notre", "nos", "notres", "leur"],
+        answer: "notre",
+        explain: "'environnement' is singular → 'notre environnement' (not 'nos').",
+        vocab: [
+          { fr: "notre environnement", en: "our environment" },
+          { fr: "les plastiques", en: "plastics" }
+        ]
+      },
+      {
+        category: "Frequency Adverb Trap",
+        prompt: "Always vs Never : « Il ne faut _____ oublier d'éteindre les lumières quand on quitte une pièce. »",
+        audio: "Il ne faut jamais oublier d'éteindre les lumières quand on quitte une pièce.",
+        en: "We must never forget to turn off the lights when we leave a room.",
+        options: ["jamais", "toujours", "souvent", "encore"],
+        answer: "jamais",
+        explain: "'ne ... jamais' = never.",
+        vocab: [
+          { fr: "jamais", en: "never" },
+          { fr: "une pièce", en: "a room" }
+        ]
+      },
+      {
+        category: "Adjective Agreement Trap",
+        prompt: "Feminine Plural Adjective : « Pour protéger les espèces _____, il ne faut rien jeter. »",
+        audio: "Il ne faut rien jeter dans la nature pour protéger les espèces menacées.",
+        en: "To protect endangered species, we must not throw anything into nature.",
+        options: ["menacées", "menacé", "menacés", "menacée"],
+        answer: "menacées",
+        explain: "'les espèces' is feminine plural → 'menacées'.",
+        vocab: [
+          { fr: "les espèces menacées", en: "endangered species" },
+          { fr: "protéger", en: "to protect" }
+        ]
+      },
+      {
+        category: "Purpose Preposition Trap",
+        prompt: "Expressing Purpose : « Il faut toujours penser à recycler les déchets _____ préserver notre planète. »",
+        audio: "Il faut toujours penser à recycler les déchets pour préserver notre planète.",
+        en: "We must always think about recycling waste in order to preserve our planet.",
+        options: ["pour", "à", "de", "sur"],
+        answer: "pour",
+        explain: "Use 'pour + infinitive' to express 'in order to'.",
+        vocab: [
+          { fr: "pour préserver", en: "in order to preserve" },
+          { fr: "notre planète", en: "our planet" }
+        ]
+      },
+      {
+        category: "Pronoun 'On' Conjugation Trap",
+        prompt: "Subject 'On' : « Quand on _____ une pièce, il ne faut jamais oublier d'éteindre les lumières. »",
+        audio: "Il ne faut jamais oublier d'éteindre les lumières quand on quitte une pièce.",
+        en: "When we leave a room, we must never forget to turn off the lights.",
+        options: ["quitte", "quittent", "quitter", "quittes"],
+        answer: "quitte",
+        explain: "'on' conjugates like il/elle (3rd-person singular) → 'quitte'.",
+        vocab: [
+          { fr: "quitter", en: "to leave" },
+          { fr: "quand", en: "when" }
+        ]
+      },
+      {
+        category: "Vocabulary Trap",
+        prompt: "Action Verb : « Tout le monde doit essayer de _____ le changement climatique. »",
+        audio: "Tout le monde doit essayer de combattre le changement climatique.",
+        en: "Everyone must try to fight against climate change.",
+        options: ["combattre", "recycler", "économiser", "fermer"],
+        answer: "combattre",
+        explain: "'combattre' = to fight against.",
+        vocab: [
+          { fr: "combattre", en: "to fight against" },
+          { fr: "essayer de", en: "to try to" }
+        ]
+      },
+      {
+        category: "Preposition Trap",
+        prompt: "After 'Essayer' : « Tout le monde doit essayer _____ combattre le changement climatique. »",
+        audio: "Tout le monde doit essayer de combattre le changement climatique.",
+        en: "Everyone must try to fight against climate change.",
+        options: ["de", "à", "pour", "en"],
+        answer: "de",
+        explain: "'essayer' takes 'de' before an infinitive verb ('essayer de combattre').",
+        vocab: [
+          { fr: "essayer de", en: "to try to" },
+          { fr: "le changement climatique", en: "climate change" }
+        ]
+      },
+      {
+        category: "Adjective Agreement Trap",
+        prompt: "Masculine Singular : « Toutes les actions peuvent avoir un impact _____ sur le futur. »",
+        audio: "Toutes les actions pour l'environnement peuvent avoir un impact positif sur le futur de la planète.",
+        en: "All actions for the environment can have a positive impact on the future.",
+        options: ["positif", "positive", "positifs", "positives"],
+        answer: "positif",
+        explain: "'un impact' is masculine singular → 'positif'.",
+        vocab: [
+          { fr: "un impact positif", en: "a positive impact" },
+          { fr: "le futur", en: "the future" }
+        ]
+      },
+      {
+        category: "Preposition Trap",
+        prompt: "Impact On : « Avoir un impact positif _____ le futur de la planète. »",
+        audio: "Toutes les actions pour l'environnement peuvent avoir un impact positif sur le futur de la planète.",
+        en: "To have a positive impact on the future of the planet.",
+        options: ["sur", "à", "dans", "pour"],
+        answer: "sur",
+        explain: "In French, you have an impact 'sur' (on) something.",
+        vocab: [
+          { fr: "sur le futur", en: "on the future" },
+          { fr: "la planète", en: "the planet" }
+        ]
+      },
+      {
+        category: "Negation Trap",
+        prompt: "Never Throw Plastics : « Il ne faut _____ jeter de plastiques dans la nature. »",
+        audio: "Il ne faut jamais jeter de plastiques dans la nature, car cela pollue notre environnement.",
+        en: "We must never throw plastics into nature, because it pollutes our environment.",
+        options: ["jamais", "toujours", "déjà", "souvent"],
+        answer: "jamais",
+        explain: "'ne ... jamais' = never.",
+        vocab: [
+          { fr: "jeter de plastiques", en: "throw plastics" },
+          { fr: "pollue", en: "pollutes" }
+        ]
+      },
+      {
+        category: "Conjunction Trap",
+        prompt: "Giving Reason : « Il ne faut jamais jeter de plastiques, _____ cela pollue notre environnement. »",
+        audio: "Il ne faut jamais jeter de plastiques dans la nature, car cela pollue notre environnement.",
+        en: "We must never throw plastics, because that pollutes our environment.",
+        options: ["car", "mais", "ou", "ni"],
+        answer: "car",
+        explain: "'car' means 'because / for' (explaining the cause).",
+        vocab: [
+          { fr: "car", en: "because / for" },
+          { fr: "cela", en: "that / it" }
+        ]
+      },
+      {
+        category: "Demonstrative Pronoun Trap",
+        prompt: "Referring to the Action : « Car _____ pollue notre environnement. »",
+        audio: "Il ne faut jamais jeter de plastiques dans la nature, car cela pollue notre environnement.",
+        en: "Because that pollutes our environment.",
+        options: ["cela", "ils", "elles", "la"],
+        answer: "cela",
+        explain: "'cela' refers to the idea/action of throwing plastics.",
+        vocab: [
+          { fr: "cela pollue", en: "that pollutes" },
+          { fr: "notre environnement", en: "our environment" }
+        ]
+      },
+      {
+        category: "Verb Conjugation Trap",
+        prompt: "Singular Agreement : « Car cela _____ notre environnement. »",
+        audio: "Il ne faut jamais jeter de plastiques dans la nature, car cela pollue notre environnement.",
+        en: "Because that pollutes our environment.",
+        options: ["pollue", "polluent", "polluer", "pollues"],
+        answer: "pollue",
+        explain: "'cela' is 3rd-person singular → 'pollue'.",
+        vocab: [
+          { fr: "polluer", en: "to pollute" },
+          { fr: "notre environnement", en: "our environment" }
+        ]
+      },
+      {
+        category: "Verb Conjugation Trap",
+        prompt: "First Person 'Je' : « Je _____ toujours le robinet quand je me brosse les dents. »",
+        audio: "Je ferme toujours le robinet quand je me brosse les dents pour économiser l'eau.",
+        en: "I always turn off the tap when I brush my teeth to save water.",
+        options: ["ferme", "fermes", "ferment", "fermer"],
+        answer: "ferme",
+        explain: "For 'je' with regular -er verb 'fermer', the ending is '-e': 'je ferme'.",
+        vocab: [
+          { fr: "fermer", en: "to close / turn off" },
+          { fr: "le robinet", en: "tap / faucet" }
+        ]
+      },
+      {
+        category: "Conjunction Trap",
+        prompt: "Time Clause : « Je ferme toujours le robinet _____ je me brosse les dents. »",
+        audio: "Je ferme toujours le robinet quand je me brosse les dents pour économiser l'eau.",
+        en: "I always turn off the tap when I brush my teeth.",
+        options: ["quand", "car", "mais", "rien"],
+        answer: "quand",
+        explain: "'quand' means 'when' (at the time that).",
+        vocab: [
+          { fr: "quand", en: "when" },
+          { fr: "se brosser les dents", en: "brush one's teeth" }
+        ]
+      },
+      {
+        category: "Article with Body Parts Trap",
+        prompt: "Definite Article : « Quand je me brosse _____ dents. »",
+        audio: "Je ferme toujours le robinet quand je me brosse les dents pour économiser l'eau.",
+        en: "When I brush my teeth.",
+        options: ["les", "ma", "mon", "le"],
+        answer: "les",
+        explain: "French normally uses 'les' (not possessive) with body parts after reflexive verbs: 'se brosser les dents'.",
+        vocab: [
+          { fr: "les dents", en: "the teeth" },
+          { fr: "économiser l'eau", en: "to save water" }
+        ]
+      },
+      {
+        category: "Vocabulary Trap",
+        prompt: "Saving Resources : « Je ferme toujours le robinet pour économiser _____ . »",
+        audio: "Je ferme toujours le robinet pour économiser l'eau.",
+        en: "I always turn off the tap to save water.",
+        options: ["l'eau", "les déchets", "le futur", "les espèces"],
+        answer: "l'eau",
+        explain: "'économiser l'eau' = to save water.",
+        vocab: [
+          { fr: "l'eau", en: "water" },
+          { fr: "économiser", en: "to save" }
+        ]
+      },
+      {
+        category: "Negation Trap",
+        prompt: "Nothing at All : « Il ne faut _____ jeter dans la nature. »",
+        audio: "Il ne faut rien jeter dans la nature pour protéger les espèces menacées.",
+        en: "We must not throw anything into nature to protect endangered species.",
+        options: ["rien", "quelque chose", "toujours", "beaucoup"],
+        answer: "rien",
+        explain: "'ne ... rien' = nothing / not anything.",
+        vocab: [
+          { fr: "ne ... rien", en: "nothing / not anything" },
+          { fr: "protéger", en: "to protect" }
+        ]
+      },
+      {
+        category: "Vocabulary Trap",
+        prompt: "Wildlife Protection : « Pour protéger les _____ menacées. »",
+        audio: "Il ne faut rien jeter dans la nature pour protéger les espèces menacées.",
+        en: "To protect endangered species.",
+        options: ["espèces", "déchets", "robinets", "lumières"],
+        answer: "espèces",
+        explain: "'les espèces menacées' = endangered species.",
+        vocab: [
+          { fr: "les espèces menacées", en: "endangered species" },
+          { fr: "la nature", en: "nature" }
+        ]
+      },
+      {
+        category: "Vocabulary Trap",
+        prompt: "Recycling : « Il faut toujours penser à recycler _____ . »",
+        audio: "Il faut toujours penser à recycler les déchets pour préserver notre planète.",
+        en: "We must always think about recycling waste to preserve our planet.",
+        options: ["les déchets", "le robinet", "la lumière", "le futur"],
+        answer: "les déchets",
+        explain: "'recycler les déchets' = recycle waste.",
+        vocab: [
+          { fr: "recycler", en: "to recycle" },
+          { fr: "les déchets", en: "waste / trash" }
+        ]
+      },
+      {
+        category: "Agreement Trap",
+        prompt: "Feminine Plural : « _____ les actions pour l'environnement... »",
+        audio: "Toutes les actions pour l'environnement peuvent avoir un impact positif sur le futur de la planète.",
+        en: "All actions for the environment can have a positive impact on the future of the planet.",
+        options: ["Toutes", "Tout", "Tous", "Toute"],
+        answer: "Toutes",
+        explain: "'les actions' is feminine plural → 'Toutes'.",
+        vocab: [
+          { fr: "toutes les actions", en: "all actions" },
+          { fr: "l'environnement", en: "the environment" }
+        ]
+      },
+      {
+        category: "Agreement Trap",
+        prompt: "Masculine Singular : « _____ le monde doit essayer... »",
+        audio: "Tout le monde doit essayer de combattre le changement climatique.",
+        en: "Everyone must try to fight against climate change.",
+        options: ["Tout", "Toutes", "Tous", "Toute"],
+        answer: "Tout",
+        explain: "'le monde' is masculine singular → 'Tout'.",
+        vocab: [
+          { fr: "tout le monde", en: "everyone" },
+          { fr: "combattre", en: "fight against" }
+        ]
+      },
+      {
+        category: "Conjugation Trap",
+        prompt: "Singular Verb : « Tout le monde _____ essayer... »",
+        audio: "Tout le monde doit essayer de combattre le changement climatique.",
+        en: "Everyone must try to fight against climate change.",
+        options: ["doit", "doivent", "dois", "devez"],
+        answer: "doit",
+        explain: "'Tout le monde' takes singular 'doit'.",
+        vocab: [
+          { fr: "doit", en: "must" },
+          { fr: "essayer", en: "to try" }
+        ]
+      },
+      {
+        category: "Conjugation Trap",
+        prompt: "Plural Verb : « Toutes les actions _____ avoir un impact positif. »",
+        audio: "Toutes les actions peuvent avoir un impact positif sur le futur de la planète.",
+        en: "All actions can have a positive impact on the future of the planet.",
+        options: ["peuvent", "peut", "peux", "pouvons"],
+        answer: "peuvent",
+        explain: "'Toutes les actions' is plural → 'peuvent'.",
+        vocab: [
+          { fr: "peuvent", en: "can" },
+          { fr: "avoir un impact", en: "have an impact" }
+        ]
+      },
+      {
+        category: "Negation Trap",
+        prompt: "Negation Particle : « Il _____ faut jamais oublier d'éteindre les lumières. »",
+        audio: "Il ne faut jamais oublier d'éteindre les lumières quand on quitte une pièce.",
+        en: "We must never forget to turn off the lights when we leave a room.",
+        options: ["ne", "n'", "pas", "jamais"],
+        answer: "ne",
+        explain: "'faut' starts with a consonant, so use 'ne'.",
+        vocab: [
+          { fr: "il ne faut jamais", en: "one must never" },
+          { fr: "éteindre", en: "turn off" }
+        ]
+      },
+      {
+        category: "Negation Trap",
+        prompt: "Never Forget : « Il ne faut _____ oublier d'éteindre les lumières. »",
+        audio: "Il ne faut jamais oublier d'éteindre les lumières quand on quitte une pièce.",
+        en: "We must never forget to turn off the lights when we leave a room.",
+        options: ["jamais", "rien", "toujours", "souvent"],
+        answer: "jamais",
+        explain: "'ne ... jamais' = never.",
+        vocab: [
+          { fr: "jamais", en: "never" },
+          { fr: "oublier", en: "to forget" }
+        ]
+      },
+      {
+        category: "Elision Trap",
+        prompt: "Before Vowel : « Oublier _____ éteindre les lumières. »",
+        audio: "Il ne faut jamais oublier d'éteindre les lumières quand on quitte une pièce.",
+        en: "Never forget to turn off the lights when leaving a room.",
+        options: ["d'", "de", "du", "des"],
+        answer: "d'",
+        explain: "'de' becomes 'd'' before vowel 'é' in 'éteindre'.",
+        vocab: [
+          { fr: "d'éteindre", en: "to turn off" },
+          { fr: "les lumières", en: "the lights" }
+        ]
+      },
+      {
+        category: "Vocabulary Trap",
+        prompt: "Turn Off : « Éteindre _____ . »",
+        audio: "Il ne faut jamais oublier d'éteindre les lumières quand on quitte une pièce.",
+        en: "Turn off the lights when leaving a room.",
+        options: ["les lumières", "le robinet", "les déchets", "le futur"],
+        answer: "les lumières",
+        explain: "'éteindre les lumières' = turn off the lights.",
+        vocab: [
+          { fr: "les lumières", en: "the lights" },
+          { fr: "quitter", en: "to leave" }
+        ]
+      },
+      {
+        category: "Meaning Trap",
+        prompt: "Leaving a Space : « Quand on quitte une _____ . »",
+        audio: "Il ne faut jamais oublier d'éteindre les lumières quand on quitte une pièce.",
+        en: "When we leave a room.",
+        options: ["pièce", "planète", "espèce", "eau"],
+        answer: "pièce",
+        explain: "In this context, 'une pièce' means a room.",
+        vocab: [
+          { fr: "une pièce", en: "a room" },
+          { fr: "on quitte", en: "one leaves" }
+        ]
+      },
+      {
+        category: "Meaning Trap",
+        prompt: "Protecting Earth : « Préserver notre _____ . »",
+        audio: "Il faut toujours penser à recycler les déchets pour préserver notre planète.",
+        en: "To preserve our planet.",
+        options: ["planète", "pièce", "lampe", "chaise"],
+        answer: "planète",
+        explain: "'notre planète' = our planet.",
+        vocab: [
+          { fr: "notre planète", en: "our planet" },
+          { fr: "préserver", en: "to preserve" }
+        ]
+      },
+      {
+        category: "Adverb Placement Trap",
+        prompt: "Always Recycle : « Il faut _____ penser à recycler les déchets. »",
+        audio: "Il faut toujours penser à recycler les déchets pour préserver notre planète.",
+        en: "We must always think about recycling waste.",
+        options: ["toujours", "jamais", "rien", "pas"],
+        answer: "toujours",
+        explain: "'toujours' = always.",
+        vocab: [
+          { fr: "toujours", en: "always" },
+          { fr: "recycler les déchets", en: "recycle waste" }
+        ]
+      },
+      {
+        category: "Impersonal Verb Trap",
+        prompt: "Subject of 'Il faut' : « 'Il faut' is always used with which subject? »",
+        audio: "Il faut toujours penser à recycler les déchets.",
+        en: "We must always think about recycling waste.",
+        options: ["il (impersonal)", "je", "nous", "ils"],
+        answer: "il (impersonal)",
+        explain: "'Il faut' is an impersonal verb form that only uses 'il'.",
+        vocab: [
+          { fr: "il faut", en: "it is necessary / we must" },
+          { fr: "penser à", en: "think about" }
+        ]
+      },
+      {
+        category: "Vocabulary Trap",
+        prompt: "Climate Phrase : « Le changement _____ . »",
+        audio: "Tout le monde doit essayer de combattre le changement climatique.",
+        en: "Climate change.",
+        options: ["climatique", "climatiques", "climat", "climax"],
+        answer: "climatique",
+        explain: "'le changement climatique' = climate change.",
+        vocab: [
+          { fr: "le changement climatique", en: "climate change" },
+          { fr: "combattre", en: "fight against" }
+        ]
+      },
+      {
+        category: "Negation Trap",
+        prompt: "No Double Negative with 'Pas' : « Can you say 'Il ne faut pas rien jeter'? »",
+        audio: "Il ne faut rien jeter dans la nature.",
+        en: "We must not throw anything into nature.",
+        options: ["No, 'rien' already negates", "Yes, always", "Only with 'je'", "Only in plural"],
+        answer: "No, 'rien' already negates",
+        explain: "'ne ... rien' already forms a negative sentence without 'pas'.",
+        vocab: [
+          { fr: "ne ... rien", en: "nothing / not anything" },
+          { fr: "jeter", en: "to throw" }
+        ]
+      },
+      {
+        category: "Meaning Trap",
+        prompt: "Everyone : « 'Tout le monde' means... »",
+        audio: "Tout le monde doit essayer de combattre le changement climatique.",
+        en: "Everyone must try to fight against climate change.",
+        options: ["Everyone (singular)", "All worlds", "Only adults", "No one"],
+        answer: "Everyone (singular)",
+        explain: "'Tout le monde' means 'everyone' and takes a singular verb.",
+        vocab: [
+          { fr: "tout le monde", en: "everyone" },
+          { fr: "doit", en: "must" }
+        ]
+      },
+      {
+        category: "Grammar Classification Trap",
+        prompt: "Gender & Number : « 'Toutes les actions' is... »",
+        audio: "Toutes les actions pour l'environnement peuvent avoir un impact positif.",
+        en: "All actions for the environment can have a positive impact.",
+        options: ["Feminine plural", "Masculine singular", "Masculine plural", "Feminine singular"],
+        answer: "Feminine plural",
+        explain: "'une action' is feminine, and 'les actions' is plural → 'Toutes'.",
+        vocab: [
+          { fr: "toutes les actions", en: "all the actions" },
+          { fr: "positif", en: "positive" }
+        ]
+      },
+      {
+        category: "Verb Conjugation Trap",
+        prompt: "Matching 'Toutes les actions' : « Which verb form matches 'Toutes les actions'? »",
+        audio: "Toutes les actions peuvent avoir un impact positif.",
+        en: "All actions can have a positive impact.",
+        options: ["peuvent", "peut", "peux", "pouvons"],
+        answer: "peuvent",
+        explain: "'Toutes les actions' is plural (elles) → 'peuvent'.",
+        vocab: [
+          { fr: "peuvent", en: "can (plural)" },
+          { fr: "avoir", en: "to have" }
+        ]
+      },
+      {
+        category: "Verb Conjugation Trap",
+        prompt: "Matching 'Tout le monde' : « Which verb form matches 'Tout le monde'? »",
+        audio: "Tout le monde doit essayer de combattre le changement climatique.",
+        en: "Everyone must try to fight against climate change.",
+        options: ["doit", "doivent", "dois", "devez"],
+        answer: "doit",
+        explain: "'Tout le monde' takes singular 'doit'.",
+        vocab: [
+          { fr: "doit", en: "must (singular)" },
+          { fr: "essayer", en: "to try" }
+        ]
+      },
+      {
+        category: "Reflexive Pronoun Trap",
+        prompt: "Pronoun for 'Je' : « Je _____ brosse les dents. »",
+        audio: "Je ferme toujours le robinet quand je me brosse les dents.",
+        en: "I always turn off the tap when I brush my teeth.",
+        options: ["me", "te", "se", "nous"],
+        answer: "me",
+        explain: "The reflexive pronoun matching 'je' is 'me'.",
+        vocab: [
+          { fr: "me brosse", en: "brush (myself)" },
+          { fr: "les dents", en: "the teeth" }
+        ]
+      },
+      {
+        category: "Vocabulary Trap",
+        prompt: "Translation : « 'le robinet' in English is... »",
+        audio: "Je ferme toujours le robinet quand je me brosse les dents pour économiser l'eau.",
+        en: "I always turn off the tap when I brush my teeth to save water.",
+        options: ["tap / faucet", "window", "blanket", "shelf"],
+        answer: "tap / faucet",
+        explain: "'le robinet' = tap / faucet.",
+        vocab: [
+          { fr: "le robinet", en: "tap / faucet" },
+          { fr: "fermer", en: "close / turn off" }
+        ]
+      },
+      {
+        category: "Vocabulary Trap",
+        prompt: "Translation : « 'économiser l'eau' means... »",
+        audio: "Je ferme toujours le robinet quand je me brosse les dents pour économiser l'eau.",
+        en: "I always turn off the tap when I brush my teeth to save water.",
+        options: ["to save water", "to waste water", "to boil water", "to drink water"],
+        answer: "to save water",
+        explain: "'économiser l'eau' = to save water.",
+        vocab: [
+          { fr: "économiser l'eau", en: "to save water" },
+          { fr: "pour", en: "in order to" }
+        ]
+      },
+      {
+        category: "Verb Root Trap",
+        prompt: "Verb Identification : « 'pollue' comes from... »",
+        audio: "Il ne faut jamais jeter de plastiques dans la nature, car cela pollue notre environnement.",
+        en: "We must never throw plastics into nature, because that pollutes our environment.",
+        options: ["polluer (to pollute)", "recycler (to recycle)", "protéger (to protect)", "fermer (to close)"],
+        answer: "polluer (to pollute)",
+        explain: "'cela pollue' comes from the verb 'polluer' (to pollute).",
+        vocab: [
+          { fr: "polluer", en: "to pollute" },
+          { fr: "les plastiques", en: "plastics" }
+        ]
+      },
+      {
+        category: "Vocabulary Trap",
+        prompt: "Translation : « 'protéger' means... »",
+        audio: "Il ne faut rien jeter dans la nature pour protéger les espèces menacées.",
+        en: "We must not throw anything into nature to protect endangered species.",
+        options: ["to protect", "to throw away", "to forget", "to break"],
+        answer: "to protect",
+        explain: "'protéger' = to protect.",
+        vocab: [
+          { fr: "protéger", en: "to protect" },
+          { fr: "les espèces menacées", en: "endangered species" }
+        ]
+      },
+      {
+        category: "Vocabulary Trap",
+        prompt: "Translation : « 'les déchets' means... »",
+        audio: "Il faut toujours penser à recycler les déchets pour préserver notre planète.",
+        en: "We must always think about recycling waste to preserve our planet.",
+        options: ["waste / garbage", "plants", "lights", "taps"],
+        answer: "waste / garbage",
+        explain: "'les déchets' = waste / garbage.",
+        vocab: [
+          { fr: "les déchets", en: "waste / garbage" },
+          { fr: "recycler", en: "to recycle" }
+        ]
+      },
+      {
+        category: "Vocabulary Trap",
+        prompt: "Translation : « 'préserver' means... »",
+        audio: "Il faut toujours penser à recycler les déchets pour préserver notre planète.",
+        en: "We must always think about recycling waste to preserve our planet.",
+        options: ["to preserve", "to destroy", "to hide", "to ask"],
+        answer: "to preserve",
+        explain: "'préserver' = to preserve.",
+        vocab: [
+          { fr: "préserver", en: "to preserve" },
+          { fr: "notre planète", en: "our planet" }
+        ]
+      },
+      {
+        category: "Vocabulary Trap",
+        prompt: "Translation : « 'éteindre' means... »",
+        audio: "Il ne faut jamais oublier d'éteindre les lumières quand on quitte une pièce.",
+        en: "We must never forget to turn off the lights when we leave a room.",
+        options: ["to turn off", "to turn on", "to open", "to wash"],
+        answer: "to turn off",
+        explain: "'éteindre' = to turn off.",
+        vocab: [
+          { fr: "éteindre", en: "to turn off" },
+          { fr: "les lumières", en: "the lights" }
+        ]
+      },
+      {
+        category: "Grammar Trap",
+        prompt: "Meaning Check : « 'ne ... jamais' means... »",
+        audio: "Il ne faut jamais oublier d'éteindre les lumières.",
+        en: "We must never forget to turn off the lights.",
+        options: ["never", "always", "nothing", "nowhere"],
+        answer: "never",
+        explain: "'ne ... jamais' = never.",
+        vocab: [
+          { fr: "ne ... jamais", en: "never" },
+          { fr: "oublier", en: "to forget" }
+        ]
+      },
+      {
+        category: "Grammar Trap",
+        prompt: "Meaning Check : « 'toujours' means... »",
+        audio: "Il faut toujours penser à recycler les déchets.",
+        en: "We must always think about recycling waste.",
+        options: ["always", "never", "nothing", "nowhere"],
+        answer: "always",
+        explain: "'toujours' = always.",
+        vocab: [
+          { fr: "toujours", en: "always" },
+          { fr: "penser à", en: "think about" }
+        ]
+      },
+      {
+        category: "Grammar Trap",
+        prompt: "Meaning Check : « 'ne ... rien' means... »",
+        audio: "Il ne faut rien jeter dans la nature.",
+        en: "We must not throw anything into nature.",
+        options: ["nothing / not anything", "everything", "always", "often"],
+        answer: "nothing / not anything",
+        explain: "'ne ... rien' = nothing / not anything.",
+        vocab: [
+          { fr: "ne ... rien", en: "nothing / not anything" },
+          { fr: "jeter", en: "to throw" }
+        ]
+      },
+      {
+        category: "Final Boss Trap",
+        prompt: "Double Agreement Trap : « _____ les actions pour l'environnement peuvent avoir un impact positif sur _____ futur de la planète. »",
+        audio: "Toutes les actions pour l'environnement peuvent avoir un impact positif sur le futur de la planète.",
+        en: "All actions for the environment can have a positive impact on the future of the planet.",
+        options: ["Toutes / le", "Tout / la", "Tous / les", "Toute / le"],
+        answer: "Toutes / le",
+        explain: "'Toutes les actions' (feminine plural) + 'le futur' (masculine singular).",
+        vocab: [
+          { fr: "toutes les actions", en: "all actions" },
+          { fr: "le futur de la planète", en: "the future of the planet" }
+        ]
+      }
+    ];
+
+    const QUESTIONS_PER_ROUND = 20;
+    const OPTION_LETTERS = ["A", "B", "C", "D"];
+    let currentRound = 1;
+    let reviewedRounds = new Set();
+    let ordered60Pool = [...TRICK_QUESTIONS];
+    let quizList = [];
+    let quizIdx = 0;
+    let quizScore = 0;
+    let quizLocked = false;
+    let autoAudioEnabled = true;
+    let missedAnswers = [];
+    let allMissedHistory = [];
+
+    let showEnPhrases = false;
+    let selectedFrVoice = null;
+    let flashcardIdx = 0;
+    let isFlashcardFlipped = false;
+
+    function showToast(msg, icon = "🇫🇷") {
+      const toast = document.getElementById('toastNotification');
+      if (!toast) return;
+      document.getElementById('toastMessage').textContent = msg;
+      document.getElementById('toastIcon').textContent = icon;
+      toast.classList.remove('translate-y-[-200%]');
+      setTimeout(() => toast.classList.add('translate-y-[-200%]'), 2500);
+    }
+
+    function loadFrenchVoice() {
+      if (!window.speechSynthesis) return;
+      const voices = window.speechSynthesis.getVoices();
+      const frVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('fr'));
+      selectedFrVoice = frVoices.find(v => v.lang.toLowerCase() === 'fr-fr') || frVoices[0] || null;
+      const badge = document.getElementById('voiceStatusBadge');
+      if (badge && selectedFrVoice) {
+        badge.textContent = `🇫🇷 Voice: ${selectedFrVoice.name}`;
+      }
+    }
+
+    if (window.speechSynthesis) {
+      loadFrenchVoice();
+      window.speechSynthesis.onvoiceschanged = loadFrenchVoice;
+    }
+
+    function speakFrench(text, rate = 0.9) {
+      if (!window.speechSynthesis || !text) return;
+      if (!selectedFrVoice) loadFrenchVoice();
+      window.speechSynthesis.cancel();
+      setTimeout(() => {
+        const u = new SpeechSynthesisUtterance(text);
+        if (selectedFrVoice) {
+          u.voice = selectedFrVoice;
+          u.lang = selectedFrVoice.lang;
+        } else {
+          u.lang = 'fr-FR';
+        }
+        u.rate = rate;
+        u.volume = 1.0;
+        window.speechSynthesis.resume();
+        window.speechSynthesis.speak(u);
+      }, 50);
+    }
+
+    function toggleAutoAudio() {
+      autoAudioEnabled = !autoAudioEnabled;
+      document.getElementById('autoAudioLabel').textContent = autoAudioEnabled ? 'Auto-Audio: ON' : 'Auto-Audio: OFF';
+      const btn = document.getElementById('autoAudioBtn');
+      btn.className = autoAudioEnabled
+        ? "px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-100 text-indigo-900 border border-indigo-200 flex items-center space-x-1"
+        : "px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-200 text-stone-600 border border-stone-300 flex items-center space-x-1";
+      showToast(autoAudioEnabled ? "Auto-Audio ON" : "Auto-Audio OFF", "🔊");
+    }
+
+    function updateCycleProgressUI() {
+      const roundsDone = reviewedRounds.size;
+      const uniqueSeen = Math.min(60, roundsDone * QUESTIONS_PER_ROUND);
+      const pct = Math.round((roundsDone / 3) * 100);
+      document.getElementById('completedRoundsCount').textContent = roundsDone;
+      document.getElementById('cycleCoverageText').innerHTML = `60-Question Cycle Coverage: <strong id="completedRoundsCount">${roundsDone}</strong> / 3 Rounds Reviewed (${uniqueSeen} / 60 unique questions)`;
+      document.getElementById('cycleProgressBar').style.width = `${pct}%`;
+    }
+
+    function reshuffleAll60Questions() {
+      ordered60Pool = [...TRICK_QUESTIONS].sort(() => 0.5 - Math.random());
+      reviewedRounds.clear();
+      currentRound = 1;
+      updateCycleProgressUI();
+      selectQuizRound(1);
+      showToast("Reshuffled all 60 questions across 3 rounds!", "🎲");
+    }
+
+    function loadFrenchVoice() {
+      if (!window.speechSynthesis) return;
+      const voices = window.speechSynthesis.getVoices();
+      const frVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('fr'));
+      selectedFrVoice = frVoices.find(v => v.lang.toLowerCase() === 'fr-fr') || frVoices[0] || null;
+      const badge = document.getElementById('voiceStatusBadge');
+      if (badge && selectedFrVoice) {
+        badge.textContent = `🇫🇷 Voice: ${selectedFrVoice.name}`;
+      }
+    }
+
+    if (window.speechSynthesis) {
+      loadFrenchVoice();
+      window.speechSynthesis.onvoiceschanged = loadFrenchVoice;
+    }
+
+    function speakFrench(text) {
+      if (!window.speechSynthesis || !text) return;
+      if (!selectedFrVoice) loadFrenchVoice();
+      window.speechSynthesis.cancel();
+      setTimeout(() => {
+        const u = new SpeechSynthesisUtterance(text);
+        if (selectedFrVoice) {
+          u.voice = selectedFrVoice;
+          u.lang = selectedFrVoice.lang;
+        } else {
+          u.lang = 'fr-FR';
+        }
+        u.rate = 0.9;
+        u.volume = 1.0;
+        window.speechSynthesis.resume();
+        window.speechSynthesis.speak(u);
+      }, 50);
+    }
+
+    function switchTab(tabId) {
+      ['phrases', 'chunks', 'keywords', 'conjugation', 'quiz'].forEach(t => {
+        const sec = document.getElementById(`tabContent-${t}`);
+        const nav = document.getElementById(`navTab-${t}`);
+        if (sec) sec.classList.toggle('hidden', t !== tabId);
+        if (nav) {
+          nav.className = t === tabId
+            ? "px-2.5 py-1 rounded-md text-[11px] font-semibold bg-white text-indigo-900 shadow-sm"
+            : "px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600";
+        }
+      });
+
+      if (tabId === 'phrases') renderPhrases();
+      if (tabId === 'chunks') renderChunks();
+      if (tabId === 'keywords') {
+        renderFlashcard();
+        renderVocabList();
+      }
+      if (tabId === 'conjugation') renderConjugation();
+      if (tabId === 'quiz') startQuiz();
+    }
+
+    function toggleMissedReviewPanel() {
+      renderMissedReviewTab();
+      const panel = document.getElementById('missedReviewPanel');
+      if (panel) panel.classList.toggle('hidden');
+    }
+
+    function updateMissedTabBadge() {
+      const badge = document.getElementById('missedTabCount');
+      if (badge) badge.textContent = allMissedHistory.length;
+    }
+
+    function renderMissedReviewTab() {
+      updateMissedTabBadge();
+      const container = document.getElementById('missedReviewTabList');
+      if (!container) return;
+
+      if (allMissedHistory.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 bg-stone-50 rounded-2xl border border-stone-200 space-y-2">
+            <div class="text-3xl">🎉</div>
+            <p class="font-bold text-sm text-stone-800">No missed questions yet!</p>
+            <p class="text-xs text-stone-500">Any question you miss in Round 1, 2, or 3 will appear here automatically.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = allMissedHistory.map((item, idx) => `
+        <div class="p-4 rounded-2xl bg-rose-50/60 border border-rose-200 space-y-2">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <span class="text-[11px] font-bold bg-indigo-100 text-indigo-900 px-2 py-0.5 rounded-full mr-1.5">Round ${item.round}</span>
+              <span class="font-bold text-xs md:text-sm text-stone-900">${idx + 1}. ${item.prompt}</span>
+            </div>
+            <button onclick="speakFrench('${item.audio.replace(/'/g, "\\'")}', 0.9)" class="bg-indigo-700 hover:bg-indigo-800 text-white px-2.5 py-1 rounded-lg text-xs font-semibold shrink-0">
+              🔊 Écouter
+            </button>
+          </div>
+          <div class="text-xs flex flex-wrap gap-3">
+            <span class="text-rose-700 font-semibold">❌ Your choice: ${item.chosen}</span>
+            <span class="text-emerald-800 font-bold">✅ Answer: ${item.answer}</span>
+          </div>
+          <p class="text-xs text-stone-700"><strong>Explanation:</strong> ${item.explain}</p>
+          <p class="text-xs text-stone-500 italic">${item.audio}</p>
+        </div>
+      `).join('');
+    }
+
+    function clearMissedReview() {
+      allMissedHistory = [];
+      updateMissedTabBadge();
+      renderMissedReviewTab();
+      showToast("Cleared Missed Review list", "🧹");
+    }
+
+    function toggleEnglish() {
+      showEnPhrases = !showEnPhrases;
+      const label = document.getElementById('enToggleLabel');
+      if (label) label.textContent = showEnPhrases ? '隱藏英文 Hide English' : '顯示英文 Show English';
+      renderPhrases();
+    }
+
+    function renderPhrases() {
+      const container = document.getElementById('phrasesListContainer');
+      if (!container) return;
+      container.innerHTML = PHRASES_DATA.map((p, idx) => `
+        <div onclick="speakFrench('${p.fr.replace(/'/g, "\\'")}')" class="cursor-pointer bg-white rounded-2xl p-4 border border-stone-200 hover:border-indigo-400 shadow-sm transition-all space-y-1.5">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-bold bg-indigo-100 text-indigo-900 px-2.5 py-0.5 rounded-full">Phrase ${idx + 1}</span>
+            <span class="text-indigo-700 text-sm">🔊 Écouter</span>
+          </div>
+          <p class="font-serif font-bold text-base md:text-lg text-stone-900 leading-relaxed">${p.fr}</p>
+          ${showEnPhrases ? `<p class="text-xs text-stone-600 italic">${p.en} · <span class="text-indigo-900 not-italic font-medium">${p.zh}</span></p>` : ''}
+        </div>
+      `).join('');
+    }
+
+    function readAllPhrases() {
+      speakFrench(PHRASES_DATA.map(p => p.fr).join(' '));
+    }
+
+    function renderChunks() {
+      const container = document.getElementById('chunksListContainer');
+      if (!container) return;
+      container.innerHTML = PHRASES_DATA.map((p, idx) => `
+        <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-indigo-900">#${idx + 1} Full Sentence</span>
+            <button onclick="speakFrench('${p.fr.replace(/'/g, "\\'")}')" class="text-xs bg-indigo-100 text-indigo-900 px-2.5 py-1 rounded-lg font-semibold">🔊 All</button>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            ${p.chunks.map(c => `
+              <button onclick="speakFrench('${c.fr.replace(/'/g, "\\'")}')" class="text-left bg-white hover:bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 transition-all">
+                <div class="font-serif font-bold text-sm text-stone-900">${c.fr}</div>
+                <div class="text-[11px] text-stone-500">${c.en}</div>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function switchVocabMode(mode) {
+      const fcBtn = document.getElementById('vocabModeBtn-flashcard');
+      const listBtn = document.getElementById('vocabModeBtn-list');
+      const fcSec = document.getElementById('vocabSubMode-flashcard');
+      const listSec = document.getElementById('vocabSubMode-list');
+      if (mode === 'flashcard') {
+        fcBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-700 text-white shadow";
+        listBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-stone-100 text-stone-700";
+        fcSec.classList.remove('hidden');
+        listSec.classList.add('hidden');
+        renderFlashcard();
+      } else {
+        listBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-700 text-white shadow";
+        fcBtn.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-stone-100 text-stone-700";
+        listSec.classList.remove('hidden');
+        fcSec.classList.add('hidden');
+        renderVocabList();
+      }
+    }
+
+    function renderFlashcard() {
+      const item = VOCAB_DATA[flashcardIdx];
+      if (!item) return;
+      document.getElementById('fcCounter').textContent = `Card ${flashcardIdx + 1} / ${VOCAB_DATA.length}`;
+      document.getElementById('fcFrontWord').textContent = item.word;
+      document.getElementById('fcFrontType').textContent = item.type;
+      document.getElementById('fcBackWord').textContent = item.word;
+      document.getElementById('fcBackEn').textContent = item.en;
+      document.getElementById('fcBackZh').textContent = item.zh;
+      isFlashcardFlipped = false;
+      document.getElementById('flashcardElement').classList.remove('rotate-y-180');
+    }
+
+    function flipFlashcard() {
+      isFlashcardFlipped = !isFlashcardFlipped;
+      document.getElementById('flashcardElement').classList.toggle('rotate-y-180', isFlashcardFlipped);
+      if (isFlashcardFlipped) {
+        speakFrench(VOCAB_DATA[flashcardIdx].word.replace('...', ''));
+      }
+    }
+
+    function nextFlashcard() {
+      flashcardIdx = (flashcardIdx + 1) % VOCAB_DATA.length;
+      renderFlashcard();
+    }
+
+    function prevFlashcard() {
+      flashcardIdx = (flashcardIdx - 1 + VOCAB_DATA.length) % VOCAB_DATA.length;
+      renderFlashcard();
+    }
+
+    function renderVocabList() {
+      const container = document.getElementById('vocabSubMode-list');
+      if (!container) return;
+      container.innerHTML = VOCAB_DATA.map(v => `
+        <div onclick="speakFrench('${v.word.replace('...', '').replace(/'/g, "\\'")}')" class="cursor-pointer bg-white p-4 rounded-2xl border border-stone-200 hover:border-indigo-400 flex items-center justify-between">
+          <div>
+            <div class="font-serif font-bold text-base text-stone-900">${v.word} <span class="text-xs font-sans text-stone-400">(${v.type})</span></div>
+            <div class="text-xs text-indigo-800 font-semibold">${v.en} · <span class="text-stone-600">${v.zh}</span></div>
+          </div>
+          <span>🔊</span>
+        </div>
+      `).join('');
+    }
+
+    function renderConjugation() {
+      const container = document.getElementById('conjugationGrid');
+      if (!container) return;
+      container.innerHTML = CONJUGATIONS.map(c => `
+        <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2.5">
+          <div>
+            <h4 class="font-serif font-bold text-base text-stone-900">${c.verb}</h4>
+            <p class="text-xs text-amber-800 font-medium">${c.note}</p>
+          </div>
+          <div class="space-y-1.5">
+            ${c.forms.map(f => `
+              <button onclick="speakFrench('${f.form.replace(/'/g, "\\'")}')" class="w-full text-left bg-white hover:bg-indigo-50 border border-stone-200 rounded-xl px-3 py-2 flex items-center justify-between">
+                <div>
+                  <span class="text-xs text-stone-400 mr-2">${f.pron}</span>
+                  <strong class="font-serif text-sm text-indigo-950">${f.form}</strong>
+                </div>
+                <span class="text-xs text-stone-600">${f.meaning}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectQuizRound(roundNum) {
+      currentRound = roundNum;
+      [1, 2, 3].forEach(r => {
+        const btn = document.getElementById(`roundBtn-${r}`);
+        btn.className = r === roundNum
+          ? "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-700 text-white shadow"
+          : "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-stone-700 border border-stone-300";
+      });
+      startQuiz();
+    }
+
+    function startQuiz() {
+      quizIdx = 0;
+      quizScore = 0;
+      quizLocked = false;
+      missedAnswers = [];
+
+      const startIdx = (currentRound - 1) * QUESTIONS_PER_ROUND;
+      quizList = ordered60Pool.slice(startIdx, startIdx + QUESTIONS_PER_ROUND);
+
+      updateCycleProgressUI();
+      document.getElementById('quizGameArea').classList.remove('hidden');
+      document.getElementById('quizScoreArea').classList.add('hidden');
+      document.getElementById('confirmReviewedCheckbox').checked = false;
+      renderQuizQ();
+    }
+
+    function renderQuizQ() {
+      quizLocked = false;
+      const q = quizList[quizIdx];
+      document.getElementById('quizCategoryLabel').textContent = q.category || "Grammar & Negation Trap";
+      document.getElementById('quizCurrentNum').textContent = quizIdx + 1;
+      document.getElementById('quizTotalNum').textContent = quizList.length;
+      document.getElementById('quizScoreLive').textContent = quizScore;
+      document.getElementById('quizPromptText').textContent = q.prompt;
+      document.getElementById('quizExplanationBox').classList.add('hidden');
+
+      const opts = [...q.options].sort(() => 0.5 - Math.random());
+      document.getElementById('quizOptionsGrid').innerHTML = opts.map((o, idx) => `
+        <button onclick="answerQuiz('${o.replace(/'/g, "\\'")}')" data-val="${o}" class="q-opt p-3.5 bg-white hover:bg-indigo-50/70 border-2 border-stone-200 hover:border-indigo-400 rounded-2xl text-left transition-all flex items-center space-x-3">
+          <span class="q-letter w-7 h-7 rounded-lg bg-stone-100 text-stone-600 font-bold text-xs flex items-center justify-center shrink-0">${OPTION_LETTERS[idx] || (idx + 1)}</span>
+          <span class="font-serif font-bold text-sm md:text-base text-stone-900">${o}</span>
+        </button>
+      `).join('');
+    }
+
+    function playQuizAudio() {
+      speakFrench(quizList[quizIdx].audio, 0.9);
+    }
+
+    function speakQuizSentence(rate) {
+      speakFrench(quizList[quizIdx].audio, rate);
+    }
+
+    function answerQuiz(chosen) {
+      if (quizLocked) return;
+      quizLocked = true;
+      const q = quizList[quizIdx];
+      const isCorrect = chosen === q.answer;
+
+      if (isCorrect) {
+        quizScore++;
+        document.getElementById('quizScoreLive').textContent = quizScore;
+      } else {
+        const missedObj = {
+          round: currentRound,
+          prompt: q.prompt,
+          chosen: chosen,
+          answer: q.answer,
+          explain: q.explain,
+          audio: q.audio
+        };
+        missedAnswers.push(missedObj);
+        allMissedHistory.push(missedObj);
+        updateMissedTabBadge();
+      }
+
+      if (autoAudioEnabled) {
+        speakFrench(q.audio, 0.9);
+      }
+
+      document.querySelectorAll('.q-opt').forEach(btn => {
+        btn.disabled = true;
+        const val = btn.getAttribute('data-val');
+        const badge = btn.querySelector('.q-letter');
+        if (val === q.answer) {
+          btn.className = "q-opt p-3.5 bg-emerald-50 border-2 border-emerald-500 rounded-2xl text-left transition-all flex items-center space-x-3";
+          if (badge) badge.className = "q-letter w-7 h-7 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shrink-0";
+        } else if (val === chosen) {
+          btn.className = "q-opt p-3.5 bg-rose-50 border-2 border-rose-400 rounded-2xl text-left transition-all flex items-center space-x-3";
+          if (badge) badge.className = "q-letter w-7 h-7 rounded-lg bg-rose-600 text-white font-bold text-xs flex items-center justify-center shrink-0";
+        } else {
+          btn.className = "q-opt p-3.5 bg-stone-50/70 border border-stone-200 rounded-2xl text-left opacity-65 flex items-center space-x-3";
+        }
+      });
+
+      const exp = document.getElementById('quizExplanationBox');
+      const statusHeader = document.getElementById('feedbackStatusHeader');
+      if (isCorrect) {
+        exp.className = "rounded-2xl bg-emerald-50/80 border-2 border-emerald-400 p-4 md:p-5 space-y-3.5 text-left";
+        statusHeader.className = "font-bold text-sm md:text-base text-emerald-800";
+        statusHeader.innerHTML = "✅ Correct ! Très bien !";
+      } else {
+        exp.className = "rounded-2xl bg-rose-50/80 border-2 border-rose-400 p-4 md:p-5 space-y-3.5 text-left";
+        statusHeader.className = "font-bold text-sm md:text-base text-rose-800";
+        statusHeader.innerHTML = `❌ Incorrect — Your choice: <span class="underline">${chosen}</span> · Answer: <span class="text-emerald-800">${q.answer}</span>`;
+      }
+
+      document.getElementById('feedbackFrSentence').textContent = q.audio;
+      document.getElementById('feedbackEnSentence').textContent = q.en || "";
+      document.getElementById('feedbackExplainLine').innerHTML = `<strong>Explanation:</strong> ${q.explain}`;
+
+      const vocabItems = q.vocab || [{ fr: q.answer, en: q.en || "" }];
+      document.getElementById('feedbackVocabList').innerHTML = vocabItems.map(v => `
+        <li><strong class="font-bold text-stone-900">${v.fr}</strong> — <span class="text-stone-700">${v.en}</span></li>
+      `).join('');
+
+      document.getElementById('quizNextBtn').innerHTML = quizIdx < quizList.length - 1
+        ? '<span>Next Question</span><span>→</span>'
+        : '<span>Finish Round</span><span>→</span>';
+
+      exp.classList.remove('hidden');
+    }
+
+    function proceedToNextQuestion() {
+      if (quizIdx < quizList.length - 1) {
+        quizIdx++;
+        renderQuizQ();
+      } else {
+        reviewedRounds.add(currentRound);
+        updateCycleProgressUI();
+        showRoundSummary();
+      }
+    }
+
+    function showRoundSummary() {
+      document.getElementById('quizGameArea').classList.add('hidden');
+      document.getElementById('quizScoreArea').classList.remove('hidden');
+      document.getElementById('quizCompleteTitle').textContent = `Round ${currentRound} Complete!`;
+      document.getElementById('quizFinalScoreText').textContent = `Round ${currentRound} Score : ${quizScore} / ${quizList.length} (Missed: ${missedAnswers.length})`;
+
+      const reviewSec = document.getElementById('quizMissedReviewSection');
+      const reviewList = document.getElementById('quizMissedReviewList');
+      const nextRoundBtn = document.getElementById('nextRoundBtn');
+      nextRoundBtn.textContent = currentRound < 3 ? `Start Round ${currentRound + 1} →` : `Restart Round 1 ↺`;
+
+      if (missedAnswers.length > 0) {
+        reviewSec.classList.remove('hidden');
+        document.getElementById('missedCountBadge').textContent = `${missedAnswers.length} Missed`;
+        reviewList.innerHTML = missedAnswers.map((m, idx) => `
+          <div class="p-3 bg-white rounded-xl border border-rose-200 space-y-1">
+            <div class="flex items-start justify-between gap-2">
+              <p class="font-bold text-xs text-stone-900">${idx + 1}. ${m.prompt}</p>
+              <button onclick="speakFrench('${m.audio.replace(/'/g, "\\'")}', 0.9)" class="bg-indigo-100 text-indigo-900 px-2 py-1 rounded-lg text-[11px] font-semibold shrink-0">🔊</button>
+            </div>
+            <div class="text-xs">
+              <span class="text-rose-700 font-semibold">Missed: ${m.chosen}</span> ·
+              <span class="text-emerald-700 font-bold">Answer: ${m.answer}</span>
+            </div>
+            <p class="text-[11px] text-stone-600">${m.explain}</p>
+          </div>
+        `).join('');
+        nextRoundBtn.disabled = !document.getElementById('confirmReviewedCheckbox').checked;
+      } else {
+        reviewSec.classList.add('hidden');
+        nextRoundBtn.disabled = false;
+      }
+    }
+
+    function toggleFinishRoundEnabled() {
+      const checked = document.getElementById('confirmReviewedCheckbox').checked;
+      document.getElementById('nextRoundBtn').disabled = !checked;
+    }
+
+    function goToNextRound() {
+      if (reviewedRounds.size >= 3 && currentRound === 3) {
+        reshuffleAll60Questions();
+        return;
+      }
+      const nextR = currentRound < 3 ? currentRound + 1 : 1;
+      selectQuizRound(nextR);
+    }
+
+    window.onload = function() {
+      loadFrenchVoice();
+      updateMissedTabBadge();
+      renderPhrases();
+    };
+  </script>
+</body>
+</html>
