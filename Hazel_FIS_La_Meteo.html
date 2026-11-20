@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hazel French - La météo (Weather)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; }
+  </style>
+</head>
+<body class="bg-sky-50/50 text-stone-800 font-sans min-h-screen flex flex-col">
+
+  <!-- Compact Single-Line Header -->
+  <header class="bg-white border-b border-sky-200/80 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-5xl mx-auto px-3 py-2 flex items-center justify-between gap-2">
+      <div class="flex items-center space-x-2 shrink-0">
+        <div class="w-7 h-7 rounded-lg bg-sky-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">FR</div>
+        <h1 class="font-serif font-bold text-sm md:text-base text-stone-900">學習中心 Learning Portal</h1>
+      </div>
+
+      <a href="https://jactong-san.github.io/learning/" class="bg-stone-800 hover:bg-stone-900 text-white px-2.5 py-1 rounded-lg text-[11px] font-semibold flex items-center space-x-1 shrink-0">
+        <span>🏠</span>
+        <span>Directory</span>
+      </a>
+
+      <div class="flex items-center space-x-1 bg-stone-100 p-0.5 rounded-lg border border-stone-200 shrink-0">
+        <button onclick="switchTab('learn')" id="navTab-learn" class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-white text-sky-900 shadow-sm">🌤️ 圖片學習</button>
+        <button onclick="switchTab('act1')" id="navTab-act1" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600">👁️ 練習1</button>
+        <button onclick="switchTab('act2')" id="navTab-act2" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600">🧠 練習2</button>
+        <button onclick="switchTab('quiz')" id="navTab-quiz" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600">🎯 測驗</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4 md:p-6 space-y-5">
+    <!-- Banner -->
+    <div class="bg-white rounded-2xl border border-sky-200 px-4 py-3 flex flex-wrap items-center justify-between gap-2 shadow-sm">
+      <div class="flex items-center space-x-2.5">
+        <span class="bg-sky-600 text-white text-xs font-bold px-2.5 py-1 rounded-lg">Hazel · French</span>
+        <h2 class="font-serif font-bold text-base md:text-lg text-stone-900">La météo <span class="text-xs font-sans font-normal text-stone-500">(Weather · 天氣詞彙與看圖寫句)</span></h2>
+      </div>
+      <div id="voiceStatusBadge" class="text-[11px] font-medium px-2.5 py-1 rounded-full bg-sky-50 text-sky-800 border border-sky-200">
+        🇫🇷 Voice: French (fr-FR)
+      </div>
+    </div>
+
+    <!-- TAB 1: VISUAL WEATHER CARDS (ALL 6 SCENES WITH ILLUSTRATIONS) -->
+    <section id="tabContent-learn" class="space-y-4">
+      <div class="bg-white rounded-2xl p-4 border border-stone-200 flex items-center justify-between">
+        <p class="text-xs md:text-sm text-stone-600 font-medium">點擊每張天氣圖片聆聽法語發音 Tap each weather picture to listen:</p>
+        <button onclick="speakAllWeather()" class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow">🔊 朗讀全部</button>
+      </div>
+      <div id="weatherCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- TAB 2: ACTIVITÉ 1 (AVEC L'AIDE - WITH WORD BANK) -->
+    <section id="tabContent-act1" class="hidden space-y-4">
+      <div class="bg-sky-100/80 border-2 border-sky-300 rounded-2xl p-4 space-y-2">
+        <h3 class="font-serif font-bold text-base md:text-lg text-sky-950">Activité 1 : Regarde l'image et écris la phrase avec l'aide 👁️✍️</h3>
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <span class="font-bold text-sky-900">Aide :</span>
+          <span onclick="speakFrench('Il fait beau.')" class="cursor-pointer bg-white px-2.5 py-1 rounded-lg border border-sky-200 font-semibold hover:bg-sky-50">Il fait beau.</span>
+          <span onclick="speakFrench('Il pleut.')" class="cursor-pointer bg-white px-2.5 py-1 rounded-lg border border-sky-200 font-semibold hover:bg-sky-50">Il pleut.</span>
+          <span onclick="speakFrench('Il neige.')" class="cursor-pointer bg-white px-2.5 py-1 rounded-lg border border-sky-200 font-semibold hover:bg-sky-50">Il neige.</span>
+          <span onclick="speakFrench('Il y a du soleil.')" class="cursor-pointer bg-white px-2.5 py-1 rounded-lg border border-sky-200 font-semibold hover:bg-sky-50">Il y a du soleil.</span>
+          <span onclick="speakFrench('Il y a du vent.')" class="cursor-pointer bg-white px-2.5 py-1 rounded-lg border border-sky-200 font-semibold hover:bg-sky-50">Il y a du vent.</span>
+          <span onclick="speakFrench('Il y a des nuages.')" class="cursor-pointer bg-white px-2.5 py-1 rounded-lg border border-sky-200 font-semibold hover:bg-sky-50">Il y a des nuages.</span>
+        </div>
+      </div>
+
+      <div id="act1Grid" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- TAB 3: ACTIVITÉ 2 (SANS AIDE - NO WORD BANK) -->
+    <section id="tabContent-act2" class="hidden space-y-4">
+      <div class="bg-amber-100/80 border-2 border-amber-300 rounded-2xl p-4">
+        <h3 class="font-serif font-bold text-base md:text-lg text-amber-950">Activité 2 : Regarde l'image et écris la phrase sans aide ! 🧠✍️</h3>
+        <p class="text-xs text-amber-900 mt-1">Look at pictures 4, 5, and 6 and write the French weather sentence from memory!</p>
+      </div>
+
+      <div id="act2Grid" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- TAB 4: PICTURE & AUDIO QUIZ -->
+    <section id="tabContent-quiz" class="hidden space-y-5">
+      <div class="bg-white rounded-2xl shadow-md border border-stone-200 p-5 md:p-7 space-y-5 text-center">
+        <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+          <button onclick="switchTab('learn')" class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-3 py-1.5 rounded-xl text-xs font-semibold border border-stone-300">← 返回學習 Back</button>
+          <a href="https://jactong-san.github.io/learning/" class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-3 py-1.5 rounded-xl text-xs font-semibold border border-stone-300">🏠 Directory</a>
+        </div>
+
+        <div id="quizGameArea" class="space-y-5">
+          <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-5 max-w-md mx-auto space-y-3">
+            <span class="text-xs uppercase bg-sky-200 text-sky-950 px-3 py-1 rounded-full font-bold">Question <span id="quizCurrentNum">1</span> / 6</span>
+            <div id="quizIllustrationBox" class="w-48 h-36 mx-auto rounded-2xl overflow-hidden border border-sky-200 shadow-sm bg-white"></div>
+            <button onclick="playQuizAudio()" class="bg-sky-600 hover:bg-sky-700 text-white px-5 py-2.5 rounded-xl font-bold shadow text-xs">
+              🔊 Écouter l'indice Audio Hint
+            </button>
+          </div>
+
+          <div id="quizOptionsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto"></div>
+
+          <div id="quizNextArea" class="hidden">
+            <button onclick="nextQuizQ()" class="bg-sky-600 text-white px-7 py-2.5 rounded-2xl font-bold shadow">Suivant Next →</button>
+          </div>
+        </div>
+
+        <div id="quizScoreArea" class="hidden py-6 space-y-4">
+          <div class="text-5xl">🏆</div>
+          <h3 class="font-serif font-bold text-2xl text-stone-900">Super Hazel !</h3>
+          <p id="quizFinalScoreText" class="text-base text-stone-600 font-semibold"></p>
+          <button onclick="startQuiz()" class="bg-sky-600 text-white px-7 py-2.5 rounded-2xl font-semibold shadow">Rejouer Play Again</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const WEATHER_ITEMS = [
+      {
+        num: 1,
+        fr: "Il fait beau.",
+        en: "The weather is nice.",
+        zh: "天氣很好。",
+        scene: "beau"
+      },
+      {
+        num: 2,
+        fr: "Il pleut.",
+        en: "It is raining.",
+        zh: "下雨了。",
+        scene: "pleut"
+      },
+      {
+        num: 3,
+        fr: "Il neige.",
+        en: "It is snowing.",
+        zh: "下雪了。",
+        scene: "neige"
+      },
+      {
+        num: 4,
+        fr: "Il y a du vent.",
+        en: "It is windy.",
+        zh: "刮風了。",
+        scene: "vent"
+      },
+      {
+        num: 5,
+        fr: "Il y a des nuages.",
+        en: "It is cloudy (there are clouds).",
+        zh: "多雲（有雲朵）。",
+        scene: "nuages"
+      },
+      {
+        num: 6,
+        fr: "Il y a du soleil.",
+        alt: ["Il fait chaud."],
+        en: "It is sunny (and hot!).",
+        zh: "出太陽了（天氣很熱）。",
+        scene: "soleil"
+      }
+    ];
+
+    function getWeatherSvg(scene) {
+      if (scene === 'beau') {
+        // Picture 1: Bright sun, green park, kite flying, kids playing
+        return `<svg viewBox="0 0 240 170" class="w-full h-full">
+          <rect width="240" height="170" fill="#bae6fd"/>
+          <path d="M0 115 Q120 95 240 115 L240 170 L0 170 Z" fill="#4ade80"/>
+          <circle cx="195" cy="40" r="22" fill="#facc15" stroke="#eab308" stroke-width="3"/>
+          <polygon points="110,45 122,58 110,72 98,58" fill="#ef4444"/>
+          <line x1="110" y1="72" x2="85" y2="120" stroke="#475569" stroke-width="1.5"/>
+          <circle cx="30" cy="95" r="22" fill="#16a34a"/>
+          <rect x="26" y="110" width="8" height="20" fill="#78350f"/>
+          <circle cx="80" cy="125" r="7" fill="#fed7aa"/>
+          <rect x="75" y="132" width="10" height="16" rx="3" fill="#3b82f6"/>
+          <circle cx="145" cy="128" r="7" fill="#fed7aa"/>
+          <rect x="140" y="135" width="10" height="16" rx="3" fill="#ec4899"/>
+        </svg>`;
+      }
+      if (scene === 'pleut') {
+        // Picture 2: Dark rain clouds, falling rain, kids with umbrellas & puddles
+        return `<svg viewBox="0 0 240 170" class="w-full h-full">
+          <rect width="240" height="170" fill="#475569"/>
+          <rect y="125" width="240" height="45" fill="#334155"/>
+          <circle cx="65" cy="30" r="24" fill="#1e293b"/>
+          <circle cx="105" cy="28" r="28" fill="#1e293b"/>
+          <circle cx="155" cy="32" r="25" fill="#1e293b"/>
+          <line x1="50" y1="65" x2="45" y2="85" stroke="#93c5fd" stroke-width="2"/>
+          <line x1="95" y1="60" x2="90" y2="80" stroke="#93c5fd" stroke-width="2"/>
+          <line x1="145" y1="68" x2="140" y2="88" stroke="#93c5fd" stroke-width="2"/>
+          <line x1="190" y1="60" x2="185" y2="80" stroke="#93c5fd" stroke-width="2"/>
+          <path d="M40 105 A25 20 0 0 1 90 105 Z" fill="#dc2626"/>
+          <line x1="65" y1="105" x2="65" y2="132" stroke="#1e293b" stroke-width="2.5"/>
+          <ellipse cx="120" cy="148" rx="28" ry="6" fill="#60a5fa"/>
+          <path d="M145 108 A22 18 0 0 1 189 108 Z" fill="#f59e0b"/>
+        </svg>`;
+      }
+      if (scene === 'neige') {
+        // Picture 3: Snowy winter landscape with snowman wearing red hat & scarf
+        return `<svg viewBox="0 0 240 170" class="w-full h-full">
+          <rect width="240" height="170" fill="#93c5fd"/>
+          <path d="M0 120 Q120 105 240 120 L240 170 L0 170 Z" fill="#f8fafc"/>
+          <circle cx="120" cy="122" r="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+          <circle cx="120" cy="86" r="17" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+          <rect x="108" y="62" width="24" height="10" rx="3" fill="#dc2626"/>
+          <rect x="108" y="100" width="24" height="7" rx="2" fill="#dc2626"/>
+          <polygon points="120,86 131,89 120,91" fill="#f97316"/>
+          <circle cx="40" cy="40" r="3" fill="#ffffff"/>
+          <circle cx="80" cy="55" r="3" fill="#ffffff"/>
+          <circle cx="170" cy="45" r="3" fill="#ffffff"/>
+          <circle cx="205" cy="75" r="3" fill="#ffffff"/>
+        </svg>`;
+      }
+      if (scene === 'vent') {
+        // Picture 4: Strong wind swirling autumn leaves and bending trees
+        return `<svg viewBox="0 0 240 170" class="w-full h-full">
+          <rect width="240" height="170" fill="#dbeafe"/>
+          <rect y="125" width="240" height="45" fill="#86efac"/>
+          <rect x="42" y="95" width="10" height="35" fill="#78350f"/>
+          <ellipse cx="55" cy="78" rx="30" ry="24" fill="#15803d"/>
+          <path d="M75 65 Q140 35 195 75" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M85 82 Q145 55 205 90" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <ellipse cx="125" cy="52" rx="5" ry="3" fill="#ea580c"/>
+          <ellipse cx="155" cy="58" rx="5" ry="3" fill="#eab308"/>
+          <ellipse cx="180" cy="75" rx="5" ry="3" fill="#dc2626"/>
+        </svg>`;
+      }
+      if (scene === 'nuages') {
+        // Picture 5: Sky filled with cute white fluffy clouds and peeking sun
+        return `<svg viewBox="0 0 240 170" class="w-full h-full">
+          <rect width="240" height="170" fill="#60a5fa"/>
+          <circle cx="200" cy="35" r="18" fill="#facc15"/>
+          <g fill="#ffffff">
+            <circle cx="65" cy="60" r="18"/><circle cx="85" cy="55" r="22"/><circle cx="108" cy="62" r="16"/>
+            <circle cx="120" cy="115" r="20"/><circle cx="145" cy="110" r="24"/><circle cx="170" cy="116" r="18"/>
+            <circle cx="45" cy="128" r="15"/><circle cx="65" cy="126" r="18"/>
+          </g>
+          <circle cx="82" cy="56" r="2" fill="#1e293b"/><circle cx="92" cy="56" r="2" fill="#1e293b"/>
+          <circle cx="140" cy="112" r="2" fill="#1e293b"/><circle cx="152" cy="112" r="2" fill="#1e293b"/>
+        </svg>`;
+      }
+      // Picture 6: Bright hot sun + thermometer showing 40°C
+      return `<svg viewBox="0 0 240 170" class="w-full h-full">
+        <rect width="240" height="170" fill="#7dd3fc"/>
+        <rect y="122" width="240" height="48" fill="#4ade80"/>
+        <circle cx="165" cy="55" r="30" fill="#facc15" stroke="#f59e0b" stroke-width="3"/>
+        <rect x="42" y="38" width="20" height="92" rx="10" fill="#fef3c7" stroke="#92400e" stroke-width="2"/>
+        <rect x="48" y="52" width="8" height="68" rx="4" fill="#ef4444"/>
+        <circle cx="52" cy="118" r="11" fill="#ef4444"/>
+        <text x="72" y="65" font-size="11" font-weight="bold" fill="#b91c1c">40°C</text>
+      </svg>`;
+    }
+
+    let selectedFrVoice = null;
+    function loadFrenchVoice() {
+      if (!window.speechSynthesis) return;
+      const voices = window.speechSynthesis.getVoices();
+      const frVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('fr'));
+      selectedFrVoice = frVoices.find(v => v.lang.toLowerCase() === 'fr-fr') || frVoices[0] || null;
+      const badge = document.getElementById('voiceStatusBadge');
+      if (badge && selectedFrVoice) badge.textContent = `🇫🇷 Voice: ${selectedFrVoice.name}`;
+    }
+    if (window.speechSynthesis) {
+      loadFrenchVoice();
+      window.speechSynthesis.onvoiceschanged = loadFrenchVoice;
+    }
+
+    function speakFrench(text) {
+      if (!window.speechSynthesis) return;
+      if (!selectedFrVoice) loadFrenchVoice();
+      window.speechSynthesis.cancel();
+      setTimeout(() => {
+        const u = new SpeechSynthesisUtterance(text);
+        if (selectedFrVoice) { u.voice = selectedFrVoice; u.lang = selectedFrVoice.lang; }
+        else { u.lang = 'fr-FR'; }
+        u.rate = 0.9;
+        u.volume = 1.0;
+        window.speechSynthesis.resume();
+        window.speechSynthesis.speak(u);
+      }, 60);
+    }
+
+    function renderLearnCards() {
+      document.getElementById('weatherCardsGrid').innerHTML = WEATHER_ITEMS.map(item => `
+        <div onclick="speakFrench('${item.fr}')" class="cursor-pointer bg-white rounded-3xl overflow-hidden border-2 border-stone-200 hover:border-sky-500 shadow-sm transition-all flex flex-col">
+          <div class="h-40 w-full bg-sky-50 relative">
+            ${getWeatherSvg(item.scene)}
+            <span class="absolute top-2.5 left-2.5 bg-stone-900/80 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">${item.num}</span>
+          </div>
+          <div class="p-4 flex items-center justify-between">
+            <div>
+              <h3 class="font-serif font-bold text-lg text-stone-900">${item.fr}</h3>
+              <p class="text-xs text-stone-500">${item.en} · ${item.zh}</p>
+            </div>
+            <span class="bg-sky-100 text-sky-800 p-2 rounded-xl text-sm">🔊</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderActivityCards(containerId, items) {
+      document.getElementById(containerId).innerHTML = items.map(item => `
+        <div class="bg-white rounded-3xl overflow-hidden border border-stone-200 shadow-sm flex flex-col">
+          <div class="h-40 w-full relative">
+            ${getWeatherSvg(item.scene)}
+            <span class="absolute top-2.5 left-2.5 bg-sky-700 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">${item.num}</span>
+          </div>
+          <div class="p-4 space-y-2.5">
+            <input id="actInput-${item.num}" type="text" placeholder="Écris la phrase..." class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-sm outline-none focus:border-sky-500">
+            <div class="flex items-center justify-between gap-2">
+              <button onclick="checkActivityAnswer(${item.num})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold">✓ Vérifier</button>
+              <button onclick="revealActivityAnswer(${item.num})" class="text-xs text-sky-700 underline font-semibold">Réponse</button>
+            </div>
+            <p id="actFeedback-${item.num}" class="text-xs font-bold min-h-[1.25rem]"></p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function normalizeFr(str) {
+      return str.trim().toLowerCase().replace(/[.!?]/g, '').replace(/\s+/g, ' ');
+    }
+
+    function checkActivityAnswer(num) {
+      const item = WEATHER_ITEMS.find(w => w.num === num);
+      const val = normalizeFr(document.getElementById(`actInput-${num}`).value);
+      const fb = document.getElementById(`actFeedback-${num}`);
+      const validAnswers = [normalizeFr(item.fr), ...(item.alt || []).map(normalizeFr)];
+      if (validAnswers.includes(val)) {
+        fb.textContent = `✅ Bravo ! ${item.fr}`;
+        fb.className = 'text-xs font-bold text-emerald-700';
+        speakFrench(item.fr);
+      } else {
+        fb.textContent = '❌ Essaie encore ! Try again!';
+        fb.className = 'text-xs font-bold text-rose-700';
+      }
+    }
+
+    function revealActivityAnswer(num) {
+      const item = WEATHER_ITEMS.find(w => w.num === num);
+      const fb = document.getElementById(`actFeedback-${num}`);
+      fb.textContent = `💡 ${item.fr}`;
+      fb.className = 'text-xs font-bold text-sky-800';
+      speakFrench(item.fr);
+    }
+
+    function speakAllWeather() {
+      speakFrench(WEATHER_ITEMS.map(w => w.fr).join(' '));
+    }
+
+    function switchTab(tabId) {
+      ['learn', 'act1', 'act2', 'quiz'].forEach(t => {
+        document.getElementById(`tabContent-${t}`).classList.toggle('hidden', t !== tabId);
+        document.getElementById(`navTab-${t}`).className = t === tabId
+          ? "px-2.5 py-1 rounded-md text-[11px] font-semibold bg-white text-sky-900 shadow-sm"
+          : "px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600";
+      });
+      if (tabId === 'act1') renderActivityCards('act1Grid', WEATHER_ITEMS.slice(0, 3));
+      if (tabId === 'act2') renderActivityCards('act2Grid', WEATHER_ITEMS.slice(3, 6));
+      if (tabId === 'quiz') startQuiz();
+    }
+
+    let quizQuestions = [];
+    let quizIdx = 0;
+    let quizScore = 0;
+    let quizLocked = false;
+
+    function startQuiz() {
+      quizIdx = 0; quizScore = 0; quizLocked = false;
+      quizQuestions = [...WEATHER_ITEMS].sort(() => 0.5 - Math.random());
+      document.getElementById('quizGameArea').classList.remove('hidden');
+      document.getElementById('quizScoreArea').classList.add('hidden');
+      renderQuizQ();
+    }
+
+    function renderQuizQ() {
+      quizLocked = false;
+      const item = quizQuestions[quizIdx];
+      document.getElementById('quizCurrentNum').textContent = quizIdx + 1;
+      document.getElementById('quizIllustrationBox').innerHTML = getWeatherSvg(item.scene);
+      document.getElementById('quizNextArea').classList.add('hidden');
+
+      const wrongs = WEATHER_ITEMS.filter(w => w.num !== item.num).sort(() => 0.5 - Math.random()).slice(0, 3);
+      const opts = [...wrongs, item].sort(() => 0.5 - Math.random());
+
+      document.getElementById('quizOptionsGrid').innerHTML = opts.map(o => `
+        <button onclick="answerQuiz(${o.num})" data-num="${o.num}" class="q-opt p-4 bg-white hover:bg-sky-50 border-2 border-stone-200 rounded-2xl font-serif font-bold text-base text-stone-900 transition-all">
+          ${o.fr}
+        </button>
+      `).join('');
+    }
+
+    function playQuizAudio() {
+      speakFrench(quizQuestions[quizIdx].fr);
+    }
+
+    function answerQuiz(num) {
+      if (quizLocked) return;
+      quizLocked = true;
+      const correct = quizQuestions[quizIdx];
+      if (num === correct.num) quizScore++;
+      speakFrench(correct.fr);
+
+      document.querySelectorAll('.q-opt').forEach(btn => {
+        btn.disabled = true;
+        const bnum = parseInt(btn.getAttribute('data-num'), 10);
+        if (bnum === correct.num) btn.className = "q-opt p-4 bg-emerald-100 border-2 border-emerald-500 rounded-2xl font-serif font-bold text-base text-emerald-950";
+        else if (bnum === num) btn.className = "q-opt p-4 bg-rose-100 border-2 border-rose-500 rounded-2xl font-serif font-bold text-base text-rose-950";
+      });
+      document.getElementById('quizNextArea').classList.remove('hidden');
+    }
+
+    function nextQuizQ() {
+      if (quizIdx < quizQuestions.length - 1) { quizIdx++; renderQuizQ(); }
+      else {
+        document.getElementById('quizGameArea').classList.add('hidden');
+        document.getElementById('quizScoreArea').classList.remove('hidden');
+        document.getElementById('quizFinalScoreText').textContent = `Score : ${quizScore} / ${quizQuestions.length}`;
+      }
+    }
+
+    window.onload = function() {
+      loadFrenchVoice();
+      renderLearnCards();
+    };
+  </script>
+</body>
+</html>
