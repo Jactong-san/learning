@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>《小和尚與冬瓜》粵普雙語沉浸式學習系統</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Noto Serif TC', 'Songti TC', 'serif'],
+            sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+            mono: ['Plus Jakarta Sans', 'Inter', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+      .backface-hidden {
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+      .rotate-y-180 {
+        transform: rotateY(180deg);
+      }
+      .perspective-1000 {
+        perspective: 1000px;
+      }
+      .transform-style-3d {
+        transform-style: preserve-3d;
+      }
+      /* Custom tooltip styling */
+      .keyword-tooltip {
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+      }
+      .has-tooltip:hover .keyword-tooltip {
+        visibility: visible;
+        opacity: 1;
+      }
+      .pinyin-font {
+        font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+        letter-spacing: 0.025em;
+      }
+    </style>
+  </head>
+<body class="bg-stone-100 text-stone-800 font-sans min-h-screen flex flex-col selection:bg-amber-200 selection:text-amber-900">
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed top-5 right-5 z-50 transform translate-y-[-200%] transition-transform duration-300 bg-stone-900 text-white px-6 py-3 rounded-2xl shadow-xl flex items-center space-x-3 text-sm font-medium">
+    <span id="toastIcon">✨</span>
+    <span id="toastMessage">提示訊息</span>
+  </div>
+
+  <!-- Header -->
+  <header class="bg-white border-b border-stone-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-2xl bg-amber-800 text-white flex items-center justify-center font-serif font-bold text-xl shadow-md">
+          禅
+        </div>
+        <div>
+          <h1 class="font-serif font-bold text-lg md:text-xl text-stone-900 tracking-wide">小和尚與冬瓜</h1>
+          <p class="text-xs text-stone-500 font-medium">普通話沉浸式學習系統</p>
+        </div>
+      </div>
+
+      <!-- Quick Switch to Master Directory Only -->
+      <div class="flex items-center space-x-2">
+        <a href="https://jactong-san.github.io/learning/" class="bg-stone-800 hover:bg-stone-900 text-white px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-colors shadow-sm">
+          <span>🏠</span>
+          <span>返回總目錄 Directory</span>
+        </a>
+      </div>
+
+      <!-- Voice Speed & Navigation Controls -->
+      <div class="flex items-center space-x-2 md:space-x-3 flex-wrap justify-end">
+        <div class="flex items-center space-x-1.5 bg-stone-100 px-3 py-1.5 rounded-xl border border-stone-200 text-xs font-semibold text-stone-700">
+          <span>🔊 語速:</span>
+          <select id="audioSpeedSelect" onchange="changeAudioSpeed(this.value)" class="bg-transparent font-medium text-amber-900 outline-none cursor-pointer">
+            <option value="0.7">0.7x (慢速)</option>
+            <option value="0.9" selected>0.9x (標準)</option>
+            <option value="1.2">1.2x (快速)</option>
+          </select>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex items-center space-x-2 bg-stone-100 p-1.5 rounded-2xl border border-stone-200">
+          <button onclick="switchTab('story')" id="navTab-story" class="px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all bg-white text-amber-900 shadow-sm">
+            📖 故事
+          </button>
+          <button onclick="switchTab('vocab')" id="navTab-vocab" class="px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all text-stone-600 hover:text-stone-900">
+            🧠 詞彙
+          </button>
+          <button onclick="switchTab('quiz')" id="navTab-quiz" class="px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all text-stone-600 hover:text-stone-900">
+            🎯 測驗
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4 md:p-6 space-y-6">
+
+    <!-- ================= TAB 1: STORY READING VIEW ================= -->
+    <section id="tabContent-story" class="space-y-6">
+      <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center space-x-2">
+          <button onclick="toggleStoryMode()" id="overviewBtn" class="bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs md:text-sm font-semibold px-4 py-2.5 rounded-xl transition-all flex items-center space-x-2 border border-stone-300">
+            <span id="overviewBtnText">📜 全文總覽 (Full Text)</span>
+          </button>
+          <button onclick="toggleEnglishTranslation()" id="translationBtn" class="bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs md:text-sm font-semibold px-4 py-2.5 rounded-xl transition-all flex items-center space-x-2 border border-stone-300">
+            <span id="translationBtnText">隱藏英文 (Hide English)</span>
+          </button>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="toggleAutoPlayStory()" id="autoPlayStoryBtn" class="bg-amber-700 hover:bg-amber-800 text-white text-xs md:text-sm font-semibold px-5 py-2.5 rounded-xl shadow transition-all flex items-center space-x-2">
+            <span id="autoPlayIcon">▶</span>
+            <span id="autoPlayLabel">連續朗讀故事 (Auto-Play)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- FULL TEXT OVERVIEW -->
+      <div id="fullStoryOverview" class="hidden space-y-4">
+        <div class="bg-white rounded-2xl shadow-md border border-stone-200 p-6 space-y-6">
+          <div class="flex items-center justify-between border-b border-stone-200 pb-4">
+            <h3 class="font-serif font-bold text-xl text-stone-900">《小和尚與冬瓜》全文總覽</h3>
+            <button onclick="speakFullStory()" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-4 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-colors">
+              <span>🔊</span>
+              <span>朗讀全部故事</span>
+            </button>
+          </div>
+          <div id="fullStoryContentList" class="space-y-4"></div>
+        </div>
+      </div>
+
+      <!-- SEQUENTIAL STEP CARD -->
+      <div id="sequentialCardWrapper" class="bg-white rounded-2xl shadow-md border border-stone-200 overflow-hidden transition-all duration-300">
+        <div class="w-full bg-stone-100 h-2">
+          <div id="storyProgressBar" class="bg-amber-600 h-2 transition-all duration-300" style="width: 6.6%;"></div>
+        </div>
+
+        <div class="p-6 md:p-8 space-y-6">
+          <div class="flex items-center justify-between text-xs md:text-sm text-stone-500 font-medium border-b border-stone-100 pb-3">
+            <span id="storyStepIndicator" class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-semibold">第 1 段 / 共 15 段</span>
+            <span>💡 提示：將滑鼠移至黃色虛線詞彙可查看註解，點擊可聽發音</span>
+          </div>
+
+          <!-- Scene Illustration -->
+          <div id="sceneIllustrationContainer" class="w-full h-56 md:h-64 bg-gradient-to-b from-amber-50 to-stone-50 rounded-2xl border border-amber-200/80 flex items-center justify-center p-4 shadow-sm relative overflow-hidden"></div>
+
+          <!-- Mandarin Text -->
+          <div class="space-y-3 text-center py-2">
+            <h2 id="storyZhText" class="font-serif text-xl md:text-3xl font-bold text-stone-900 leading-relaxed tracking-wide min-h-[4rem] flex items-center justify-center flex-wrap gap-1.5"></h2>
+          </div>
+
+          <!-- English Translation -->
+          <div id="storyEnBox" class="bg-stone-50 border-l-4 border-amber-600 p-4 rounded-r-xl text-stone-600 text-sm md:text-base italic leading-relaxed"></div>
+
+          <!-- Sentence Action Buttons -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-stone-100">
+            <button onclick="prevSentence()" id="prevSentenceBtn" class="px-5 py-2.5 rounded-xl border border-stone-300 text-stone-700 hover:bg-stone-50 text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center space-x-1.5">
+              <span>←</span>
+              <span>上一句</span>
+            </button>
+
+            <button onclick="playCurrentSentence()" class="bg-amber-700 hover:bg-amber-800 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow transition-all flex items-center space-x-2">
+              <span>🔊</span>
+              <span>朗讀本句</span>
+            </button>
+
+            <button onclick="nextSentence()" id="nextSentenceBtn" class="px-5 py-2.5 rounded-xl border border-stone-300 text-stone-700 hover:bg-stone-50 text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center space-x-1.5">
+              <span>下一句</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: VOCABULARY & FLASHCARDS VIEW ================= -->
+    <section id="tabContent-vocab" class="hidden space-y-6">
+      <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-4 flex items-center justify-between">
+        <span class="font-serif font-bold text-stone-900 text-base">22 個核心詞彙與成語學習</span>
+        <div class="flex items-center space-x-2">
+          <button onclick="switchVocabMode('flashcard')" id="vocabModeBtn-flashcard" class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg bg-amber-700 text-white shadow">
+            🃏 互動字卡
+          </button>
+          <button onclick="switchVocabMode('list')" id="vocabModeBtn-list" class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg bg-stone-100 text-stone-700 hover:bg-stone-200">
+            📚 詞彙總覽
+          </button>
+        </div>
+      </div>
+
+      <!-- FLASHCARD SUB-MODE -->
+      <div id="vocabSubMode-flashcard" class="space-y-6">
+        <div class="max-w-xl mx-auto perspective-1000">
+          <div id="flashcardElement" onclick="flipFlashcard()" class="w-full h-80 bg-white rounded-3xl shadow-xl border border-stone-200 p-8 cursor-pointer relative transition-transform duration-500 transform-style-3d flex flex-col justify-between select-none hover:border-amber-400">
+            
+            <!-- FRONT (Mirrored layout: Word top, Pinyin bottom) -->
+            <div class="absolute inset-0 w-full h-full p-8 flex flex-col justify-between backface-hidden bg-white rounded-3xl">
+              <div class="w-full flex items-center justify-between text-stone-400 text-xs font-semibold uppercase tracking-wider">
+                <span id="fcCounter">字卡 1 / 22</span>
+                <span>點擊字卡翻面</span>
+              </div>
+              <div class="space-y-4 text-center my-auto">
+                <div id="fcIcon" class="text-5xl mb-2">🧘‍♂️</div>
+                <h3 id="fcFrontWord" class="font-serif text-4xl md:text-5xl font-bold text-stone-900 tracking-wider"></h3>
+                <p id="fcFrontPinyin" class="pinyin-font text-base md:text-lg text-amber-800 font-semibold tracking-wide"></p>
+              </div>
+              <div class="w-full text-center text-xs text-stone-400">
+                <span>🔄 點擊任意處查看釋義</span>
+              </div>
+            </div>
+
+            <!-- BACK (Row 1: Chinese Meaning, Row 2: English Meaning) -->
+            <div class="absolute inset-0 w-full h-full bg-stone-50 text-stone-900 rounded-3xl p-8 flex flex-col justify-between backface-hidden rotate-y-180 shadow-2xl border-2 border-stone-300">
+              <div class="w-full flex items-center justify-between text-stone-400 text-xs font-semibold uppercase tracking-wider">
+                <span>釋義與說明</span>
+                <span id="fcBackWord" class="font-serif font-bold text-amber-800 text-sm"></span>
+              </div>
+              <div class="space-y-4 text-center my-auto">
+                <div class="space-y-3">
+                  <!-- Row 1: Chinese Meaning -->
+                  <p id="fcBackDefinitionZh" class="font-serif text-2xl md:text-3xl font-bold text-stone-900 leading-relaxed"></p>
+                  <!-- Row 2: English Meaning -->
+                  <p id="fcBackDefinitionEn" class="pinyin-font text-base md:text-lg text-stone-500 font-medium italic"></p>
+                </div>
+              </div>
+              <div class="flex items-center justify-between pt-2 border-t border-stone-200">
+                <button onclick="event.stopPropagation(); speakCurrentFlashcard(true)" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-4 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-colors">
+                  <span>🔊</span>
+                  <span>完整朗讀</span>
+                </button>
+                <span class="text-xs text-stone-400">點擊任意處翻回正面</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center space-x-4 max-w-xl mx-auto pt-2">
+          <button onclick="prevFlashcard()" class="px-5 py-3 bg-white hover:bg-stone-50 border border-stone-300 rounded-2xl font-semibold shadow-sm transition-all text-stone-700 flex items-center space-x-1.5">
+            <span>←</span>
+            <span>上一張</span>
+          </button>
+          
+          <button onclick="markFlashcardMastered()" id="masteredBtn" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-semibold shadow transition-all flex items-center space-x-2">
+            <span>✓ 標記已學會</span>
+          </button>
+
+          <button onclick="nextFlashcard()" class="px-5 py-3 bg-white hover:bg-stone-50 border border-stone-300 rounded-2xl font-semibold shadow-sm transition-all text-stone-700 flex items-center space-x-1.5">
+            <span>下一張</span>
+            <span>→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- VOCABULARY DIRECTORY -->
+      <div id="vocabSubMode-list" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </section>
+
+    <!-- ================= TAB 3: AUDIO QUIZ VIEW ================= -->
+    <section id="tabContent-quiz" class="hidden space-y-6">
+      <div class="bg-white rounded-2xl shadow-md border border-stone-200 p-6 md:p-8 space-y-6 text-center">
+        <div class="max-w-md mx-auto space-y-3">
+          <div class="w-16 h-16 bg-amber-100 text-amber-800 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner">
+            🎯
+          </div>
+          <h2 class="font-serif font-bold text-2xl text-stone-900">聽力與詞義挑戰</h2>
+          <p class="text-sm text-stone-500">聆聽語音播報，從選項中選出正確的詞彙。答題後將顯示拼音與釋義。</p>
+        </div>
+
+        <div id="quizGameArea" class="py-6 space-y-6">
+          <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-6 max-w-lg mx-auto space-y-4">
+            <span class="text-xs uppercase tracking-widest bg-amber-200 text-amber-900 px-3 py-1 rounded-full font-bold">第 <span id="quizCurrentNum">1</span> / 10 題</span>
+            <div>
+              <button onclick="playQuizAudio()" class="bg-amber-700 hover:bg-amber-800 text-white px-8 py-4 rounded-2xl font-bold shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-3 mx-auto text-lg">
+                <span class="text-2xl">🔊</span>
+                <span>重新播放語音</span>
+              </button>
+            </div>
+            <!-- Feedback box on incorrect / review flashcard prompt -->
+            <div id="quizFeedbackBox" class="hidden bg-rose-50 border border-rose-300 text-rose-900 p-4 rounded-xl text-sm font-medium space-y-3">
+              <p id="quizFeedbackText">答錯囉！請點擊下方字卡進行複習：</p>
+              <!-- Mini Pop-up Flashcard for Incorrect Answer -->
+              <div id="quizMiniFlashcard" onclick="flipQuizMiniFlashcard()" class="w-full bg-white rounded-2xl shadow-md border border-rose-200 p-5 cursor-pointer relative transition-transform duration-300 text-left select-none">
+                <div class="flex items-center justify-between text-xs text-stone-400 mb-1">
+                  <span>💡 點擊字卡翻面 / 聆聽發音</span>
+                  <span class="text-rose-700 font-semibold">點我翻面</span>
+                </div>
+                <div id="quizMiniCardContent" class="space-y-1 text-center py-2">
+                  <div class="font-serif text-3xl font-bold text-stone-900" id="quizMiniWord"></div>
+                  <div class="pinyin-font text-sm text-amber-800 font-semibold" id="quizMiniPinyin"></div>
+                  <div class="text-sm text-stone-600 font-bold pt-1" id="quizMiniZhDef"></div>
+                  <div class="text-xs text-stone-500 italic" id="quizMiniEnDef"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="quizOptionsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mx-auto"></div>
+
+          <!-- Next question button after answering -->
+          <div id="quizNextActionArea" class="hidden pt-2">
+            <button onclick="proceedToNextQuestion()" class="bg-amber-700 hover:bg-amber-800 text-white px-8 py-3 rounded-2xl font-bold shadow transition-all">
+              進入下一題 →
+            </button>
+          </div>
+        </div>
+
+        <div id="quizScoreArea" class="hidden py-8 space-y-6">
+          <div class="text-6xl">🏆</div>
+          <h3 class="font-serif font-bold text-3xl text-stone-900">挑戰完成！</h3>
+          <p id="quizFinalScoreText" class="text-lg text-stone-600 font-medium"></p>
+          
+          <div id="quizReviewContainer" class="max-w-xl mx-auto text-left space-y-3 pt-4">
+            <h4 class="font-serif font-bold text-stone-800 text-base border-b border-stone-200 pb-2">📋 錯題複習與回顧</h4>
+            <div id="quizReviewList" class="space-y-3 max-h-64 overflow-y-auto pr-2"></div>
+          </div>
+
+          <div class="pt-4">
+            <button onclick="startQuiz()" class="bg-amber-700 hover:bg-amber-800 text-white px-8 py-3 rounded-2xl font-semibold shadow transition-all">
+              再玩一次 (Play Again)
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-stone-200 py-6 text-center text-xs text-stone-500 space-y-1">
+    <p>《小和尚與冬瓜》普通話沉浸式學習系統</p>
+    <p class="text-stone-400">臺灣華語原生語音引擎 (支援 GitHub Pages 與 iOS Safari)</p>
+  </footer>
+
+  <script>
+    /* ==========================================================
+       1. DATA STRUCTURES
+       ========================================================== */
+    const VOCAB_DATA = [
+      { id: 1, word: "小和尚", pinyin: "xiǎo héshang", zhDef: "小和尚", enDef: "Little monk", icon: "🧘‍♂️", category: "人物" },
+      { id: 2, word: "師父", pinyin: "shīfu", zhDef: "師父、老師", enDef: "Master / Teacher", icon: "📜", category: "人物" },
+      { id: 3, word: "技術", pinyin: "jìshù", zhDef: "技能、本事", enDef: "Skill / Technique", icon: "🛠️", category: "學習" },
+      { id: 4, word: "剃頭", pinyin: "tìtóu", zhDef: "把頭髮剃光", enDef: "To shave the head", icon: "✂️", category: "動作" },
+      { id: 5, word: "刮", pinyin: "guā", zhDef: "用刀輕輕刮", enDef: "To scrape / To shave", icon: "🪒", category: "動作" },
+      { id: 6, word: "冬瓜", pinyin: "dōngguā", zhDef: "一種大的綠色瓜", enDef: "Winter melon", icon: "🍈", category: "物件" },
+      { id: 7, word: "練習", pinyin: "liànxí", zhDef: "反覆做來學好", enDef: "To practise", icon: "📝", category: "學習" },
+      { id: 8, word: "習慣", pinyin: "xíguàn", zhDef: "經常做的行為", enDef: "Habit", icon: "🔄", category: "行為" },
+      { id: 9, word: "剃刀", pinyin: "tìdāo", zhDef: "剃頭髮用的刀", enDef: "Razor", icon: "🔪", category: "物件" },
+      { id: 10, word: "腦袋", pinyin: "nǎodai", zhDef: "頭", enDef: "Head", icon: "🧠", category: "身體" },
+      { id: 11, word: "噴嚏", pinyin: "pēntì", zhDef: "打噴嚏的聲音", enDef: "Sneeze", icon: "🤧", category: "反應" },
+      { id: 12, word: "冷汗", pinyin: "lěnghàn", zhDef: "害怕時出的汗", enDef: "Cold sweat", icon: "💧", category: "反應" },
+      { id: 13, word: "清掃", pinyin: "qīngsǎo", zhDef: "打掃乾淨", enDef: "To clean / To sweep", icon: "🧹", category: "動作" },
+      { id: 14, word: "簡單", pinyin: "jiǎndān", zhDef: "容易、不複雜", enDef: "Simple", icon: "⭐", category: "形容" },
+      { id: 15, word: "意思", pinyin: "yìsi", zhDef: "趣味、意義", enDef: "Interest / Meaning", icon: "🎈", category: "抽象" },
+      { id: 16, word: "小心", pinyin: "xiǎoxīn", zhDef: "注意、謹慎", enDef: "To be careful", icon: "⚠️", category: "態度" },
+      { id: 17, word: "刮重了", pinyin: "guā zhòng le", zhDef: "刮得太用力", enDef: "Scraped too hard", icon: "🔴", category: "動作" },
+      { id: 18, word: "刮輕了", pinyin: "guā qīng le", zhDef: "刮得太輕", enDef: "Scraped too lightly", icon: "🔵", category: "動作" },
+      { id: 19, word: "越來越好", pinyin: "yuè lái yuè hǎo", zhDef: "越來越進步", enDef: "Getting better and better", icon: "📈", category: "進步" },
+      { id: 20, word: "壞習慣", pinyin: "huài xíguàn", zhDef: "不好的習慣", enDef: "Bad habit", icon: "❌", category: "行為" },
+      { id: 21, word: "習慣成自然", pinyin: "xíguàn chéng zìrán", zhDef: "習慣了就自然會做", enDef: "Habit becomes nature", icon: "🌿", category: "成語" },
+      { id: 22, word: "謝天謝地", pinyin: "xiè tiān xiè dì", zhDef: "非常慶幸、感謝", enDef: "Thank heavens", icon: "🙏", category: "感嘆" }
+    ];
+
+    const STORY_SENTENCES = [
+      { id: 1, zh: "從前有個小和尚，出家不久，覺得整天清掃院子、做飯太簡單，沒什麼意思，就請師父教他點兒技術。", en: "Once there was a little monk who had just become a monk. He felt that sweeping the yard and cooking every day was too simple and boring, so he asked his master to teach him some skills.", scene: "sweep" },
+      { id: 2, zh: "師父說：「那你就學剃頭吧。」", en: "The master said: “Then you can learn to shave heads.”", scene: "master_talk" },
+      { id: 3, zh: "他告訴小和尚，剃光頭要小心，刮重了，會刮出血來；刮輕了，頭髮刮不下來。", en: "He told the little monk that when shaving a bald head, you must be careful. If you scrape too hard, you will draw blood; if you scrape too lightly, the hair won't come off.", scene: "warning" },
+      { id: 4, zh: "小和尚說：「明白了，我一定聽師父的話。」", en: "The little monk said: “I understand. I will definitely listen to Master's words.”", scene: "agree" },
+      { id: 5, zh: "老和尚讓他先在冬瓜上練習。", en: "The old monk told him to practise on a winter melon first.", scene: "melon_practice" },
+      { id: 6, zh: "小和尚每天從早到晚，用心地練，有時連飯都忘了吃。", en: "The little monk practised carefully from morning to night every day, sometimes even forgetting to eat.", scene: "hard_work" },
+      { id: 7, zh: "後來，小和尚的技術越來越好了。", en: "Later, the little monk's skill became better and better.", scene: "skill_improve" },
+      { id: 8, zh: "可他就是有個壞習慣，每次刮完冬瓜後，總是把剃刀「噌」地一下插在冬瓜上。", en: "But he had a bad habit: every time after scraping the winter melon, he would always thrust the razor into the melon with a 'whoosh'.", scene: "bad_habit" },
+      { id: 9, zh: "師父叫小和尚別這樣做，這種習慣不好。", en: "The master told the little monk not to do that, saying this habit was bad.", scene: "master_scold" },
+      { id: 10, zh: "可是小和尚不聽。", en: "But the little monk didn't listen.", scene: "disobey" },
+      { id: 11, zh: "他想：這不是練習嗎？又不是人的腦袋！", en: "He thought: Isn't this just practice? It's not a person's head!", scene: "thought" },
+      { id: 12, zh: "每次背著老和尚，他還是這麼做。", en: "Every time behind the old monk's back, he still did it.", scene: "secret_habit" },
+      { id: 13, zh: "一天，師父叫他給剃頭，小和尚剃得又快又好。", en: "One day, the master asked him to shave his head. The little monk shaved quickly and well.", scene: "real_shave" },
+      { id: 14, zh: "可是，習慣成自然，當他剃完時，剛要把剃刀往下插，師父「阿嚏」一聲打了個大大的噴嚏，小和尚嚇了一跳，手裏的剃刀也掉在了地上。", en: "But habit becomes nature. When he finished shaving and was about to thrust the razor down, the master sneezed loudly with an 'Achoo!' The little monk was startled and the razor in his hand fell to the ground.", scene: "sneeze_shock" },
+      { id: 15, zh: "看見地上的剃刀，小和尚嚇出一身冷汗，心想：謝天謝地，這次可不再是冬瓜了！", en: "Seeing the razor on the ground, the little monk broke out in a cold sweat and thought: Thank goodness this time it wasn't a winter melon!", scene: "relief" }
+    ];
+
+    /* ==========================================================
+       2. STATE & NATIVE TAIWANESE MANDARIN AUDIO ENGINE (GITHUB PAGES & IPHONE SAFE)
+       ========================================================== */
+    let currentAudioRate = 0.9;
+    let currentSentenceIdx = 0;
+    let isFullTextOverview = false;
+    let showEnglishTranslation = false; // Default hidden English
+    let isAutoPlayingStory = false;
+    let audioUnlocked = false;
+    let currentSpeakRequestId = 0;
+    let selectedTwVoice = null;
+    let activeUtterance = null;
+    let webAudioContext = null;
+
+    let vocabSubMode = 'flashcard';
+    let flashcardIdx = 0;
+    let isFlashcardFlipped = false;
+    let masteredFlashcardIds = new Set();
+
+    let quizCurrentIdx = 0;
+    let quizScore = 0;
+    let quizCurrentCorrectItem = null;
+    let quizWrongAnswersLog = [];
+    let isQuizLocked = false;
+    let isMiniFlashcardFlipped = false;
+
+    function loadTaiwaneseVoice() {
+      if (!window.speechSynthesis) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return;
+      // Strictly prioritize Taiwanese Mandarin (zh-TW)
+      selectedTwVoice =
+        voices.find(v => v.lang === 'zh-TW' && (v.name.includes('Meijia') || v.name.includes('HanHan') || v.name.includes('Yating') || v.name.includes('Google'))) ||
+        voices.find(v => v.lang === 'zh-TW' || v.lang.toLowerCase().includes('tw')) ||
+        voices.find(v => v.lang.startsWith('zh') && !v.lang.toLowerCase().includes('hk') && !v.name.toLowerCase().includes('cantonese')) ||
+        voices.find(v => v.lang.startsWith('zh'));
+    }
+
+    if (window.speechSynthesis) {
+      loadTaiwaneseVoice();
+      window.speechSynthesis.onvoiceschanged = loadTaiwaneseVoice;
+    }
+
+    function unlockAudioEngine() {
+      if (audioUnlocked) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          webAudioContext = new AudioCtx();
+          if (webAudioContext.state === 'suspended') {
+            webAudioContext.resume();
+          }
+          const buffer = webAudioContext.createBuffer(1, 10, 22050);
+          const source = webAudioContext.createBufferSource();
+          source.buffer = buffer;
+          source.connect(webAudioContext.destination);
+          source.start(0);
+        }
+        loadTaiwaneseVoice();
+        audioUnlocked = true;
+      } catch (e) {
+        console.debug("Audio unlock note:", e);
+      }
+    }
+
+    document.addEventListener('touchstart', unlockAudioEngine, { once: true });
+    document.addEventListener('click', unlockAudioEngine, { once: true });
+
+    function playBeepFeedback(frequency = 580, duration = 0.18) {
+      try {
+        if (!webAudioContext) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) webAudioContext = new AudioCtx();
+        }
+        if (webAudioContext) {
+          if (webAudioContext.state === 'suspended') webAudioContext.resume();
+          const osc = webAudioContext.createOscillator();
+          const gain = webAudioContext.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = frequency;
+          gain.gain.setValueAtTime(0.15, webAudioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, webAudioContext.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(webAudioContext.destination);
+          osc.start();
+          osc.stop(webAudioContext.currentTime + duration);
+        }
+      } catch (err) {
+        console.debug("Beep fallback note:", err);
+      }
+    }
+
+    function stopCurrentAudio() {
+      currentSpeakRequestId++;
+      activeUtterance = null;
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function changeAudioSpeed(val) {
+      currentAudioRate = parseFloat(val);
+      playBeepFeedback(650, 0.1);
+      showToast(`已切換語速為 ${val}x`);
+    }
+
+    function speakText(text, onEndCallback = null) {
+      unlockAudioEngine();
+      stopCurrentAudio();
+      const reqId = ++currentSpeakRequestId;
+
+      playBeepFeedback(520, 0.12);
+
+      if (!window.speechSynthesis) {
+        if (onEndCallback) onEndCallback();
+        return;
+      }
+
+      if (!selectedTwVoice) loadTaiwaneseVoice();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      activeUtterance = utterance;
+      if (selectedTwVoice) {
+        utterance.voice = selectedTwVoice;
+      }
+      utterance.lang = 'zh-TW'; // Force Taiwan zh-TW locale
+      utterance.rate = currentAudioRate;
+      utterance.pitch = 1.0;
+
+      utterance.onend = () => {
+        if (reqId === currentSpeakRequestId) {
+          activeUtterance = null;
+          if (onEndCallback) onEndCallback();
+        }
+      };
+
+      utterance.onerror = () => {
+        if (reqId === currentSpeakRequestId) {
+          activeUtterance = null;
+          if (onEndCallback) onEndCallback();
+        }
+      };
+
+      window.speechSynthesis.resume();
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function showToast(message, icon = "✨") {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').textContent = message;
+      document.getElementById('toastIcon').textContent = icon;
+      toast.classList.remove('translate-y-[-200%]');
+      setTimeout(() => {
+        toast.classList.add('translate-y-[-200%]');
+      }, 3000);
+    }
+
+    function switchTab(tabId) {
+      stopAutoPlayStory();
+      stopCurrentAudio();
+
+      ['story', 'vocab', 'quiz'].forEach(t => {
+        const sec = document.getElementById(`tabContent-${t}`);
+        const nav = document.getElementById(`navTab-${t}`);
+        if (t === tabId) {
+          sec.classList.remove('hidden');
+          nav.className = "px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all bg-white text-amber-900 shadow-sm";
+        } else {
+          sec.classList.add('hidden');
+          nav.className = "px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all text-stone-600 hover:text-stone-900";
+        }
+      });
+
+      if (tabId === 'vocab') {
+        renderFlashcard();
+        renderVocabDirectory();
+      } else if (tabId === 'quiz') {
+        startQuiz();
+      }
+    }
+
+    /* ==========================================================
+       3. ZEN ILLUSTRATIONS (SVG)
+       ========================================================== */
+    function getSceneSvg(sceneKey) {
+      switch(sceneKey) {
+        case 'sweep':
+          return `<svg viewBox="0 0 320 200" class="w-full h-full drop-shadow"><rect width="320" height="200" fill="#fdfbf7"/><circle cx="160" cy="100" r="70" fill="#fef3c7" opacity="0.5"/><path d="M40 160 Q160 140 280 160 L280 190 L40 190 Z" fill="#e7e5e4"/><path d="M120 120 L150 90 L160 100 L130 130 Z" fill="#d97706"/><line x1="150" y1="90" x2="200" y2="40" stroke="#78350f" stroke-width="4" stroke-linecap="round"/><circle cx="110" cy="115" r="14" fill="#fde68a"/><path d="M100 130 C100 125 120 125 120 130 Z" fill="#b45309"/></svg>`;
+        case 'master_talk':
+          return `<svg viewBox="0 0 320 200" class="w-full h-full drop-shadow"><rect width="320" height="200" fill="#fdfbf7"/><circle cx="160" cy="100" r="70" fill="#ffedd5" opacity="0.6"/><circle cx="110" cy="90" r="18" fill="#fed7aa"/><circle cx="210" cy="90" r="14" fill="#fde68a"/><path d="M90 140 Q110 110 130 140 Z" fill="#b45309"/><path d="M195 140 Q210 115 225 140 Z" fill="#78350f"/><text x="160" y="50" font-size="24" text-anchor="middle" fill="#d97706">📜</text></svg>`;
+        case 'warning':
+        case 'melon_practice':
+        case 'hard_work':
+        case 'skill_improve':
+          return `<svg viewBox="0 0 320 200" class="w-full h-full drop-shadow"><rect width="320" height="200" fill="#fdfbf7"/><ellipse cx="160" cy="120" rx="60" ry="40" fill="#15803d"/><ellipse cx="160" cy="115" rx="55" ry="35" fill="#22c55e"/><path d="M140 100 L180 80" stroke="#fef08a" stroke-width="3" stroke-linecap="round"/><circle cx="130" cy="85" r="16" fill="#fde68a"/><path d="M170 60 L190 90" stroke="#451a03" stroke-width="3" stroke-linecap="round"/></svg>`;
+        case 'bad_habit':
+        case 'secret_habit':
+          return `<svg viewBox="0 0 320 200" class="w-full h-full drop-shadow"><rect width="320" height="200" fill="#fdfbf7"/><ellipse cx="160" cy="130" rx="60" ry="35" fill="#15803d"/><path d="M160 80 L160 130" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/><text x="190" y="90" font-size="20" fill="#b91c1c" font-weight="bold">噌！</text></svg>`;
+        case 'master_scold':
+        case 'disobey':
+        case 'thought':
+          return `<svg viewBox="0 0 320 200" class="w-full h-full drop-shadow"><rect width="320" height="200" fill="#fdfbf7"/><circle cx="160" cy="100" r="50" fill="#ffedd5"/><text x="160" y="110" font-size="36" text-anchor="middle">⚠️</text></svg>`;
+        case 'real_shave':
+          return `<svg viewBox="0 0 320 200" class="w-full h-full drop-shadow"><rect width="320" height="200" fill="#fdfbf7"/><circle cx="140" cy="100" r="25" fill="#fed7aa"/><path d="M110 100 C110 70 170 70 170 100 Z" fill="#78350f"/><path d="M150 80 Q170 70 185 90" stroke="#94a3b8" stroke-width="4" fill="none"/></svg>`;
+        case 'sneeze_shock':
+          return `<svg viewBox="0 0 320 200" class="w-full h-full drop-shadow"><rect width="320" height="200" fill="#fdfbf7"/><circle cx="160" cy="100" r="30" fill="#fca5a5"/><text x="160" y="60" font-size="24" text-anchor="middle" fill="#dc2626" font-weight="bold">阿嚏！</text><path d="M140 140 L150 170" stroke="#78350f" stroke-width="4"/></svg>`;
+        case 'relief':
+          default:
+            return `<svg viewBox="0 0 320 200" class="w-full h-full drop-shadow"><rect width="320" height="200" fill="#fdfbf7"/><circle cx="160" cy="100" r="45" fill="#dbeafe"/><text x="160" y="112" font-size="36" text-anchor="middle">💧</text><text x="160" y="45" font-size="18" text-anchor="middle" fill="#2563eb" font-weight="bold">謝天謝地！</text></svg>`;
+      }
+    }
+
+    /* ==========================================================
+       4. STORY READING & KEYWORD TOOLTIPS
+       ========================================================== */
+    function highlightStoryKeywords(text) {
+      let html = text;
+      VOCAB_DATA.forEach(v => {
+        if (html.includes(v.word)) {
+          const tooltipHtml = `<span class="keyword-tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-52 bg-stone-900 text-white text-xs rounded-xl p-3 shadow-xl z-30 pointer-events-none text-center font-sans"><strong class="text-amber-300 font-serif">${v.word}</strong><br><span class="pinyin-font text-amber-200">${v.pinyin}</span><br><span class="text-stone-200">${v.zhDef}</span><br><em class="text-stone-400">${v.enDef}</em></span>`;
+          const replacement = `<span class="has-tooltip relative inline-block cursor-pointer text-amber-900 font-bold border-b-2 border-dashed border-amber-500 hover:bg-amber-100/80 px-1 rounded transition-colors" onclick="speakText('${v.word}'); event.stopPropagation();">${v.word}${tooltipHtml}</span>`;
+          html = html.split(v.word).join(replacement);
+        }
+      });
+      return html;
+    }
+
+    function renderStoryStep(autoPlay = true) {
+      const sentence = STORY_SENTENCES[currentSentenceIdx];
+      const pct = ((currentSentenceIdx + 1) / STORY_SENTENCES.length) * 100;
+      document.getElementById('storyProgressBar').style.width = `${pct}%`;
+
+      document.getElementById('storyStepIndicator').textContent = `第 ${currentSentenceIdx + 1} 段 / 共 ${STORY_SENTENCES.length} 段`;
+      document.getElementById('sceneIllustrationContainer').innerHTML = getSceneSvg(sentence.scene);
+      document.getElementById('storyZhText').innerHTML = highlightStoryKeywords(sentence.zh);
+
+      const enBox = document.getElementById('storyEnBox');
+      enBox.textContent = sentence.en;
+      enBox.style.display = showEnglishTranslation ? 'block' : 'none';
+
+      document.getElementById('prevSentenceBtn').disabled = currentSentenceIdx === 0;
+      document.getElementById('nextSentenceBtn').disabled = currentSentenceIdx === STORY_SENTENCES.length - 1;
+
+      if (autoPlay) {
+        speakText(sentence.zh);
+      }
+    }
+
+    function nextSentence() {
+      if (currentSentenceIdx < STORY_SENTENCES.length - 1) {
+        currentSentenceIdx++;
+        renderStoryStep(true);
+      }
+    }
+
+    function prevSentence() {
+      if (currentSentenceIdx > 0) {
+        currentSentenceIdx--;
+        renderStoryStep(true);
+      }
+    }
+
+    function playCurrentSentence() {
+      const sentence = STORY_SENTENCES[currentSentenceIdx];
+      speakText(sentence.zh);
+    }
+
+    function toggleStoryMode() {
+      isFullTextOverview = !isFullTextOverview;
+      const overviewEl = document.getElementById('fullStoryOverview');
+      const sequentialWrapper = document.getElementById('sequentialCardWrapper');
+      const btnText = document.getElementById('overviewBtnText');
+      const autoPlayBtn = document.getElementById('autoPlayStoryBtn');
+
+      if (isFullTextOverview) {
+        overviewEl.classList.remove('hidden');
+        sequentialWrapper.classList.add('hidden');
+        autoPlayBtn.style.display = 'none';
+        btnText.textContent = '📖 逐句導覽';
+        renderFullStoryOverview();
+      } else {
+        overviewEl.classList.add('hidden');
+        sequentialWrapper.classList.remove('hidden');
+        autoPlayBtn.style.display = 'flex';
+        btnText.textContent = '📜 全文總覽';
+        renderStoryStep(false);
+      }
+    }
+
+    function toggleEnglishTranslation() {
+      showEnglishTranslation = !showEnglishTranslation;
+      document.getElementById('translationBtnText').textContent = showEnglishTranslation ? '隱藏英文' : '顯示英文';
+      renderStoryStep(false);
+      if (isFullTextOverview) renderFullStoryOverview();
+    }
+
+    function startAutoPlayStory() {
+      if (isFullTextOverview) {
+        toggleStoryMode();
+      }
+      isAutoPlayingStory = true;
+      const btn = document.getElementById('autoPlayStoryBtn');
+      btn.className = "bg-red-700 hover:bg-red-800 text-white text-xs md:text-sm font-semibold px-5 py-2.5 rounded-xl shadow transition-all flex items-center space-x-2";
+      document.getElementById('autoPlayIcon').textContent = '⏹';
+      document.getElementById('autoPlayLabel').textContent = '停止朗讀';
+
+      const playRecursive = () => {
+        if (!isAutoPlayingStory) return;
+        renderStoryStep(false);
+        const sentence = STORY_SENTENCES[currentSentenceIdx];
+        speakText(sentence.zh, () => {
+          if (!isAutoPlayingStory) return;
+          if (currentSentenceIdx < STORY_SENTENCES.length - 1) {
+            setTimeout(() => {
+              if (!isAutoPlayingStory) return;
+              currentSentenceIdx++;
+              playRecursive();
+            }, 800);
+          } else {
+            stopAutoPlayStory();
+            showToast('✨ 完整故事朗讀完畢！');
+          }
+        });
+      };
+
+      playRecursive();
+    }
+
+    function stopAutoPlayStory() {
+      isAutoPlayingStory = false;
+      stopCurrentAudio();
+      const btn = document.getElementById('autoPlayStoryBtn');
+      if (btn) {
+        btn.className = "bg-amber-700 hover:bg-amber-800 text-white text-xs md:text-sm font-semibold px-5 py-2.5 rounded-xl shadow transition-all flex items-center space-x-2";
+        document.getElementById('autoPlayIcon').textContent = '▶';
+        document.getElementById('autoPlayLabel').textContent = '連續朗讀故事';
+      }
+    }
+
+    function toggleAutoPlayStory() {
+      if (isAutoPlayingStory) {
+        stopAutoPlayStory();
+      } else {
+        startAutoPlayStory();
+      }
+    }
+
+    function renderFullStoryOverview() {
+      const container = document.getElementById('fullStoryContentList');
+      container.innerHTML = STORY_SENTENCES.map((s, idx) => `
+        <div class="p-4 bg-stone-50 rounded-xl border border-stone-200 hover:border-amber-400 transition-all space-y-2">
+          <div class="flex items-center justify-between text-xs text-amber-800 font-semibold">
+            <span>第 ${idx + 1} 段</span>
+            <button onclick="speakText('${s.zh}')" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-3 py-1 rounded-lg text-xs flex items-center space-x-1">
+              <span>🔊</span>
+              <span>朗讀</span>
+            </button>
+          </div>
+          <p class="font-serif text-lg font-bold text-stone-900 leading-relaxed">${highlightStoryKeywords(s.zh)}</p>
+          ${showEnglishTranslation ? `<p class="text-sm text-stone-600 italic">${s.en}</p>` : ''}
+        </div>
+      `).join('');
+    }
+
+    function speakFullStory() {
+      const fullText = STORY_SENTENCES.map(s => s.zh).join('。');
+      speakText(fullText);
+    }
+
+    /* ==========================================================
+       5. VOCABULARY & FLASHCARDS
+       ========================================================== */
+    function switchVocabMode(mode) {
+      vocabSubMode = mode;
+      const fcBtn = document.getElementById('vocabModeBtn-flashcard');
+      const listBtn = document.getElementById('vocabModeBtn-list');
+      const fcArea = document.getElementById('vocabSubMode-flashcard');
+      const listArea = document.getElementById('vocabSubMode-list');
+
+      if (mode === 'flashcard') {
+        fcBtn.className = "px-4 py-2 text-xs md:text-sm font-semibold rounded-lg bg-amber-700 text-white shadow";
+        listBtn.className = "px-4 py-2 text-xs md:text-sm font-semibold rounded-lg bg-stone-100 text-stone-700 hover:bg-stone-200";
+        fcArea.classList.remove('hidden');
+        listArea.classList.add('hidden');
+        renderFlashcard();
+      } else {
+        listBtn.className = "px-4 py-2 text-xs md:text-sm font-semibold rounded-lg bg-amber-700 text-white shadow";
+        fcBtn.className = "px-4 py-2 text-xs md:text-sm font-semibold rounded-lg bg-stone-100 text-stone-700 hover:bg-stone-200";
+        listArea.classList.remove('hidden');
+        fcArea.classList.add('hidden');
+        renderVocabDirectory();
+      }
+    }
+
+    function renderFlashcard() {
+      const item = VOCAB_DATA[flashcardIdx];
+      document.getElementById('fcCounter').textContent = `字卡 ${flashcardIdx + 1} / ${VOCAB_DATA.length}`;
+      document.getElementById('fcIcon').textContent = item.icon;
+      document.getElementById('fcFrontWord').textContent = item.word;
+      document.getElementById('fcFrontPinyin').textContent = item.pinyin;
+      document.getElementById('fcBackWord').textContent = item.word;
+      
+      // Row 1: Chinese Meaning, Row 2: English Meaning
+      document.getElementById('fcBackDefinitionZh').textContent = item.zhDef;
+      document.getElementById('fcBackDefinitionEn').textContent = item.enDef;
+
+      const masteredBtn = document.getElementById('masteredBtn');
+      if (masteredFlashcardIds.has(item.id)) {
+        masteredBtn.className = "px-6 py-3 bg-stone-300 text-stone-700 rounded-2xl font-semibold shadow transition-all flex items-center space-x-2";
+        masteredBtn.innerHTML = "<span>✓ 已學會</span>";
+      } else {
+        masteredBtn.className = "px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-semibold shadow transition-all flex items-center space-x-2";
+        masteredBtn.innerHTML = "<span>✓ 標記已學會</span>";
+      }
+
+      isFlashcardFlipped = false;
+      document.getElementById('flashcardElement').classList.remove('rotate-y-180');
+
+      speakText(item.word);
+    }
+
+    function flipFlashcard() {
+      isFlashcardFlipped = !isFlashcardFlipped;
+      const el = document.getElementById('flashcardElement');
+      if (isFlashcardFlipped) {
+        el.classList.add('rotate-y-180');
+        speakText(`${VOCAB_DATA[flashcardIdx].word}。${VOCAB_DATA[flashcardIdx].zhDef}`);
+      } else {
+        el.classList.remove('rotate-y-180');
+        speakText(VOCAB_DATA[flashcardIdx].word);
+      }
+    }
+
+    function nextFlashcard() {
+      if (flashcardIdx < VOCAB_DATA.length - 1) {
+        flashcardIdx++;
+        renderFlashcard();
+      } else {
+        flashcardIdx = 0;
+        renderFlashcard();
+      }
+    }
+
+    function prevFlashcard() {
+      if (flashcardIdx > 0) {
+        flashcardIdx--;
+        renderFlashcard();
+      } else {
+        flashcardIdx = VOCAB_DATA.length - 1;
+        renderFlashcard();
+      }
+    }
+
+    function markFlashcardMastered() {
+      const item = VOCAB_DATA[flashcardIdx];
+      if (masteredFlashcardIds.has(item.id)) {
+        masteredFlashcardIds.delete(item.id);
+        showToast('已取消已學會標記');
+      } else {
+        masteredFlashcardIds.add(item.id);
+        showToast('🎉 太棒了！已標記為學會');
+      }
+      renderFlashcard();
+    }
+
+    function speakCurrentFlashcard(includeDefinition = false) {
+      const item = VOCAB_DATA[flashcardIdx];
+      if (includeDefinition) {
+        speakText(`${item.word}。${item.zhDef}`);
+      } else {
+        speakText(item.word);
+      }
+    }
+
+    function renderVocabDirectory() {
+      const container = document.getElementById('vocabSubMode-list');
+      container.innerHTML = VOCAB_DATA.map(item => `
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-stone-200 hover:border-amber-500 transition-all flex items-start space-x-4">
+          <div class="text-3xl p-3 bg-amber-50 rounded-xl border border-amber-100 flex items-center justify-center">${item.icon}</div>
+          <div class="flex-1 space-y-1">
+            <div class="flex items-center justify-between">
+              <h4 class="font-serif font-bold text-lg text-stone-900">${item.word}</h4>
+              <button onclick="speakText('${item.word}')" class="text-amber-700 hover:text-amber-800 p-1 rounded-lg hover:bg-amber-50 transition-colors">🔊</button>
+            </div>
+            <p class="pinyin-font text-xs text-amber-700 font-semibold tracking-wide">${item.pinyin}</p>
+            <div class="pt-1 flex flex-col space-y-0.5">
+              <span class="text-xs text-stone-800 font-bold">${item.zhDef}</span>
+              <span class="text-xs text-stone-500 italic">${item.enDef}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ==========================================================
+       6. AUDIO QUIZ GAME
+       ========================================================== */
+    let quizQuestions = [];
+
+    function startQuiz() {
+      quizCurrentIdx = 0;
+      quizScore = 0;
+      quizWrongAnswersLog = [];
+      isQuizLocked = false;
+      quizQuestions = [...VOCAB_DATA].sort(() => 0.5 - Math.random()).slice(0, 10);
+      
+      document.getElementById('quizGameArea').classList.remove('hidden');
+      document.getElementById('quizScoreArea').classList.add('hidden');
+      document.getElementById('quizFeedbackBox').classList.add('hidden');
+      document.getElementById('quizNextActionArea').classList.add('hidden');
+      renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+      isQuizLocked = false;
+      isMiniFlashcardFlipped = false;
+      const item = quizQuestions[quizCurrentIdx];
+      quizCurrentCorrectItem = item;
+      document.getElementById('quizCurrentNum').textContent = quizCurrentIdx + 1;
+      document.getElementById('quizFeedbackBox').classList.add('hidden');
+      document.getElementById('quizNextActionArea').classList.add('hidden');
+
+      let wrongOptions = VOCAB_DATA.filter(v => v.word !== item.word).sort(() => 0.5 - Math.random()).slice(0, 3);
+      let options = [...wrongOptions, item].sort(() => 0.5 - Math.random());
+
+      const grid = document.getElementById('quizOptionsGrid');
+      // Emoji removed in Hugo's Mandarin quiz so it doesn't give away the answer
+      grid.innerHTML = options.map(opt => {
+        return `
+          <button onclick="submitQuizAnswer('${opt.word}')" class="quiz-opt-btn p-5 bg-white hover:bg-amber-50 border-2 border-stone-200 hover:border-amber-500 rounded-2xl shadow-sm transition-all flex items-center justify-between">
+            <div class="text-left">
+              <div class="font-serif font-bold text-2xl md:text-3xl text-stone-900 tracking-wide">${opt.word}</div>
+              <div class="quiz-opt-pinyin hidden pinyin-font text-xs text-amber-700 font-semibold tracking-wide">${opt.pinyin}</div>
+            </div>
+            <span class="text-xs font-sans text-stone-500 bg-stone-100 px-3 py-1.5 rounded-lg font-medium">${opt.zhDef}</span>
+          </button>
+        `;
+      }).join('');
+
+      playQuizAudio();
+    }
+
+    function playQuizAudio() {
+      if (quizCurrentCorrectItem) {
+        speakText(quizCurrentCorrectItem.word);
+      }
+    }
+
+    function submitQuizAnswer(selectedWord) {
+      if (isQuizLocked) return;
+      const item = quizCurrentCorrectItem;
+      const isCorrect = (selectedWord === item.word);
+      isQuizLocked = true;
+
+      document.querySelectorAll('.quiz-opt-pinyin').forEach(el => el.classList.remove('hidden'));
+
+      const allButtons = document.querySelectorAll('.quiz-opt-btn');
+      allButtons.forEach(btn => btn.disabled = true);
+
+      allButtons.forEach(btn => {
+        const wordText = btn.querySelector('.font-bold').textContent;
+        if (wordText === item.word) {
+          btn.className = "quiz-opt-btn p-5 bg-emerald-100 border-2 border-emerald-500 rounded-2xl shadow-sm transition-all flex items-center justify-between";
+        } else if (wordText === selectedWord && !isCorrect) {
+          btn.className = "quiz-opt-btn p-5 bg-rose-100 border-2 border-rose-500 rounded-2xl shadow-sm transition-all flex items-center justify-between";
+        }
+      });
+
+      if (isCorrect) {
+        quizScore++;
+        showToast('✅ 答對了！ Correct!');
+        // Read out word and meaning together even when correct
+        speakText(`${item.word}。${item.zhDef}`);
+        document.getElementById('quizNextActionArea').classList.remove('hidden');
+      } else {
+        quizWrongAnswersLog.push({
+          questionWord: item.word,
+          pinyin: item.pinyin,
+          zhDef: item.zhDef,
+          enDef: item.enDef,
+          userSelected: selectedWord
+        });
+
+        const feedbackBox = document.getElementById('quizFeedbackBox');
+        document.getElementById('quizFeedbackText').innerHTML = `答錯囉！正確答案是 <strong class="text-emerald-700">${item.word}</strong> [${item.pinyin}]。請點擊下方字卡進行複習：`;
+        
+        document.getElementById('quizMiniWord').textContent = item.word;
+        document.getElementById('quizMiniPinyin').textContent = item.pinyin;
+        document.getElementById('quizMiniZhDef').textContent = item.zhDef;
+        document.getElementById('quizMiniEnDef').textContent = item.enDef;
+        
+        feedbackBox.classList.remove('hidden');
+        speakText(`${item.word}。${item.zhDef}`);
+      }
+    }
+
+    function flipQuizMiniFlashcard() {
+      isMiniFlashcardFlipped = !isMiniFlashcardFlipped;
+      const item = quizCurrentCorrectItem;
+      speakText(`${item.word}。${item.zhDef}`);
+      showToast('🔊 正在朗讀該詞彙');
+      document.getElementById('quizNextActionArea').classList.remove('hidden');
+    }
+
+    function proceedToNextQuestion() {
+      if (quizCurrentIdx < quizQuestions.length - 1) {
+        quizCurrentIdx++;
+        renderQuizQuestion();
+      } else {
+        document.getElementById('quizGameArea').classList.add('hidden');
+        document.getElementById('quizScoreArea').classList.remove('hidden');
+        document.getElementById('quizFinalScoreText').textContent = `您的得分：${quizScore} / ${quizQuestions.length}`;
+
+        const reviewListEl = document.getElementById('quizReviewList');
+        const reviewContainerEl = document.getElementById('quizReviewContainer');
+
+        if (quizWrongAnswersLog.length > 0) {
+          reviewContainerEl.style.display = 'block';
+          reviewListEl.innerHTML = quizWrongAnswersLog.map(log => `
+            <div class="p-4 bg-stone-50 rounded-2xl border border-stone-200 space-y-2 text-left">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <span class="font-serif font-bold text-lg text-stone-900">${log.questionWord}</span>
+                  <span class="pinyin-font text-amber-700 text-xs font-semibold">[${log.pinyin}]</span>
+                </div>
+                <span class="text-xs bg-rose-100 text-rose-800 px-2.5 py-1 rounded-lg">您選錯了 (${log.userSelected})</span>
+              </div>
+              <div class="flex flex-col text-xs md:text-sm text-stone-600">
+                <span>中文釋義：<strong class="text-stone-900">${log.zhDef}</strong></span>
+                <span>英文釋義：<em class="text-stone-500">${log.enDef}</em></span>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          reviewContainerEl.style.display = 'none';
+        }
+      }
+    }
+
+    /* ==========================================================
+       7. ONLOAD
+       ========================================================== */
+    window.onload = function() {
+      // Set translation button text to match default hidden state
+      document.getElementById('translationBtnText').textContent = '顯示英文';
+      renderStoryStep(false);
+    };
+  </script>
+</body>
+</html>
