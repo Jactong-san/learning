@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>《野豬與長頸鹿》普通話沉浸式學習系統</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; }
+    .keyword-tooltip { visibility: hidden; opacity: 0; transition: opacity 0.2s ease-in-out; }
+    .has-tooltip:hover .keyword-tooltip { visibility: visible; opacity: 1; }
+    .pinyin-font { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; letter-spacing: 0.025em; }
+  </style>
+</head>
+<body class="bg-stone-100 text-stone-800 font-sans min-h-screen flex flex-col">
+
+  <!-- Toast -->
+  <div id="toastNotification" class="fixed top-4 right-4 z-50 transform translate-y-[-200%] transition-transform duration-300 bg-stone-900 text-white px-5 py-2.5 rounded-2xl shadow-xl flex items-center space-x-2 text-xs font-medium">
+    <span id="toastIcon">✨</span>
+    <span id="toastMessage">提示訊息</span>
+  </div>
+
+  <!-- Header -->
+  <header class="bg-white border-b border-stone-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-5xl mx-auto px-3 py-2 flex items-center justify-between gap-2">
+      <div class="flex items-center space-x-2 shrink-0">
+        <div class="w-7 h-7 rounded-lg bg-amber-800 text-white flex items-center justify-center font-serif font-bold text-xs shadow-sm">學</div>
+        <h1 class="font-serif font-bold text-sm md:text-base text-stone-900">學習中心 Learning Portal</h1>
+      </div>
+
+      <a href="https://jactong-san.github.io/learning/" class="bg-stone-800 hover:bg-stone-900 text-white px-2.5 py-1 rounded-lg text-[11px] font-semibold flex items-center space-x-1 shrink-0">
+        <span>🏠</span>
+        <span>Directory</span>
+      </a>
+
+      <div class="flex items-center space-x-1 bg-stone-100 p-0.5 rounded-lg border border-stone-200 shrink-0">
+        <button onclick="switchTab('story')" id="navTab-story" class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-white text-amber-900 shadow-sm">📖 故事 Story</button>
+        <button onclick="switchTab('vocab')" id="navTab-vocab" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600">🧠 詞彙 (16)</button>
+        <button onclick="switchTab('quiz')" id="navTab-quiz" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600">🎯 測驗 Quiz</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4 md:p-6 space-y-5">
+    <!-- Banner -->
+    <div class="bg-white rounded-2xl border border-amber-200 px-4 py-3 flex flex-wrap items-center justify-between gap-2 shadow-sm">
+      <div class="flex items-center space-x-2">
+        <span class="bg-amber-700 text-white text-xs font-bold px-2.5 py-1 rounded-lg">Hugo · Mandarin · 2026.11.14</span>
+        <h2 class="font-serif font-bold text-base md:text-lg text-stone-900">🐗 野豬與長頸鹿 (Wild Boar)</h2>
+      </div>
+      <div class="flex items-center space-x-1 bg-stone-100 px-2.5 py-1 rounded-xl border border-stone-200 text-xs font-semibold text-stone-700">
+        <span>🔊 語速:</span>
+        <select onchange="currentAudioRate = parseFloat(this.value)" class="bg-transparent font-medium text-amber-900 outline-none cursor-pointer">
+          <option value="0.7">0.7x</option>
+          <option value="0.9" selected>0.9x</option>
+          <option value="1.2">1.2x</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- TAB 1: STORY -->
+    <section id="tabContent-story" class="space-y-5">
+      <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-3.5 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center space-x-2">
+          <button onclick="toggleStoryMode()" class="bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold px-3.5 py-2 rounded-xl border border-stone-300">
+            <span id="overviewBtnText">📜 全文總覽 Full Text</span>
+          </button>
+          <button onclick="toggleEnglishTranslation()" class="bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold px-3.5 py-2 rounded-xl border border-stone-300">
+            <span id="translationBtnText">顯示英文 Show English</span>
+          </button>
+        </div>
+        <button onclick="toggleAutoPlayStory()" id="autoPlayStoryBtn" class="bg-amber-700 hover:bg-amber-800 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow flex items-center space-x-1.5">
+          <span id="autoPlayIcon">▶</span>
+          <span id="autoPlayLabel">連續朗讀 Auto-Play</span>
+        </button>
+      </div>
+
+      <div id="fullStoryOverview" class="hidden bg-white rounded-2xl shadow-md border border-stone-200 p-6 space-y-4">
+        <div class="flex items-center justify-between border-b border-stone-200 pb-3">
+          <h3 class="font-serif font-bold text-lg text-stone-900">《野豬與長頸鹿》全文總覽</h3>
+          <button onclick="speakText(STORY_SENTENCES.map(s => s.zh).join(' '))" class="bg-amber-100 text-amber-900 px-3.5 py-1.5 rounded-xl text-xs font-semibold">🔊 朗讀全部</button>
+        </div>
+        <div id="fullStoryContentList" class="space-y-3"></div>
+      </div>
+
+      <div id="sequentialCardWrapper" class="bg-white rounded-2xl shadow-md border border-stone-200 overflow-hidden">
+        <div class="w-full bg-stone-100 h-2"><div id="storyProgressBar" class="bg-amber-600 h-2 transition-all duration-300" style="width: 16.6%;"></div></div>
+        <div class="p-6 md:p-8 space-y-5">
+          <div class="flex items-center justify-between text-xs text-stone-500 font-medium border-b border-stone-100 pb-2.5">
+            <span id="storyStepIndicator" class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-semibold">第 1 段 / 共 6 段</span>
+            <span>💡 滑鼠移至黃色虛線看解釋</span>
+          </div>
+          <div id="sceneIllustrationContainer" class="w-full h-52 bg-gradient-to-b from-emerald-50 to-amber-50 rounded-2xl border border-amber-200/80 flex items-center justify-center p-4 overflow-hidden"></div>
+          <div class="text-center py-2">
+            <h2 id="storyZhText" class="font-serif text-2xl md:text-3xl font-bold text-stone-900 leading-relaxed flex items-center justify-center flex-wrap gap-1.5"></h2>
+          </div>
+          <div id="storyEnBox" class="hidden bg-stone-50 border-l-4 border-amber-600 p-4 rounded-r-xl text-stone-600 text-sm italic"></div>
+          <div class="flex items-center justify-between gap-2 pt-3 border-t border-stone-100">
+            <button onclick="prevSentence()" id="prevSentenceBtn" class="px-4 py-2.5 rounded-xl border border-stone-300 text-stone-700 text-xs font-medium disabled:opacity-40">← 上一句 Prev</button>
+            <button onclick="speakText(STORY_SENTENCES[currentSentenceIdx].zh)" class="bg-amber-700 text-white px-5 py-2.5 rounded-xl text-xs font-semibold shadow">🔊 朗讀本句 Listen</button>
+            <button onclick="nextSentence()" id="nextSentenceBtn" class="px-4 py-2.5 rounded-xl border border-stone-300 text-stone-700 text-xs font-medium disabled:opacity-40">下一句 Next →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: VOCAB -->
+    <section id="tabContent-vocab" class="hidden space-y-5">
+      <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-3.5 flex items-center justify-between">
+        <span class="font-serif font-bold text-stone-900 text-base">16 個核心詞彙</span>
+        <div class="flex items-center space-x-2">
+          <button onclick="switchVocabMode('flashcard')" id="vocabModeBtn-flashcard" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-700 text-white shadow">🃏 互動字卡</button>
+          <button onclick="switchVocabMode('list')" id="vocabModeBtn-list" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-stone-100 text-stone-700">📚 詞彙總覽</button>
+        </div>
+      </div>
+
+      <div id="vocabSubMode-flashcard" class="space-y-5">
+        <div class="max-w-lg mx-auto perspective-1000">
+          <div id="flashcardElement" onclick="flipFlashcard()" class="w-full h-72 bg-white rounded-3xl shadow-xl border border-stone-200 p-6 cursor-pointer relative transition-transform duration-500 transform-style-3d select-none">
+            <div class="absolute inset-0 w-full h-full p-6 flex flex-col justify-between backface-hidden bg-white rounded-3xl">
+              <div class="flex justify-between text-stone-400 text-xs font-semibold"><span id="fcCounter">字卡 1 / 16</span><span>點擊翻面</span></div>
+              <div class="text-center my-auto space-y-2">
+                <div id="fcIcon" class="text-5xl">🐗</div>
+                <h3 id="fcFrontWord" class="font-serif text-4xl font-bold text-stone-900"></h3>
+                <p id="fcFrontPinyin" class="pinyin-font text-base text-amber-800 font-semibold"></p>
+              </div>
+              <div class="text-center text-xs text-stone-400">🔄 點擊查看釋義</div>
+            </div>
+            <div class="absolute inset-0 w-full h-full bg-stone-50 rounded-3xl p-6 flex flex-col justify-between backface-hidden rotate-y-180 border-2 border-stone-300">
+              <div class="flex justify-between text-stone-400 text-xs font-semibold"><span>釋義</span><span id="fcBackWord" class="font-bold text-amber-800"></span></div>
+              <div class="text-center my-auto space-y-2">
+                <p id="fcBackDefinitionZh" class="font-serif text-2xl font-bold text-stone-900"></p>
+                <p id="fcBackDefinitionEn" class="text-base text-stone-500 italic"></p>
+              </div>
+              <div class="flex justify-between items-center pt-2 border-t border-stone-200">
+                <button onclick="event.stopPropagation(); speakText(VOCAB_DATA[flashcardIdx].word + '。' + VOCAB_DATA[flashcardIdx].zhDef)" class="bg-amber-100 text-amber-900 px-3.5 py-1.5 rounded-xl text-xs font-semibold">🔊 完整朗讀</button>
+                <span class="text-xs text-stone-400">點擊翻回</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center gap-3">
+          <button onclick="prevFlashcard()" class="px-4 py-2.5 bg-white border border-stone-300 rounded-xl text-xs font-semibold">← 上一張</button>
+          <button onclick="nextFlashcard()" class="px-4 py-2.5 bg-white border border-stone-300 rounded-xl text-xs font-semibold">下一張 →</button>
+        </div>
+      </div>
+
+      <div id="vocabSubMode-list" class="hidden grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+    </section>
+
+    <!-- TAB 3: QUIZ -->
+    <section id="tabContent-quiz" class="hidden space-y-5">
+      <div class="bg-white rounded-2xl shadow-md border border-stone-200 p-6 space-y-5 text-center">
+        <div id="quizGameArea" class="space-y-5">
+          <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-5 max-w-lg mx-auto space-y-3">
+            <span class="text-xs uppercase bg-amber-200 text-amber-900 px-3 py-1 rounded-full font-bold">第 <span id="quizCurrentNum">1</span> / 10 題</span>
+            <div>
+              <button onclick="playQuizAudio()" class="bg-amber-700 hover:bg-amber-800 text-white px-7 py-3.5 rounded-2xl font-bold shadow-lg flex items-center justify-center space-x-2 mx-auto text-base">
+                <span>🔊</span><span>重新播放 Replay Audio</span>
+              </button>
+            </div>
+            <div id="quizFeedbackBox" class="hidden bg-rose-50 border border-rose-300 text-rose-900 p-3.5 rounded-xl text-xs space-y-1.5">
+              <p id="quizFeedbackText"></p>
+            </div>
+          </div>
+          <div id="quizOptionsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto"></div>
+          <div id="quizNextActionArea" class="hidden">
+            <button onclick="proceedToNextQuestion()" class="bg-amber-700 text-white px-7 py-2.5 rounded-2xl font-bold shadow">下一題 Next →</button>
+          </div>
+        </div>
+        <div id="quizScoreArea" class="hidden py-6 space-y-4">
+          <div class="text-5xl">🏆</div>
+          <h3 class="font-serif font-bold text-2xl text-stone-900">挑戰完成！</h3>
+          <p id="quizFinalScoreText" class="text-base text-stone-600 font-semibold"></p>
+          <button onclick="startQuiz()" class="bg-amber-700 text-white px-7 py-2.5 rounded-2xl font-semibold shadow">再玩一次 Play Again</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const VOCAB_DATA = [
+      { id: 1, word: "野豬", pinyin: "yězhū", zhDef: "野生的豬。", enDef: "Wild boar", icon: "🐗" },
+      { id: 2, word: "長頸鹿", pinyin: "chángjǐnglù", zhDef: "脖子很長的動物。", enDef: "Giraffe", icon: "🦒" },
+      { id: 3, word: "朋友", pinyin: "péngyou", zhDef: "好朋友。", enDef: "Friend", icon: "🤝" },
+      { id: 4, word: "不怕", pinyin: "bù pà", zhDef: "不害怕。", enDef: "Not afraid", icon: "💪" },
+      { id: 5, word: "路遠", pinyin: "lù yuǎn", zhDef: "路很遠。", enDef: "The road is far", icon: "🛤️" },
+      { id: 6, word: "來看", pinyin: "lái kàn", zhDef: "來探望。", enDef: "To come and visit", icon: "👀" },
+      { id: 7, word: "到了", pinyin: "dào le", zhDef: "到達了。", enDef: "Arrived", icon: "📍" },
+      { id: 8, word: "家", pinyin: "jiā", zhDef: "住的地方。", enDef: "Home", icon: "🏠" },
+      { id: 9, word: "敲門", pinyin: "qiāo mén", zhDef: "用手指敲門。", enDef: "To knock on the door", icon: "✊" },
+      { id: 10, word: "沒人開", pinyin: "méi rén kāi", zhDef: "沒有人開門。", enDef: "No one opens", icon: "🚪" },
+      { id: 11, word: "問", pinyin: "wèn", zhDef: "提出問題。", enDef: "To ask", icon: "❓" },
+      { id: 12, word: "在家嗎", pinyin: "zài jiā ma", zhDef: "是不是在家？", enDef: "Are you at home?", icon: "🏡" },
+      { id: 13, word: "回答", pinyin: "huídá", zhDef: "回覆別人的話。", enDef: "To answer", icon: "💬" },
+      { id: 14, word: "咦", pinyin: "yí", zhDef: "表示奇怪的聲音。", enDef: "Expression of surprise", icon: "😮" },
+      { id: 15, word: "為什麼", pinyin: "wèishénme", zhDef: "詢問原因。", enDef: "Why", icon: "🤔" },
+      { id: 16, word: "不開門", pinyin: "bù kāi mén", zhDef: "不把門打開。", enDef: "Not open the door", icon: "🔒" }
+    ];
+
+    const STORY_SENTENCES = [
+      { id: 1, zh: "野豬和長頸鹿是朋友。", en: "The wild boar and the giraffe are friends." },
+      { id: 2, zh: "野豬不怕路遠，來看長頸鹿，到了長頸鹿的家。", en: "The wild boar is not afraid of the long road. He comes to visit the giraffe and arrives at the giraffe’s home." },
+      { id: 3, zh: "咚咚咚！野豬敲門沒人開。", en: "Knock knock knock! The wild boar knocks on the door, but no one opens it." },
+      { id: 4, zh: "野豬問：「長頸鹿大哥在家嗎？」", en: "The wild boar asks: “Is Big Brother Giraffe at home?”" },
+      { id: 5, zh: "「在家呢。」長頸鹿在裡面回答說。", en: "“I’m home,” the giraffe answers from inside." },
+      { id: 6, zh: "「咦，在家為什麼不開門？」", en: "“Huh? If you’re home, why don’t you open the door?”" }
+    ];
+
+    let currentAudioRate = 0.9;
+    let currentSentenceIdx = 0;
+    let isFullTextOverview = false;
+    let showEnglishTranslation = false;
+    let isAutoPlayingStory = false;
+    let selectedTwVoice = null;
+    let flashcardIdx = 0;
+    let isFlashcardFlipped = false;
+    let quizQuestions = [];
+    let quizCurrentIdx = 0;
+    let quizScore = 0;
+    let quizCurrentCorrectItem = null;
+    let isQuizLocked = false;
+
+    function loadTaiwaneseVoice() {
+      if (!window.speechSynthesis) return;
+      const voices = window.speechSynthesis.getVoices();
+      selectedTwVoice = voices.find(v => v.lang === 'zh-TW') || voices.find(v => v.lang.startsWith('zh')) || null;
+    }
+    if (window.speechSynthesis) {
+      loadTaiwaneseVoice();
+      window.speechSynthesis.onvoiceschanged = loadTaiwaneseVoice;
+    }
+
+    function speakText(text, onEnd = null) {
+      if (!window.speechSynthesis) { if (onEnd) onEnd(); return; }
+      if (!selectedTwVoice) loadTaiwaneseVoice();
+      window.speechSynthesis.cancel();
+      setTimeout(() => {
+        const u = new SpeechSynthesisUtterance(text);
+        if (selectedTwVoice) u.voice = selectedTwVoice;
+        u.lang = 'zh-TW';
+        u.rate = currentAudioRate;
+        u.onend = () => { if (onEnd) onEnd(); };
+        window.speechSynthesis.resume();
+        window.speechSynthesis.speak(u);
+      }, 50);
+    }
+
+    function switchTab(tabId) {
+      isAutoPlayingStory = false;
+      ['story', 'vocab', 'quiz'].forEach(t => {
+        document.getElementById(`tabContent-${t}`).classList.toggle('hidden', t !== tabId);
+        document.getElementById(`navTab-${t}`).className = t === tabId
+          ? "px-2.5 py-1 rounded-md text-[11px] font-semibold bg-white text-amber-900 shadow-sm"
+          : "px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600";
+      });
+      if (tabId === 'vocab') { renderFlashcard(); renderVocabDirectory(); }
+      if (tabId === 'quiz') startQuiz();
+    }
+
+    function getSceneSvg() {
+      return `<svg viewBox="0 0 360 210" class="w-full h-full">
+        <rect width="360" height="210" fill="#f0fdf4"/>
+        <ellipse cx="180" cy="200" rx="190" ry="30" fill="#bbf7d0"/>
+        <rect x="200" y="90" width="110" height="105" rx="6" fill="#fef3c7" stroke="#92400e" stroke-width="2.5"/>
+        <polygon points="190,90 255,40 320,90" fill="#d97706" stroke="#78350f" stroke-width="2.5"/>
+        <path d="M235 83 L235 63 A20 20 0 0 1 275 63 L275 83 Z" fill="#451a03"/>
+        <rect x="232" y="125" width="46" height="70" rx="4" fill="#b45309" stroke="#78350f" stroke-width="2"/>
+        <path d="M265 77 Q230 70 205 87" stroke="#facc15" stroke-width="14" stroke-linecap="round" fill="none"/>
+        <ellipse cx="200" cy="90" rx="12" ry="8" fill="#facc15" stroke="#b45309" stroke-width="1.5"/>
+        <ellipse cx="115" cy="170" rx="28" ry="20" fill="#78716c" stroke="#44403c" stroke-width="2"/>
+        <circle cx="138" cy="163" r="13" fill="#78716c" stroke="#44403c" stroke-width="2"/>
+        <ellipse cx="150" cy="165" rx="5" ry="4" fill="#fca5a5"/>
+      </svg>`;
+    }
+
+    function highlightKeywords(text) {
+      const sorted = [...VOCAB_DATA].sort((a, b) => b.word.length - a.word.length);
+      let segs = [text];
+      sorted.forEach(v => {
+        let next = [];
+        segs.forEach(s => {
+          if (typeof s === 'object') { next.push(s); return; }
+          const parts = s.split(v.word);
+          parts.forEach((p, idx) => {
+            if (p) next.push(p);
+            if (idx < parts.length - 1) {
+              const tip = `<span class="keyword-tooltip absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-stone-900 text-white text-xs rounded-xl p-2.5 shadow-xl z-30 pointer-events-none text-center font-sans"><strong class="text-amber-300">${v.word}</strong><br><span class="pinyin-font text-amber-200">${v.pinyin}</span><br><span>${v.zhDef}</span><br><em class="text-stone-400">${v.enDef}</em></span>`;
+              next.push({ __html: `<span class="has-tooltip relative inline-block cursor-pointer text-amber-900 border-b-2 border-dashed border-amber-500 px-1 rounded" onclick="speakText('${v.word}'); event.stopPropagation();">${v.word}${tip}</span>` });
+            }
+          });
+        });
+        segs = next;
+      });
+      return segs.map(s => typeof s === 'string' ? s : s.__html).join('');
+    }
+
+    function renderStoryStep(autoPlay = true) {
+      const s = STORY_SENTENCES[currentSentenceIdx];
+      document.getElementById('storyProgressBar').style.width = `${((currentSentenceIdx + 1) / STORY_SENTENCES.length) * 100}%`;
+      document.getElementById('storyStepIndicator').textContent = `第 ${currentSentenceIdx + 1} 段 / 共 ${STORY_SENTENCES.length} 段`;
+      document.getElementById('sceneIllustrationContainer').innerHTML = getSceneSvg();
+      document.getElementById('storyZhText').innerHTML = highlightKeywords(s.zh);
+      const enBox = document.getElementById('storyEnBox');
+      enBox.textContent = s.en;
+      enBox.classList.toggle('hidden', !showEnglishTranslation);
+      document.getElementById('prevSentenceBtn').disabled = currentSentenceIdx === 0;
+      document.getElementById('nextSentenceBtn').disabled = currentSentenceIdx === STORY_SENTENCES.length - 1;
+      if (autoPlay) speakText(s.zh);
+    }
+
+    function nextSentence() { if (currentSentenceIdx < STORY_SENTENCES.length - 1) { currentSentenceIdx++; renderStoryStep(true); } }
+    function prevSentence() { if (currentSentenceIdx > 0) { currentSentenceIdx--; renderStoryStep(true); } }
+
+    function toggleStoryMode() {
+      isFullTextOverview = !isFullTextOverview;
+      document.getElementById('fullStoryOverview').classList.toggle('hidden', !isFullTextOverview);
+      document.getElementById('sequentialCardWrapper').classList.toggle('hidden', isFullTextOverview);
+      document.getElementById('overviewBtnText').textContent = isFullTextOverview ? '📖 逐句導覽 Step View' : '📜 全文總覽 Full Text';
+      if (isFullTextOverview) {
+        document.getElementById('fullStoryContentList').innerHTML = STORY_SENTENCES.map((s, i) => `
+          <div class="p-4 bg-stone-50 rounded-xl border border-stone-200 space-y-1">
+            <div class="flex justify-between text-xs text-amber-800 font-semibold"><span>第 ${i + 1} 段</span><button onclick="speakText('${s.zh}')" class="bg-amber-100 px-2.5 py-0.5 rounded-lg">🔊 朗讀</button></div>
+            <p class="font-serif text-lg font-bold text-stone-900">${highlightKeywords(s.zh)}</p>
+            ${showEnglishTranslation ? `<p class="text-xs text-stone-600 italic">${s.en}</p>` : ''}
+          </div>
+        `).join('');
+      }
+    }
+
+    function toggleEnglishTranslation() {
+      showEnglishTranslation = !showEnglishTranslation;
+      document.getElementById('translationBtnText').textContent = showEnglishTranslation ? '隱藏英文 Hide English' : '顯示英文 Show English';
+      renderStoryStep(false);
+    }
+
+    function toggleAutoPlayStory() {
+      isAutoPlayingStory = !isAutoPlayingStory;
+      document.getElementById('autoPlayIcon').textContent = isAutoPlayingStory ? '⏹' : '▶';
+      document.getElementById('autoPlayLabel').textContent = isAutoPlayingStory ? '停止 Stop' : '連續朗讀 Auto-Play';
+      if (isAutoPlayingStory) {
+        const playNext = () => {
+          if (!isAutoPlayingStory) return;
+          renderStoryStep(false);
+          speakText(STORY_SENTENCES[currentSentenceIdx].zh, () => {
+            if (!isAutoPlayingStory) return;
+            if (currentSentenceIdx < STORY_SENTENCES.length - 1) { currentSentenceIdx++; setTimeout(playNext, 700); }
+            else { isAutoPlayingStory = false; document.getElementById('autoPlayIcon').textContent = '▶'; document.getElementById('autoPlayLabel').textContent = '連續朗讀 Auto-Play'; }
+          });
+        };
+        playNext();
+      } else {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function switchVocabMode(mode) {
+      document.getElementById('vocabSubMode-flashcard').classList.toggle('hidden', mode !== 'flashcard');
+      document.getElementById('vocabSubMode-list').classList.toggle('hidden', mode === 'flashcard');
+      document.getElementById('vocabModeBtn-flashcard').className = mode === 'flashcard' ? "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-700 text-white shadow" : "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-stone-100 text-stone-700";
+      document.getElementById('vocabModeBtn-list').className = mode !== 'flashcard' ? "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-700 text-white shadow" : "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-stone-100 text-stone-700";
+    }
+
+    function renderFlashcard() {
+      const item = VOCAB_DATA[flashcardIdx];
+      document.getElementById('fcCounter').textContent = `字卡 ${flashcardIdx + 1} / ${VOCAB_DATA.length}`;
+      document.getElementById('fcIcon').textContent = item.icon;
+      document.getElementById('fcFrontWord').textContent = item.word;
+      document.getElementById('fcFrontPinyin').textContent = item.pinyin;
+      document.getElementById('fcBackWord').textContent = item.word;
+      document.getElementById('fcBackDefinitionZh').textContent = item.zhDef;
+      document.getElementById('fcBackDefinitionEn').textContent = item.enDef;
+      isFlashcardFlipped = false;
+      document.getElementById('flashcardElement').classList.remove('rotate-y-180');
+    }
+
+    function flipFlashcard() {
+      isFlashcardFlipped = !isFlashcardFlipped;
+      document.getElementById('flashcardElement').classList.toggle('rotate-y-180', isFlashcardFlipped);
+      speakText(isFlashcardFlipped ? `${VOCAB_DATA[flashcardIdx].word}。${VOCAB_DATA[flashcardIdx].zhDef}` : VOCAB_DATA[flashcardIdx].word);
+    }
+
+    function nextFlashcard() { flashcardIdx = (flashcardIdx + 1) % VOCAB_DATA.length; renderFlashcard(); speakText(VOCAB_DATA[flashcardIdx].word); }
+    function prevFlashcard() { flashcardIdx = (flashcardIdx - 1 + VOCAB_DATA.length) % VOCAB_DATA.length; renderFlashcard(); speakText(VOCAB_DATA[flashcardIdx].word); }
+
+    function renderVocabDirectory() {
+      document.getElementById('vocabSubMode-list').innerHTML = VOCAB_DATA.map(v => `
+        <div onclick="speakText('${v.word}')" class="cursor-pointer bg-white p-4 rounded-2xl border border-stone-200 hover:border-amber-500 flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <span class="text-2xl bg-amber-50 p-2.5 rounded-xl">${v.icon}</span>
+            <div>
+              <div class="font-serif font-bold text-lg text-stone-900">${v.word} <span class="pinyin-font text-xs text-amber-700 font-semibold">${v.pinyin}</span></div>
+              <div class="text-xs text-stone-700 font-bold">${v.zhDef} <span class="text-stone-400 font-normal italic">(${v.enDef})</span></div>
+            </div>
+          </div>
+          <span>🔊</span>
+        </div>
+      `).join('');
+    }
+
+    function startQuiz() {
+      quizCurrentIdx = 0; quizScore = 0; isQuizLocked = false;
+      quizQuestions = [...VOCAB_DATA].sort(() => 0.5 - Math.random()).slice(0, 10);
+      document.getElementById('quizGameArea').classList.remove('hidden');
+      document.getElementById('quizScoreArea').classList.add('hidden');
+      renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+      isQuizLocked = false;
+      const item = quizQuestions[quizCurrentIdx];
+      quizCurrentCorrectItem = item;
+      document.getElementById('quizCurrentNum').textContent = quizCurrentIdx + 1;
+      document.getElementById('quizFeedbackBox').classList.add('hidden');
+      document.getElementById('quizNextActionArea').classList.add('hidden');
+
+      const wrongs = VOCAB_DATA.filter(v => v.word !== item.word).sort(() => 0.5 - Math.random()).slice(0, 3);
+      const opts = [...wrongs, item].sort(() => 0.5 - Math.random());
+
+      document.getElementById('quizOptionsGrid').innerHTML = opts.map(opt => `
+        <button onclick="submitQuizAnswer('${opt.word}')" data-word="${opt.word}" class="q-opt p-4 bg-white hover:bg-amber-50 border-2 border-stone-200 rounded-2xl flex items-center justify-between text-left">
+          <div>
+            <div class="font-serif font-bold text-2xl text-stone-900">${opt.word}</div>
+            <div class="q-pin hidden pinyin-font text-xs text-amber-700 font-semibold">${opt.pinyin}</div>
+          </div>
+          <span class="text-xs text-stone-500 bg-stone-100 px-2.5 py-1 rounded-lg">${opt.zhDef}</span>
+        </button>
+      `).join('');
+      playQuizAudio();
+    }
+
+    function playQuizAudio() { if (quizCurrentCorrectItem) speakText(quizCurrentCorrectItem.word); }
+
+    function submitQuizAnswer(word) {
+      if (isQuizLocked) return;
+      isQuizLocked = true;
+      const item = quizCurrentCorrectItem;
+      document.querySelectorAll('.q-pin').forEach(el => el.classList.remove('hidden'));
+      document.querySelectorAll('.q-opt').forEach(btn => {
+        btn.disabled = true;
+        const w = btn.getAttribute('data-word');
+        if (w === item.word) btn.className = "q-opt p-4 bg-emerald-100 border-2 border-emerald-500 rounded-2xl flex items-center justify-between text-left";
+        else if (w === word) btn.className = "q-opt p-4 bg-rose-100 border-2 border-rose-500 rounded-2xl flex items-center justify-between text-left";
+      });
+      if (word === item.word) {
+        quizScore++;
+      } else {
+        const fb = document.getElementById('quizFeedbackBox');
+        document.getElementById('quizFeedbackText').innerHTML = `答錯囉！正確答案是 <strong class="text-emerald-700">${item.word}</strong> [${item.pinyin}] — ${item.zhDef}`;
+        fb.classList.remove('hidden');
+      }
+      speakText(`${item.word}。${item.zhDef}`);
+      document.getElementById('quizNextActionArea').classList.remove('hidden');
+    }
+
+    function proceedToNextQuestion() {
+      if (quizCurrentIdx < quizQuestions.length - 1) { quizCurrentIdx++; renderQuizQuestion(); }
+      else {
+        document.getElementById('quizGameArea').classList.add('hidden');
+        document.getElementById('quizScoreArea').classList.remove('hidden');
+        document.getElementById('quizFinalScoreText').textContent = `您的得分：${quizScore} / ${quizQuestions.length}`;
+      }
+    }
+
+    window.onload = function() {
+      renderStoryStep(false);
+    };
+  </script>
+</body>
+</html>
