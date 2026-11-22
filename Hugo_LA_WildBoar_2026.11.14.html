@@ -41,7 +41,7 @@
         <button onclick="switchTab('story')" id="navTab-story" class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-white text-amber-900 shadow-sm whitespace-nowrap">📖 故事 Story</button>
         <button onclick="switchTab('vocab')" id="navTab-vocab" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600 whitespace-nowrap">🧠 詞彙 (<span id="vocabCountLabel">26</span>)</button>
         <button onclick="switchTab('reorder')" id="navTab-reorder" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600 whitespace-nowrap">🧩 重組句子</button>
-        <button onclick="switchTab('quiz')" id="navTab-quiz" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600 whitespace-nowrap">🎯 測驗 Quiz</button>
+        <button onclick="switchTab('quiz')" id="navTab-quiz" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600 whitespace-nowrap">🎯 測驗 (30題)</button>
       </div>
     </div>
   </header>
@@ -50,7 +50,7 @@
     <!-- Banner -->
     <div class="bg-white rounded-2xl border border-amber-200 px-4 py-3 flex flex-wrap items-center justify-between gap-2 shadow-sm">
       <div class="flex items-center space-x-2">
-        <span class="bg-amber-700 text-white text-xs font-bold px-2.5 py-1 rounded-lg">Hugo · Mandarin · Updated</span>
+        <span class="bg-amber-700 text-white text-xs font-bold px-2.5 py-1 rounded-lg">Hugo · Mandarin · 3 Rounds</span>
         <h2 class="font-serif font-bold text-base md:text-lg text-stone-900">🐗 野豬與長頸鹿 (Wild Boar)</h2>
       </div>
       <div class="flex items-center space-x-1 bg-stone-100 px-2.5 py-1 rounded-xl border border-stone-200 text-xs font-semibold text-stone-700">
@@ -187,12 +187,31 @@
       </div>
     </section>
 
-    <!-- TAB 4: QUIZ -->
+    <!-- TAB 4: QUIZ (30 QUESTIONS: 3 ROUNDS x 10 QUESTIONS) -->
     <section id="tabContent-quiz" class="hidden space-y-5">
       <div class="bg-white rounded-2xl shadow-md border border-stone-200 p-6 space-y-5 text-center">
+        <!-- Round Selector & Overall Progress -->
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-stone-100 pb-3">
+          <div class="flex items-center space-x-1.5">
+            <button onclick="selectQuizRound(0)" id="roundBtn-0" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-700 text-white shadow">第 1 輪 Round 1 (1–10)</button>
+            <button onclick="selectQuizRound(1)" id="roundBtn-1" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200">第 2 輪 Round 2 (11–20)</button>
+            <button onclick="selectQuizRound(2)" id="roundBtn-2" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200">第 3 輪 Round 3 (21–30)</button>
+          </div>
+          <div class="text-xs font-semibold text-stone-600">
+            總進度：<span id="quizGlobalDoneCount" class="text-amber-800 font-bold">0</span> / 30 題 · 總分：<span id="quizTotalScoreBadge" class="text-emerald-700 font-bold">0</span>
+          </div>
+        </div>
+
         <div id="quizGameArea" class="space-y-5">
           <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-5 max-w-lg mx-auto space-y-3">
-            <span class="text-xs uppercase bg-amber-200 text-amber-900 px-3 py-1 rounded-full font-bold">第 <span id="quizCurrentNum">1</span> / 10 題</span>
+            <div class="flex items-center justify-center gap-2 flex-wrap">
+              <span class="text-xs uppercase bg-amber-200 text-amber-900 px-3 py-1 rounded-full font-bold">
+                <span id="quizRoundLabel">第 1 輪</span> · 本輪第 <span id="quizCurrentNum">1</span> / 10 題
+              </span>
+              <span class="text-xs bg-white text-stone-600 border border-amber-200 px-2.5 py-1 rounded-full font-semibold">
+                總第 <span id="quizOverallQuestionNum">1</span> / 30 題
+              </span>
+            </div>
             <div>
               <button onclick="playQuizAudio()" class="bg-amber-700 hover:bg-amber-800 text-white px-7 py-3.5 rounded-2xl font-bold shadow-lg flex items-center justify-center space-x-2 mx-auto text-base">
                 <span>🔊</span><span>重新播放 Replay Audio</span>
@@ -207,11 +226,23 @@
             <button onclick="proceedToNextQuestion()" class="bg-amber-700 text-white px-7 py-2.5 rounded-2xl font-bold shadow">下一題 Next →</button>
           </div>
         </div>
+
+        <div id="quizRoundCompleteArea" class="hidden py-6 space-y-4">
+          <div class="text-5xl">🎉</div>
+          <h3 id="quizRoundCompleteTitle" class="font-serif font-bold text-2xl text-stone-900">本輪完成！</h3>
+          <p id="quizRoundScoreText" class="text-base text-stone-600 font-semibold"></p>
+          <div class="flex items-center justify-center gap-3 flex-wrap">
+            <button onclick="replayCurrentRound()" class="px-5 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-2xl text-xs font-semibold border border-stone-300">↺ 重玩本輪</button>
+            <button id="nextRoundBtn" onclick="goToNextRound()" class="px-6 py-2.5 bg-amber-700 hover:bg-amber-800 text-white rounded-2xl text-xs font-bold shadow">前往下一輪 →</button>
+          </div>
+        </div>
+
         <div id="quizScoreArea" class="hidden py-6 space-y-4">
           <div class="text-5xl">🏆</div>
-          <h3 class="font-serif font-bold text-2xl text-stone-900">挑戰完成！</h3>
+          <h3 class="font-serif font-bold text-2xl text-stone-900">30 題全數挑戰完成！</h3>
           <p id="quizFinalScoreText" class="text-base text-stone-600 font-semibold"></p>
-          <button onclick="startQuiz()" class="bg-amber-700 text-white px-7 py-2.5 rounded-2xl font-semibold shadow">再玩一次 Play Again</button>
+          <div id="quizRoundBreakdown" class="flex items-center justify-center gap-2 flex-wrap text-xs font-semibold text-stone-700"></div>
+          <button onclick="startQuiz()" class="bg-amber-700 text-white px-7 py-2.5 rounded-2xl font-semibold shadow">重新開始 3 輪測驗 Play Again</button>
         </div>
       </div>
     </section>
@@ -288,9 +319,18 @@
     let reorderBankItems = [];
     let reorderSelectedItems = [];
 
-    let quizQuestions = [];
+    // 3 Rounds x 10 Questions = 30 Questions
+    const ROUNDS_COUNT = 3;
+    const QUESTIONS_PER_ROUND = 10;
+    let quizRounds = [[], [], []]; // 3 arrays of 10 items
+    let quizRoundScores = [0, 0, 0];
+    let quizRoundAnswered = [
+      Array(10).fill(false),
+      Array(10).fill(false),
+      Array(10).fill(false)
+    ];
+    let activeRoundIdx = 0;
     let quizCurrentIdx = 0;
-    let quizScore = 0;
     let quizCurrentCorrectItem = null;
     let isQuizLocked = false;
 
@@ -333,7 +373,10 @@
       });
       if (tabId === 'vocab') { renderFlashcard(); renderVocabDirectory(); }
       if (tabId === 'reorder') { renderReorderQuestion(); }
-      if (tabId === 'quiz') startQuiz();
+      if (tabId === 'quiz') {
+        if (!quizRounds[0] || quizRounds[0].length === 0) startQuiz();
+        else renderQuizQuestion();
+      }
     }
 
     function getSceneSvg(idx) {
@@ -562,20 +605,130 @@
       renderReorderQuestion();
     }
 
-    /* QUIZ LOGIC */
+    /* QUIZ LOGIC: 30 QUESTIONS (3 ROUNDS x 10 QUESTIONS) */
+    function build30QuestionPool() {
+      const pool = [];
+      for (let i = 0; i < 30; i++) {
+        pool.push(VOCAB_DATA[i % VOCAB_DATA.length]);
+      }
+      return pool.sort(() => 0.5 - Math.random());
+    }
+
     function startQuiz() {
-      quizCurrentIdx = 0; quizScore = 0; isQuizLocked = false;
-      quizQuestions = [...VOCAB_DATA].sort(() => 0.5 - Math.random()).slice(0, 10);
-      document.getElementById('quizGameArea').classList.remove('hidden');
-      document.getElementById('quizScoreArea').classList.add('hidden');
+      const all30 = build30QuestionPool();
+      quizRounds = [
+        all30.slice(0, 10),
+        all30.slice(10, 20),
+        all30.slice(20, 30)
+      ];
+      quizRoundScores = [0, 0, 0];
+      quizRoundAnswered = [
+        Array(10).fill(false),
+        Array(10).fill(false),
+        Array(10).fill(false)
+      ];
+      activeRoundIdx = 0;
+      quizCurrentIdx = 0;
+      updateRoundButtons();
+      updateQuizSummaryBadges();
+      showQuizGameView();
       renderQuizQuestion();
+    }
+
+    function updateRoundButtons() {
+      for (let r = 0; r < ROUNDS_COUNT; r++) {
+        const btn = document.getElementById(`roundBtn-${r}`);
+        const doneInRound = quizRoundAnswered[r].filter(Boolean).length;
+        const suffix = doneInRound === 10 ? ` ✓ (${quizRoundScores[r]}/10)` : ` (${doneInRound}/10)`;
+        btn.textContent = `第 ${r + 1} 輪 Round ${r + 1}${suffix}`;
+        btn.className = r === activeRoundIdx
+          ? "px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-700 text-white shadow"
+          : "px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200";
+      }
+    }
+
+    function updateQuizSummaryBadges() {
+      const totalDone = quizRoundAnswered.flat().filter(Boolean).length;
+      const totalScore = quizRoundScores.reduce((a, b) => a + b, 0);
+      document.getElementById('quizGlobalDoneCount').textContent = totalDone;
+      document.getElementById('quizTotalScoreBadge').textContent = totalScore;
+    }
+
+    function showQuizGameView() {
+      document.getElementById('quizGameArea').classList.remove('hidden');
+      document.getElementById('quizRoundCompleteArea').classList.add('hidden');
+      document.getElementById('quizScoreArea').classList.add('hidden');
+    }
+
+    function selectQuizRound(roundIdx) {
+      activeRoundIdx = roundIdx;
+      const firstUnanswered = quizRoundAnswered[roundIdx].findIndex(v => !v);
+      quizCurrentIdx = firstUnanswered >= 0 ? firstUnanswered : 0;
+      updateRoundButtons();
+      showQuizGameView();
+      renderQuizQuestion();
+    }
+
+    function replayCurrentRound() {
+      quizRoundScores[activeRoundIdx] = 0;
+      quizRoundAnswered[activeRoundIdx] = Array(10).fill(false);
+      // Reshuffle this round's 10 questions
+      const fresh10 = [...VOCAB_DATA].sort(() => 0.5 - Math.random()).slice(0, 10);
+      quizRounds[activeRoundIdx] = fresh10;
+      quizCurrentIdx = 0;
+      updateRoundButtons();
+      updateQuizSummaryBadges();
+      showQuizGameView();
+      renderQuizQuestion();
+    }
+
+    function goToNextRound() {
+      if (activeRoundIdx < ROUNDS_COUNT - 1) {
+        selectQuizRound(activeRoundIdx + 1);
+      } else {
+        showFinal30Score();
+      }
+    }
+
+    function showRoundCompleteView() {
+      updateRoundButtons();
+      updateQuizSummaryBadges();
+      document.getElementById('quizGameArea').classList.add('hidden');
+      document.getElementById('quizScoreArea').classList.add('hidden');
+      document.getElementById('quizRoundCompleteArea').classList.remove('hidden');
+
+      document.getElementById('quizRoundCompleteTitle').textContent = `第 ${activeRoundIdx + 1} 輪完成！`;
+      document.getElementById('quizRoundScoreText').textContent = `本輪得分：${quizRoundScores[activeRoundIdx]} / ${QUESTIONS_PER_ROUND}`;
+
+      const nextBtn = document.getElementById('nextRoundBtn');
+      if (activeRoundIdx < ROUNDS_COUNT - 1) {
+        nextBtn.textContent = `前往第 ${activeRoundIdx + 2} 輪 →`;
+      } else {
+        nextBtn.textContent = `查看 30 題總成績 🏆`;
+      }
+    }
+
+    function showFinal30Score() {
+      updateRoundButtons();
+      updateQuizSummaryBadges();
+      document.getElementById('quizGameArea').classList.add('hidden');
+      document.getElementById('quizRoundCompleteArea').classList.add('hidden');
+      document.getElementById('quizScoreArea').classList.remove('hidden');
+
+      const totalScore = quizRoundScores.reduce((a, b) => a + b, 0);
+      document.getElementById('quizFinalScoreText').textContent = `3 輪總得分：${totalScore} / 30`;
+      document.getElementById('quizRoundBreakdown').innerHTML = [0, 1, 2].map(r =>
+        `<span class="px-3 py-1 bg-amber-50 border border-amber-200 rounded-xl">第 ${r + 1} 輪：${quizRoundScores[r]} / 10</span>`
+      ).join('');
     }
 
     function renderQuizQuestion() {
       isQuizLocked = false;
-      const item = quizQuestions[quizCurrentIdx];
+      const item = quizRounds[activeRoundIdx][quizCurrentIdx];
       quizCurrentCorrectItem = item;
+      document.getElementById('quizRoundLabel').textContent = `第 ${activeRoundIdx + 1} 輪`;
       document.getElementById('quizCurrentNum').textContent = quizCurrentIdx + 1;
+      document.getElementById('quizOverallQuestionNum').textContent = activeRoundIdx * QUESTIONS_PER_ROUND + quizCurrentIdx + 1;
       document.getElementById('quizFeedbackBox').classList.add('hidden');
       document.getElementById('quizNextActionArea').classList.add('hidden');
 
@@ -607,9 +760,17 @@
         if (w === item.word) btn.className = "q-opt p-4 bg-emerald-100 border-2 border-emerald-500 rounded-2xl flex items-center justify-between text-left";
         else if (w === word) btn.className = "q-opt p-4 bg-rose-100 border-2 border-rose-500 rounded-2xl flex items-center justify-between text-left";
       });
-      if (word === item.word) {
-        quizScore++;
-      } else {
+
+      if (!quizRoundAnswered[activeRoundIdx][quizCurrentIdx]) {
+        quizRoundAnswered[activeRoundIdx][quizCurrentIdx] = true;
+        if (word === item.word) {
+          quizRoundScores[activeRoundIdx]++;
+        }
+      }
+      updateRoundButtons();
+      updateQuizSummaryBadges();
+
+      if (word !== item.word) {
         const fb = document.getElementById('quizFeedbackBox');
         document.getElementById('quizFeedbackText').innerHTML = `答錯囉！正確答案是 <strong class="text-emerald-700">${item.word}</strong> [${item.pinyin}] — ${item.zhDef}`;
         fb.classList.remove('hidden');
@@ -619,11 +780,11 @@
     }
 
     function proceedToNextQuestion() {
-      if (quizCurrentIdx < quizQuestions.length - 1) { quizCurrentIdx++; renderQuizQuestion(); }
-      else {
-        document.getElementById('quizGameArea').classList.add('hidden');
-        document.getElementById('quizScoreArea').classList.remove('hidden');
-        document.getElementById('quizFinalScoreText').textContent = `您的得分：${quizScore} / ${quizQuestions.length}`;
+      if (quizCurrentIdx < QUESTIONS_PER_ROUND - 1) {
+        quizCurrentIdx++;
+        renderQuizQuestion();
+      } else {
+        showRoundCompleteView();
       }
     }
 
