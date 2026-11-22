@@ -37,10 +37,11 @@
         <span>Directory</span>
       </a>
 
-      <div class="flex items-center space-x-1 bg-stone-100 p-0.5 rounded-lg border border-stone-200 shrink-0">
-        <button onclick="switchTab('story')" id="navTab-story" class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-white text-amber-900 shadow-sm">📖 故事 Story</button>
-        <button onclick="switchTab('vocab')" id="navTab-vocab" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600">🧠 詞彙 (16)</button>
-        <button onclick="switchTab('quiz')" id="navTab-quiz" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600">🎯 測驗 Quiz</button>
+      <div class="flex items-center space-x-1 bg-stone-100 p-0.5 rounded-lg border border-stone-200 shrink-0 overflow-x-auto">
+        <button onclick="switchTab('story')" id="navTab-story" class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-white text-amber-900 shadow-sm whitespace-nowrap">📖 故事 Story</button>
+        <button onclick="switchTab('vocab')" id="navTab-vocab" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600 whitespace-nowrap">🧠 詞彙 (<span id="vocabCountLabel">26</span>)</button>
+        <button onclick="switchTab('reorder')" id="navTab-reorder" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600 whitespace-nowrap">🧩 重組句子</button>
+        <button onclick="switchTab('quiz')" id="navTab-quiz" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600 whitespace-nowrap">🎯 測驗 Quiz</button>
       </div>
     </div>
   </header>
@@ -49,7 +50,7 @@
     <!-- Banner -->
     <div class="bg-white rounded-2xl border border-amber-200 px-4 py-3 flex flex-wrap items-center justify-between gap-2 shadow-sm">
       <div class="flex items-center space-x-2">
-        <span class="bg-amber-700 text-white text-xs font-bold px-2.5 py-1 rounded-lg">Hugo · Mandarin · 2026.11.14</span>
+        <span class="bg-amber-700 text-white text-xs font-bold px-2.5 py-1 rounded-lg">Hugo · Mandarin · Updated</span>
         <h2 class="font-serif font-bold text-base md:text-lg text-stone-900">🐗 野豬與長頸鹿 (Wild Boar)</h2>
       </div>
       <div class="flex items-center space-x-1 bg-stone-100 px-2.5 py-1 rounded-xl border border-stone-200 text-xs font-semibold text-stone-700">
@@ -88,10 +89,10 @@
       </div>
 
       <div id="sequentialCardWrapper" class="bg-white rounded-2xl shadow-md border border-stone-200 overflow-hidden">
-        <div class="w-full bg-stone-100 h-2"><div id="storyProgressBar" class="bg-amber-600 h-2 transition-all duration-300" style="width: 16.6%;"></div></div>
+        <div class="w-full bg-stone-100 h-2"><div id="storyProgressBar" class="bg-amber-600 h-2 transition-all duration-300" style="width: 7.1%;"></div></div>
         <div class="p-6 md:p-8 space-y-5">
           <div class="flex items-center justify-between text-xs text-stone-500 font-medium border-b border-stone-100 pb-2.5">
-            <span id="storyStepIndicator" class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-semibold">第 1 段 / 共 6 段</span>
+            <span id="storyStepIndicator" class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-semibold">第 1 段 / 共 14 段</span>
             <span>💡 滑鼠移至黃色虛線看解釋</span>
           </div>
           <div id="sceneIllustrationContainer" class="w-full h-52 bg-gradient-to-b from-emerald-50 to-amber-50 rounded-2xl border border-amber-200/80 flex items-center justify-center p-4 overflow-hidden"></div>
@@ -111,7 +112,7 @@
     <!-- TAB 2: VOCAB -->
     <section id="tabContent-vocab" class="hidden space-y-5">
       <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-3.5 flex items-center justify-between">
-        <span class="font-serif font-bold text-stone-900 text-base">16 個核心詞彙</span>
+        <span class="font-serif font-bold text-stone-900 text-base"><span id="vocabTotalCount">26</span> 個核心詞彙</span>
         <div class="flex items-center space-x-2">
           <button onclick="switchVocabMode('flashcard')" id="vocabModeBtn-flashcard" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-700 text-white shadow">🃏 互動字卡</button>
           <button onclick="switchVocabMode('list')" id="vocabModeBtn-list" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-stone-100 text-stone-700">📚 詞彙總覽</button>
@@ -122,7 +123,7 @@
         <div class="max-w-lg mx-auto perspective-1000">
           <div id="flashcardElement" onclick="flipFlashcard()" class="w-full h-72 bg-white rounded-3xl shadow-xl border border-stone-200 p-6 cursor-pointer relative transition-transform duration-500 transform-style-3d select-none">
             <div class="absolute inset-0 w-full h-full p-6 flex flex-col justify-between backface-hidden bg-white rounded-3xl">
-              <div class="flex justify-between text-stone-400 text-xs font-semibold"><span id="fcCounter">字卡 1 / 16</span><span>點擊翻面</span></div>
+              <div class="flex justify-between text-stone-400 text-xs font-semibold"><span id="fcCounter">字卡 1 / 26</span><span>點擊翻面</span></div>
               <div class="text-center my-auto space-y-2">
                 <div id="fcIcon" class="text-5xl">🐗</div>
                 <h3 id="fcFrontWord" class="font-serif text-4xl font-bold text-stone-900"></h3>
@@ -152,7 +153,41 @@
       <div id="vocabSubMode-list" class="hidden grid grid-cols-1 md:grid-cols-2 gap-3"></div>
     </section>
 
-    <!-- TAB 3: QUIZ -->
+    <!-- TAB 3: REORDER SENTENCES -->
+    <section id="tabContent-reorder" class="hidden space-y-5">
+      <div class="bg-white rounded-2xl shadow-md border border-stone-200 p-6 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-stone-100 pb-3">
+          <div class="flex items-center space-x-2">
+            <span class="bg-amber-100 text-amber-900 text-xs font-bold px-3 py-1 rounded-full">第 <span id="reorderNum">1</span> / <span id="reorderTotal">8</span> 題</span>
+            <h3 class="font-serif font-bold text-base text-stone-900">🧩 重組句子 Sentence Ordering</h3>
+          </div>
+          <button onclick="speakText(REORDER_SENTENCES[reorderIdx].zh)" class="bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow">🔊 聽句子提示</button>
+        </div>
+
+        <p class="text-xs text-stone-500">點擊下方詞語方塊，按正確順序排成一句通順的話（也可點擊已選方塊移除）：</p>
+
+        <!-- Answer Tray -->
+        <div id="reorderSelectedTray" class="min-h-[68px] p-4 bg-amber-50/70 border-2 border-dashed border-amber-300 rounded-2xl flex flex-wrap gap-2 items-center"></div>
+
+        <!-- Bank -->
+        <div id="reorderWordBank" class="p-4 bg-stone-50 border border-stone-200 rounded-2xl flex flex-wrap gap-2 items-center"></div>
+
+        <div id="reorderFeedback" class="hidden p-3.5 rounded-xl text-xs font-semibold"></div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
+          <div class="flex items-center space-x-2">
+            <button onclick="resetReorderQuestion()" class="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl text-xs font-semibold border border-stone-300">↺ 重排 Reset</button>
+            <button onclick="checkReorderAnswer()" class="px-5 py-2 bg-amber-700 hover:bg-amber-800 text-white rounded-xl text-xs font-semibold shadow">✓ 檢查答案 Check</button>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="prevReorderQuestion()" class="px-3.5 py-2 bg-white hover:bg-stone-50 text-stone-700 rounded-xl text-xs font-semibold border border-stone-300">← 上一題</button>
+            <button onclick="nextReorderQuestion()" class="px-3.5 py-2 bg-stone-800 hover:bg-stone-900 text-white rounded-xl text-xs font-semibold">下一題 →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: QUIZ -->
     <section id="tabContent-quiz" class="hidden space-y-5">
       <div class="bg-white rounded-2xl shadow-md border border-stone-200 p-6 space-y-5 text-center">
         <div id="quizGameArea" class="space-y-5">
@@ -199,7 +234,17 @@
       { id: 13, word: "回答", pinyin: "huídá", zhDef: "回覆別人的話。", enDef: "To answer", icon: "💬" },
       { id: 14, word: "咦", pinyin: "yí", zhDef: "表示奇怪的聲音。", enDef: "Expression of surprise", icon: "😮" },
       { id: 15, word: "為什麼", pinyin: "wèishénme", zhDef: "詢問原因。", enDef: "Why", icon: "🤔" },
-      { id: 16, word: "不開門", pinyin: "bù kāi mén", zhDef: "不把門打開。", enDef: "Not open the door", icon: "🔒" }
+      { id: 16, word: "不開門", pinyin: "bù kāi mén", zhDef: "不把門打開。", enDef: "Not open the door", icon: "🔒" },
+      { id: 17, word: "新裝", pinyin: "xīn zhuāng", zhDef: "新安裝上去。", enDef: "Newly installed", icon: "🔔" },
+      { id: 18, word: "先按門鈴", pinyin: "xiān àn ménlíng", zhDef: "先去按門上的鈴。", enDef: "Press the doorbell first", icon: "🛎️" },
+      { id: 19, word: "鈴響", pinyin: "líng xiǎng", zhDef: "門鈴發出聲音。", enDef: "The bell rings", icon: "🔊" },
+      { id: 20, word: "夠不著", pinyin: "gòu bù zháo", zhDef: "太高或太遠，手伸不到。", enDef: "Unable to reach", icon: "🙅" },
+      { id: 21, word: "白裝", pinyin: "bái zhuāng", zhDef: "裝了卻沒發揮作用，白費力氣。", enDef: "Installed in vain", icon: "🤷" },
+      { id: 22, word: "滿頭大汗", pinyin: "mǎn tóu dà hàn", zhDef: "頭上和臉上流了很多汗。", enDef: "Sweating all over one's head", icon: "💦" },
+      { id: 23, word: "一架梯子", pinyin: "yī jià tīzi", zhDef: "用來爬高的梯子。", enDef: "A ladder", icon: "🪜" },
+      { id: 24, word: "壞了", pinyin: "huài le", zhDef: "不能正常使用了。", enDef: "Broken", icon: "🛠️" },
+      { id: 25, word: "急得哇哇叫", pinyin: "jí de wāwā jiào", zhDef: "非常著急地大聲叫喊。", enDef: "Yelling anxiously", icon: "😫" },
+      { id: 26, word: "白背來", pinyin: "bái bēi lái", zhDef: "背了過來卻沒派上用場，白跑一趟。", enDef: "Carried over in vain", icon: "🎒" }
     ];
 
     const STORY_SENTENCES = [
@@ -208,7 +253,26 @@
       { id: 3, zh: "咚咚咚！野豬敲門沒人開。", en: "Knock knock knock! The wild boar knocks on the door, but no one opens it." },
       { id: 4, zh: "野豬問：「長頸鹿大哥在家嗎？」", en: "The wild boar asks: “Is Big Brother Giraffe at home?”" },
       { id: 5, zh: "「在家呢。」長頸鹿在裡面回答說。", en: "“I’m home,” the giraffe answers from inside." },
-      { id: 6, zh: "「咦，在家為什麼不開門？」", en: "“Huh? If you’re home, why don’t you open the door?”" }
+      { id: 6, zh: "「咦，在家為什麼不開門？」", en: "“Huh? If you’re home, why don’t you open the door?”" },
+      { id: 7, zh: "「野豬兄弟，你往上看，我新裝了一個門鈴。", en: "“Brother Wild Boar, look up—I newly installed a doorbell." },
+      { id: 8, zh: "有誰來找我，要先按門鈴。我聽見鈴響以後，就會來開門。」", en: "Anyone who comes to see me has to press the doorbell first. Once I hear the bell ring, I will come open the door.”" },
+      { id: 9, zh: "野豬抬頭看見了門鈴。「長頸鹿大哥，門鈴太高，我夠不著，還是敲門吧。」", en: "The wild boar looks up and sees the doorbell. “Big Brother Giraffe, the doorbell is too high and I can’t reach it. Let me just knock on the door instead.”" },
+      { id: 10, zh: "咚咚咚！可是長頸鹿還是不開門。", en: "Knock knock knock! Yet the giraffe still doesn’t open the door." },
+      { id: 11, zh: "「對不起，野豬兄弟，我知道你夠不著。可是你就不能想想辦法嗎？要是大家都像你這樣，只敲敲門，那我的門鈴不是白裝了嗎？」", en: "“Sorry, Brother Wild Boar, I know you can’t reach it. But couldn’t you think of a way? If everyone does what you do and only knocks on the door, wouldn’t my doorbell have been installed in vain?”" },
+      { id: 12, zh: "野豬沒話說了，只好回家去了。", en: "The wild boar has nothing left to say and has no choice but to go home." },
+      { id: 13, zh: "不久，野豬又來看長頸鹿。這回他滿頭大汗地背來了一架梯子。", en: "Before long, the wild boar comes to visit the giraffe again. This time, sweating all over his head, he carries a ladder on his back." },
+      { id: 14, zh: "他爬上梯子按門鈴，可是怎麼按，鈴也不響。野豬急得哇哇叫。「對不起，野豬兄弟。」長頸鹿在裡面說：「門鈴壞了。只好請你再敲門了。」「這怎麼行！」野豬叫起來：「只敲幾下門？那我這梯子不是白背來了！」", en: "He climbs the ladder to press the doorbell, but no matter how he presses it, the bell doesn’t ring. The wild boar yells anxiously. “Sorry, Brother Wild Boar,” the giraffe says from inside. “The doorbell is broken. I’ll have to ask you to knock on the door again.” “How can that work!” the wild boar cries out. “Just knock on the door a few times? Then didn’t I carry this ladder over in vain?!”" }
+    ];
+
+    const REORDER_SENTENCES = [
+      { id: 1, zh: "野豬和長頸鹿是朋友。", chunks: ["野豬", "和長頸鹿", "是朋友。"] },
+      { id: 2, zh: "在家為什麼不開門？", chunks: ["在家", "為什麼", "不開門？"] },
+      { id: 3, zh: "我新裝了一個門鈴。", chunks: ["我", "新裝了", "一個門鈴。"] },
+      { id: 4, zh: "我聽見鈴響以後，就會來開門。", chunks: ["我聽見", "鈴響以後，", "就會來開門。"] },
+      { id: 5, zh: "門鈴太高，我夠不著。", chunks: ["門鈴太高，", "我", "夠不著。"] },
+      { id: 6, zh: "野豬沒話說了，只好回家去了。", chunks: ["野豬沒話說了，", "只好", "回家去了。"] },
+      { id: 7, zh: "這回他滿頭大汗地背來了一架梯子。", chunks: ["這回他", "滿頭大汗地", "背來了", "一架梯子。"] },
+      { id: 8, zh: "那我這梯子不是白背來了！", chunks: ["那我", "這梯子", "不是", "白背來了！"] }
     ];
 
     let currentAudioRate = 0.9;
@@ -219,11 +283,20 @@
     let selectedTwVoice = null;
     let flashcardIdx = 0;
     let isFlashcardFlipped = false;
+
+    let reorderIdx = 0;
+    let reorderBankItems = [];
+    let reorderSelectedItems = [];
+
     let quizQuestions = [];
     let quizCurrentIdx = 0;
     let quizScore = 0;
     let quizCurrentCorrectItem = null;
     let isQuizLocked = false;
+
+    document.getElementById('vocabCountLabel').textContent = VOCAB_DATA.length;
+    document.getElementById('vocabTotalCount').textContent = VOCAB_DATA.length;
+    document.getElementById('reorderTotal').textContent = REORDER_SENTENCES.length;
 
     function loadTaiwaneseVoice() {
       if (!window.speechSynthesis) return;
@@ -252,17 +325,19 @@
 
     function switchTab(tabId) {
       isAutoPlayingStory = false;
-      ['story', 'vocab', 'quiz'].forEach(t => {
+      ['story', 'vocab', 'reorder', 'quiz'].forEach(t => {
         document.getElementById(`tabContent-${t}`).classList.toggle('hidden', t !== tabId);
         document.getElementById(`navTab-${t}`).className = t === tabId
-          ? "px-2.5 py-1 rounded-md text-[11px] font-semibold bg-white text-amber-900 shadow-sm"
-          : "px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600";
+          ? "px-2.5 py-1 rounded-md text-[11px] font-semibold bg-white text-amber-900 shadow-sm whitespace-nowrap"
+          : "px-2.5 py-1 rounded-md text-[11px] font-semibold text-stone-600 whitespace-nowrap";
       });
       if (tabId === 'vocab') { renderFlashcard(); renderVocabDirectory(); }
+      if (tabId === 'reorder') { renderReorderQuestion(); }
       if (tabId === 'quiz') startQuiz();
     }
 
-    function getSceneSvg() {
+    function getSceneSvg(idx) {
+      const hasLadder = idx >= 12;
       return `<svg viewBox="0 0 360 210" class="w-full h-full">
         <rect width="360" height="210" fill="#f0fdf4"/>
         <ellipse cx="180" cy="200" rx="190" ry="30" fill="#bbf7d0"/>
@@ -270,8 +345,16 @@
         <polygon points="190,90 255,40 320,90" fill="#d97706" stroke="#78350f" stroke-width="2.5"/>
         <path d="M235 83 L235 63 A20 20 0 0 1 275 63 L275 83 Z" fill="#451a03"/>
         <rect x="232" y="125" width="46" height="70" rx="4" fill="#b45309" stroke="#78350f" stroke-width="2"/>
+        <circle cx="225" cy="152" r="5" fill="#ef4444" stroke="#7f1d1d" stroke-width="1.5"/>
         <path d="M265 77 Q230 70 205 87" stroke="#facc15" stroke-width="14" stroke-linecap="round" fill="none"/>
         <ellipse cx="200" cy="90" rx="12" ry="8" fill="#facc15" stroke="#b45309" stroke-width="1.5"/>
+        ${hasLadder ? `<g stroke="#92400e" stroke-width="3">
+          <line x1="175" y1="195" x2="215" y2="115"/>
+          <line x1="192" y1="195" x2="232" y2="115"/>
+          <line x1="183" y1="175" x2="200" y2="175"/>
+          <line x1="191" y1="155" x2="208" y2="155"/>
+          <line x1="199" y1="135" x2="216" y2="135"/>
+        </g>` : ''}
         <ellipse cx="115" cy="170" rx="28" ry="20" fill="#78716c" stroke="#44403c" stroke-width="2"/>
         <circle cx="138" cy="163" r="13" fill="#78716c" stroke="#44403c" stroke-width="2"/>
         <ellipse cx="150" cy="165" rx="5" ry="4" fill="#fca5a5"/>
@@ -303,7 +386,7 @@
       const s = STORY_SENTENCES[currentSentenceIdx];
       document.getElementById('storyProgressBar').style.width = `${((currentSentenceIdx + 1) / STORY_SENTENCES.length) * 100}%`;
       document.getElementById('storyStepIndicator').textContent = `第 ${currentSentenceIdx + 1} 段 / 共 ${STORY_SENTENCES.length} 段`;
-      document.getElementById('sceneIllustrationContainer').innerHTML = getSceneSvg();
+      document.getElementById('sceneIllustrationContainer').innerHTML = getSceneSvg(currentSentenceIdx);
       document.getElementById('storyZhText').innerHTML = highlightKeywords(s.zh);
       const enBox = document.getElementById('storyEnBox');
       enBox.textContent = s.en;
@@ -402,6 +485,84 @@
       `).join('');
     }
 
+    /* SENTENCE REORDER LOGIC */
+    function renderReorderQuestion() {
+      const item = REORDER_SENTENCES[reorderIdx];
+      document.getElementById('reorderNum').textContent = reorderIdx + 1;
+      document.getElementById('reorderFeedback').classList.add('hidden');
+      reorderSelectedItems = [];
+      let shuffled = item.chunks.map((text, idx) => ({ id: idx, text })).sort(() => 0.5 - Math.random());
+      if (shuffled.map(x => x.text).join('') === item.zh && item.chunks.length > 1) {
+        shuffled = [...shuffled.slice(1), shuffled[0]];
+      }
+      reorderBankItems = shuffled;
+      drawReorderBlocks();
+    }
+
+    function drawReorderBlocks() {
+      const tray = document.getElementById('reorderSelectedTray');
+      const bank = document.getElementById('reorderWordBank');
+
+      if (reorderSelectedItems.length === 0) {
+        tray.innerHTML = `<span class="text-xs text-stone-400 italic">點選下方詞語方塊組成句子...</span>`;
+      } else {
+        tray.innerHTML = reorderSelectedItems.map((c, idx) => `
+          <button onclick="removeReorderChunk(${idx})" class="px-3.5 py-2 bg-amber-700 text-white font-serif font-bold text-base rounded-xl shadow hover:bg-amber-800 transition">
+            ${c.text}
+          </button>
+        `).join('');
+      }
+
+      bank.innerHTML = reorderBankItems.map((c, idx) => `
+        <button onclick="selectReorderChunk(${idx})" class="px-3.5 py-2 bg-white hover:bg-amber-50 text-stone-800 border-2 border-stone-200 hover:border-amber-400 font-serif font-bold text-base rounded-xl shadow-sm transition">
+          ${c.text}
+        </button>
+      `).join('');
+    }
+
+    function selectReorderChunk(bankIdx) {
+      const chosen = reorderBankItems.splice(bankIdx, 1)[0];
+      reorderSelectedItems.push(chosen);
+      speakText(chosen.text);
+      drawReorderBlocks();
+    }
+
+    function removeReorderChunk(selIdx) {
+      const removed = reorderSelectedItems.splice(selIdx, 1)[0];
+      reorderBankItems.push(removed);
+      drawReorderBlocks();
+    }
+
+    function resetReorderQuestion() {
+      renderReorderQuestion();
+    }
+
+    function checkReorderAnswer() {
+      const target = REORDER_SENTENCES[reorderIdx].zh;
+      const attempt = reorderSelectedItems.map(x => x.text).join('');
+      const fb = document.getElementById('reorderFeedback');
+      fb.classList.remove('hidden');
+      if (attempt === target) {
+        fb.className = "p-3.5 rounded-xl text-xs font-semibold bg-emerald-50 border border-emerald-300 text-emerald-800";
+        fb.textContent = `🎉 答對了！完整句子：「${target}」`;
+        speakText(target);
+      } else {
+        fb.className = "p-3.5 rounded-xl text-xs font-semibold bg-rose-50 border border-rose-300 text-rose-800";
+        fb.textContent = `再試一次！正確句子是：「${target}」`;
+      }
+    }
+
+    function nextReorderQuestion() {
+      reorderIdx = (reorderIdx + 1) % REORDER_SENTENCES.length;
+      renderReorderQuestion();
+    }
+
+    function prevReorderQuestion() {
+      reorderIdx = (reorderIdx - 1 + REORDER_SENTENCES.length) % REORDER_SENTENCES.length;
+      renderReorderQuestion();
+    }
+
+    /* QUIZ LOGIC */
     function startQuiz() {
       quizCurrentIdx = 0; quizScore = 0; isQuizLocked = false;
       quizQuestions = [...VOCAB_DATA].sort(() => 0.5 - Math.random()).slice(0, 10);
