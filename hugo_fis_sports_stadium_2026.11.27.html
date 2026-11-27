@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hugo French — Past Mistakes, Tricky Accents &amp; Sports Stadium Guidance (27 Nov 2026)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* Typography and tactile surfaces for Year 6 French practice */
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .soft-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.06);
+    }
+
+    .kw-token {
+      display: inline-block;
+      font-weight: 700;
+      color: #0369a1;
+      background-color: #f0f9ff;
+      border-bottom: 2px dashed #38bdf8;
+      border-radius: 6px;
+      padding: 1px 6px;
+      margin: 1px 1px;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .kw-token:hover,
+    .kw-token:focus,
+    .kw-token.active-kw {
+      background-color: #0284c7;
+      color: #ffffff;
+      border-bottom-color: #0c4a6e;
+      outline: none;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header & Navigation -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-600 to-sky-700 flex items-center justify-center text-white font-extrabold text-xl shadow-sm" aria-hidden="true">
+            🏟️
+          </div>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">
+                Hugo French — 27 Nov 2026
+              </h1>
+              <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                Year 6 • Unité 1 &amp; Devoir (1er déc.)
+              </span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-500">
+              Strengthen past mistakes • Tricky accents (MC) • Answers &amp; Stadium homework guidance
+            </p>
+          </div>
+        </div>
+
+        <button
+          id="speechRateBtn"
+          type="button"
+          onclick="toggleSpeechRate()"
+          class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition cursor-pointer"
+        >
+          🐢 Slow Audio: OFF
+        </button>
+      </div>
+
+      <!-- 4 Core Tabs -->
+      <nav class="mt-3 flex gap-2 overflow-x-auto no-scrollbar pb-1" aria-label="Hugo French sections">
+        <button id="tab-mistakes" type="button" onclick="switchTab('mistakes')" class="px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition cursor-pointer bg-sky-700 text-white shadow-sm">
+          1. Fix Last Week’s Mistakes
+        </button>
+        <button id="tab-accents" type="button" onclick="switchTab('accents')" class="px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">
+          2. Tricky Accents (MC)
+        </button>
+        <button id="tab-answers" type="button" onclick="switchTab('answers')" class="px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">
+          3. New Work Answers (27 Nov)
+        </button>
+        <button id="tab-stadium" type="button" onclick="switchTab('stadium')" class="px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">
+          4. Stadium Homework Guide (1er déc.)
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Keyword Hover & Tap Bar -->
+  <div id="keywordInspector" class="sticky top-[116px] sm:top-[112px] z-20 bg-slate-900 text-white border-b border-slate-800 shadow-md">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div class="flex items-start sm:items-center gap-2.5 min-w-0">
+        <span class="shrink-0 text-xs font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-400 text-slate-950">
+          Grammar Tip
+        </span>
+        <p id="inspectorText" class="text-xs sm:text-sm text-slate-200 leading-snug">
+          Hover over or tap any <strong class="text-white underline decoration-sky-400">blue keyword</strong> to inspect grammar rules, agreements, and audio.
+        </p>
+      </div>
+      <button
+        id="inspectorSpeakBtn"
+        type="button"
+        onclick="speakInspectorWord()"
+        class="hidden shrink-0 self-start sm:self-center px-3 py-1 rounded-lg bg-sky-400 hover:bg-sky-300 text-slate-950 font-bold text-xs transition cursor-pointer"
+      >
+        🔊 Listen
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 space-y-8">
+
+    <!-- ========================================================= -->
+    <!-- TAB 1: STRENGTHEN WHAT WAS WRONG LAST WEEK (IMG_0175 & 0174) -->
+    <!-- ========================================================= -->
+    <section id="view-mistakes" class="space-y-6">
+      <div class="soft-card p-5 sm:p-6 bg-gradient-to-r from-sky-50 via-white to-emerald-50">
+        <p class="text-xs font-extrabold uppercase tracking-wider text-sky-700">
+          Diagnostic Drill • From Last Week’s 2 Marked Pages
+        </p>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
+          Strengthening Last Week’s Tricky Spots
+        </h2>
+        <p class="text-sm text-slate-600 mt-1">
+          Based on your two marked sheets from last week, here are the exact grammar traps to lock in:
+          <strong>gender &amp; plural agreement</strong> (<em>le mois dernier</em>, <em>des centres de données</em>),
+          <strong>verb conjugation &amp; spelling</strong> (<em>ramassé</em>, <em>ont jeté</em> instead of <em>*jetter</em>, <em>a ouvert</em> instead of <em>*ouverte</em>, <em>a mis</em> instead of <em>*mette</em>),
+          <strong>prepositions</strong> (<em>sur la plage</em> instead of <em>*dans la plage</em>), and
+          <strong>connectors</strong> (<em>et</em> = and).
+        </p>
+      </div>
+
+      <div id="mistakesDrillContainer" class="space-y-4"></div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 2: TRICKY ACCENTS TEST (JUST MULTIPLE CHOICE)         -->
+    <!-- ========================================================= -->
+    <section id="view-accents" class="hidden space-y-6">
+      <div class="soft-card p-5 sm:p-6 bg-gradient-to-r from-amber-50 via-white to-rose-50">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p class="text-xs font-extrabold uppercase tracking-wider text-rose-600">
+              Multiple Choice Only • é, è, ê, à, ç
+            </p>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
+              Tricky Accents Test (MC)
+            </h2>
+            <p class="text-sm text-slate-600 mt-1">
+              Select the best multiple-choice option for each accent &amp; spelling trap from your worksheets.
+            </p>
+          </div>
+          <button
+            type="button"
+            onclick="startAccentMcTest()"
+            class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-rose-600 hover:bg-rose-700 text-white shadow-sm transition cursor-pointer shrink-0"
+          >
+            ↻ New MC Accent Set
+          </button>
+        </div>
+      </div>
+
+      <div id="accentMcStage" class="soft-card p-5 sm:p-7 space-y-5"></div>
+      <div id="accentMcReview" class="hidden soft-card p-5 sm:p-7 space-y-4 border-2 border-rose-200"></div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 3: ANSWERS TO NEW WORK (IMG_0177 - 27 NOV 2026)       -->
+    <!-- ========================================================= -->
+    <section id="view-answers" class="hidden space-y-6">
+      <div class="soft-card p-5 sm:p-6 bg-gradient-to-r from-indigo-50 via-white to-sky-50">
+        <p class="text-xs font-extrabold uppercase tracking-wider text-indigo-700">
+          Vendredi 27 Novembre 2026 • Résumé des compétences Year 6 – Unité 1
+        </p>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
+          Answers &amp; Explanations: QUI, QUE, TOUJOURS, JAMAIS, TOUS, RIEN
+        </h2>
+        <p class="text-sm text-slate-600 mt-1">
+          Hover or tap any <strong class="text-sky-700">blue target word</strong> in the completed sentences below to check why it fits.
+        </p>
+      </div>
+
+      <div id="newWorkAnswersList" class="space-y-4"></div>
+
+      <!-- Self-assessment star/arrow box guidance at bottom of IMG_0177 -->
+      <div class="soft-card p-5 sm:p-6 bg-emerald-50/60 border-emerald-200 space-y-2">
+        <h3 class="text-base sm:text-lg font-extrabold text-slate-900">
+          Bottom Self-Check Box ("Je peux utiliser les mots QUI, QUE, TOUJOURS, JAMAIS, RIEN et TOUS")
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+          <strong>★ (Star — 1 example sentence):</strong> Write one strong sentence using <em>qui</em> or <em>que</em> + <em>toujours</em>/<em>jamais</em>, e.g.
+          <span class="font-bold text-slate-900">"Il faut toujours protéger la nature qui nous entoure."</span>
+        </p>
+        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+          <strong>➔ (Arrow — second example / goal):</strong> Write a second sentence showing a different word such as <em>tous</em> or <em>rien</em>, e.g.
+          <span class="font-bold text-slate-900">"Tous les élèves peuvent aider à réduire les déchets."</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 4: GUIDANCE FOR NEW HOMEWORK (IMG_0176 - MARDI 1ER DÉC.) -->
+    <!-- ========================================================= -->
+    <section id="view-stadium" class="hidden space-y-6">
+      <div class="soft-card p-5 sm:p-6 bg-gradient-to-r from-emerald-50 via-white to-amber-50">
+        <p class="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+          Devoir pour mardi 1er décembre • ~8 lignes
+        </p>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
+          Guidance: Trip to the Sports Stadium ("Tu es allé au stade avec tes amis")
+        </h2>
+        <p class="text-sm text-slate-600 mt-1">
+          You are writing to a friend (<em>un(e) ami(e)</em>) in the <strong>passé composé</strong> about last weekend’s trip to the stadium, the activities you did, what you liked, and what you didn’t like and why (~8 lines).
+        </p>
+      </div>
+
+      <!-- Step-by-step Checklist & Useful Phrases -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="soft-card p-5 space-y-3">
+          <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800">
+            Step 1 • Greeting &amp; Stadium + Activities
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900">Describe the stadium &amp; what you did</h3>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Start with <em>Salut [Prénom] !</em> and <em>Le week-end dernier, je suis allé(e) au stade avec mes amis.</em> Mention the stadium (grand, moderne, plein de monde) and activities in the past tense.
+          </p>
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-bold text-slate-800">Le week-end dernier, je suis allé au stade avec mes amis.</span>
+              <button type="button" onclick="speakFrench('Le week-end dernier, je suis allé au stade avec mes amis.')" class="text-xs font-bold text-sky-700 hover:underline cursor-pointer">🔊</button>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-bold text-slate-800">Nous avons joué au foot et couru sur le terrain.</span>
+              <button type="button" onclick="speakFrench('Nous avons joué au foot et couru sur le terrain.')" class="text-xs font-bold text-sky-700 hover:underline cursor-pointer">🔊</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="soft-card p-5 space-y-3">
+          <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-sky-100 text-sky-800">
+            Step 2 • What You Liked &amp; Didn’t Like + Why
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900">Give opinions &amp; reasons (parce que)</h3>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Use the picture cues (sunshine/playing vs. rain/sitting down) to explain what went well and what was annoying (like rain or getting tired).
+          </p>
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-bold text-slate-800">J'ai adoré jouer au soleil parce que l'ambiance était super.</span>
+              <button type="button" onclick="speakFrench(\"J'ai adoré jouer au soleil parce que l'ambiance était super.\")" class="text-xs font-bold text-sky-700 hover:underline cursor-pointer">🔊</button>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-bold text-slate-800">Je n'ai pas aimé la pluie parce que nous étions mouillés.</span>
+              <button type="button" onclick="speakFrench(\"Je n'ai pas aimé la pluie parce que nous étions mouillés.\")" class="text-xs font-bold text-sky-700 hover:underline cursor-pointer">🔊</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ~8-Line Model Paragraph with Hoverable Grammar/Vocab Keywords -->
+      <div class="soft-card p-5 sm:p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+              Model Draft (~8 Lines)
+            </span>
+            <h3 class="text-lg sm:text-xl font-extrabold text-slate-900">
+              Example Letter to a Friend (Hover/Tap Blue Words)
+            </h3>
+          </div>
+          <button
+            type="button"
+            onclick="speakFrench(MODEL_STADIUM_PLAIN)"
+            class="px-4 py-2 rounded-xl text-xs font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white transition cursor-pointer shrink-0"
+          >
+            🔊 Read Full Draft
+          </button>
+        </div>
+
+        <div id="modelDraftBox" class="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 text-base sm:text-lg leading-loose text-slate-900"></div>
+
+        <p class="text-xs sm:text-sm text-slate-600">
+          <strong>Writing Tip for Hugo:</strong> Adapt the activities to your real weekend (football, running, athletics, cheering, snacks) and remember to check past participles (<em>joué, aimé, fini, pris</em>) and <em>je suis allé</em> (with <em>être</em>).
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 mt-10">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+      <span>Hugo French • 27 Nov 2026 • Unité 1 &amp; Devoir pour mardi 1er décembre</span>
+      <span>Uses browser <code class="font-semibold">fr-FR</code> pronunciation</span>
+    </div>
+  </footer>
+
+  <script>
+    /* =====================================================================
+       1. GRAMMAR & VOCABULARY INSPECTOR DATA
+       ===================================================================== */
+    const GRAMMAR_NOTES = {
+      le_mois_dernier: {
+        term: 'le mois dernier',
+        meaning: 'last month',
+        rule: '"Mois" is masculine singular (le mois), so "dernier" stays masculine singular (not *"dernière", which is for feminine nouns like "la semaine dernière").'
+      },
+      centres_de_donnees: {
+        term: 'les centres de données',
+        meaning: 'data centres',
+        rule: 'Plural noun phrase: both "centres" and "données" take a plural "-s".'
+      },
+      ont_jete: {
+        term: 'ont jeté',
+        meaning: 'threw (passé composé)',
+        rule: 'Passé composé of "jeter" with "avoir" is "ont jeté" (past participle "-é"), not infinitive *"jetter" or *"mette".'
+      },
+      a_ouvert: {
+        term: 'a ouvert',
+        meaning: 'opened',
+        rule: 'Passé composé of "ouvrir" is "a ouvert" (irregular past participle "ouvert", not feminine adjective *"ouverte" or reflexive *"se ouverte").'
+      },
+      sur_la_plage: {
+        term: 'sur la plage',
+        meaning: 'on the beach',
+        rule: 'Use "sur" (on/onto) for a beach or surface, not *"dans" (in).'
+      },
+      et_conj: {
+        term: 'et',
+        meaning: 'and',
+        rule: 'Conjunction "et" (pronounced /e/) links ideas; do not confuse it with "est" (is).'
+      },
+      qui_rel: {
+        term: 'qui',
+        meaning: 'who / which / that (subject)',
+        rule: 'Use "qui" when the relative pronoun is the SUBJECT doing the verb right after it (e.g., "les arbres qui fournissent...").'
+      },
+      que_rel: {
+        term: 'que',
+        meaning: 'which / that / whom (object)',
+        rule: 'Use "que" when followed by another subject + verb (e.g., "que nous soutenons", "que nous entoure" object clause).'
+      },
+      toujours: {
+        term: 'toujours',
+        meaning: 'always',
+        rule: 'Adverb meaning "always" (e.g., "On devrait toujours recycler...").'
+      },
+      jamais: {
+        term: 'jamais',
+        meaning: 'never / ever',
+        rule: 'With "ne ... jamais", it means "never" (e.g., "Il ne faut jamais oublier...").'
+      },
+      tous: {
+        term: 'tous',
+        meaning: 'all / everyone',
+        rule: 'Masculine plural determiner/pronoun meaning "all" (e.g., "Tous les membres de la communauté...").'
+      },
+      rien: {
+        term: 'rien',
+        meaning: 'nothing',
+        rule: 'Pronoun/negative word meaning "nothing" (e.g., "Rien n\'est plus beau que...").'
+      },
+      je_suis_alle: {
+        term: 'je suis allé(e)',
+        meaning: 'I went',
+        rule: '"Aller" uses "être" in the passé composé ("je suis allé" for a boy; add "-e" if feminine).'
+      },
+      au_stade: {
+        term: 'au stade',
+        meaning: 'to the stadium / at the stadium',
+        rule: '"À + le" contracts to "au" before masculine singular "stade".'
+      },
+      parce_que: {
+        term: 'parce que',
+        meaning: 'because',
+        rule: 'Use "parce que" (or "parce qu\'" before a vowel/h) to give a reason for what you liked or disliked.'
+      }
+    };
+
+    /* =====================================================================
+       2. TAB 1: STRENGTHEN LAST WEEK'S MISTAKES (IMG_0175 & IMG_0174)
+       ===================================================================== */
+    const MISTAKE_DRILLS = [
+      {
+        id: 'm1',
+        title: 'Gender & Plural Agreement ("le mois dernier" & "les centres de données")',
+        pastIssue: 'Last week: "La mois derniere" (feminine "la/dernière" used with masculine "mois") and missing plural "-s" on "centres" / "données".',
+        fixText: 'Le mois dernier, ma sœur et moi avons nettoyé la plage, et les centres de données ont pollué.',
+        segments: [
+          { kw: 'le_mois_dernier', text: 'Le mois dernier' },
+          { text: ', ma sœur et moi avons nettoyé ' },
+          { kw: 'sur_la_plage', text: 'la plage' },
+          { text: ', ' },
+          { kw: 'et_conj', text: 'et' },
+          { text: ' ' },
+          { kw: 'centres_de_donnees', text: 'les centres de données' },
+          { text: ' ont pollué.' }
+        ],
+        mcPrompt: 'Choose the correct form to replace "La mois derniere":',
+        mcOptions: ['Le mois dernier', 'La mois dernier', 'Le mois derniere', 'Les mois derniere'],
+        mcAnswer: 'Le mois dernier',
+        mcWhy: '"Mois" is masculine singular, so it takes "Le" and "dernier" (without final -e).'
+      },
+      {
+        id: 'm2',
+        title: 'Passé Composé Participles ("ont jeté" & "a ouvert")',
+        pastIssue: 'Last week: infinitive/wrong verb forms like "qui jetter" instead of "qui ont jeté", and "qui se ouverte" instead of "qui a ouvert".',
+        fixText: 'Hier, j\'ai vu des gens qui ont jeté leurs papiers par terre, et un homme qui a ouvert un paquet.',
+        segments: [
+          { text: "Hier, j'ai vu des gens qui " },
+          { kw: 'ont_jete', text: 'ont jeté' },
+          { text: ' leurs papiers par terre, ' },
+          { kw: 'et_conj', text: 'et' },
+          { text: ' un homme qui ' },
+          { kw: 'a_ouvert', text: 'a ouvert' },
+          { text: ' un paquet.' }
+        ],
+        mcPrompt: 'Which verb form correctly completes: "Hier, des gens ___ leurs déchets par terre."?',
+        mcOptions: ['ont jeté', 'jetter', 'ont jeter', 'a jeté'],
+        mcAnswer: 'ont jeté',
+        mcWhy: '"Des gens" is plural, so "avoir" is "ont" and the past participle of "jeter" is "jeté".'
+      },
+      {
+        id: 'm3',
+        title: 'Prepositions & Connectors ("sur la plage" & "et")',
+        pastIssue: 'Last week: "dans la plage" instead of "sur la plage", and "est" or a crossed-out word where "et" (and) was needed.',
+        fixText: 'L\'année dernière, mon frère et mon père ont ramassé les déchets sur la plage et au parc.',
+        segments: [
+          { text: "L'année dernière, mon frère " },
+          { kw: 'et_conj', text: 'et' },
+          { text: ' mon père ont ramassé les déchets ' },
+          { kw: 'sur_la_plage', text: 'sur la plage' },
+          { text: ' ' },
+          { kw: 'et_conj', text: 'et' },
+          { text: ' au parc.' }
+        ],
+        mcPrompt: 'Complete the sentence: "Litterbug jette son emballage ___ la plage ___ il est fâché."',
+        mcOptions: ['sur / et', 'dans / est', 'sur / est', 'à / mais'],
+        mcAnswer: 'sur / et',
+        mcWhy: 'Use "sur la plage" (on the beach) and "et" (and) to join actions.'
+      }
+    ];
+
+    /* =====================================================================
+       3. TAB 2: TRICKY ACCENTS TEST (JUST MULTIPLE CHOICE)
+       ===================================================================== */
+    const ACCENT_MC_QUESTIONS = [
+      {
+        prompt: 'Which spelling of "last year" has the right accent on "dernière"?',
+        context: "___, mon frère et mon père ont ramassé les déchets.",
+        options: ["L'année dernière", "L'année derniere", "L'année derniére", "L'annee derniere"],
+        answer: "L'année dernière",
+        why: '"Dernière" (feminine) has a grave accent (è) before the final silent "-e".'
+      },
+      {
+        prompt: 'Choose the right spelling of "very" (used in "très fâché"):',
+        context: 'Il est ___ fâché.',
+        options: ['très', 'trés', 'tres', 'três'],
+        answer: 'très',
+        why: '"Très" (very) takes a grave accent: è.'
+      },
+      {
+        prompt: 'Which word means "and" (not "is")?',
+        context: 'Ma sœur ___ moi avons nettoyé la plage.',
+        options: ['et', 'est', 'èt', 'é'],
+        answer: 'et',
+        why: '"Et" = and; "est" = is.'
+      },
+      {
+        prompt: 'Choose the correct accented preposition for "in/at" before a place or month:',
+        context: 'Rendez-vous ___ décembre au stade.',
+        options: ['en', 'én', 'èn', 'ç'],
+        answer: 'en',
+        why: 'Months take "en" ("en décembre"), and "à" (grave accent) is used for places/times like "à midi".'
+      },
+      {
+        prompt: 'Which past participle is spelled correctly for "cleaned" (nettoyer)?',
+        context: 'Nous avons ___ la plage.',
+        options: ['nettoyé', 'nettoyè', 'nettoyer', 'nettoyée'],
+        answer: 'nettoyé',
+        why: 'The past participle of "-er" verbs like "nettoyer" ends in "-é" (acute accent) when not agreeing with a preceding direct object.'
+      },
+      {
+        prompt: 'Pick the word with a cedilla (ç) that sounds like /s/ before "a" or "o":',
+        context: 'Attention à la cédille (ç) en français :',
+        options: ['ça (that)', 'quai', 'fâché', 'stade'],
+        answer: 'ça (that)',
+        why: 'The cedilla (ç) makes "c" sound like /s/ before "a", "o", or "u".'
+      }
+    ];
+
+    /* =====================================================================
+       4. TAB 3: ANSWERS TO NEW WORK (IMG_0177 - 27 NOV 2026)
+       ===================================================================== */
+    const NEW_WORK_ANSWERS = [
+      {
+        num: 1,
+        before: 'Les arbres, ',
+        target: 'qui',
+        kw: 'qui_rel',
+        after: " fournissent de l'oxygène, sont essentiels à notre survie.",
+        english: 'Trees, which provide oxygen, are essential to our survival.',
+        why: '"Qui" is the subject of the verb "fournissent" (what provides oxygen? The trees).'
+      },
+      {
+        num: 2,
+        before: 'Il est important de choisir des produits ',
+        target: 'qui',
+        kw: 'qui_rel',
+        after: " respectent l'environnement.",
+        english: 'It is important to choose products that respect the environment.',
+        why: '"Qui" acts as the subject right before the verb "respectent".'
+      },
+      {
+        num: 3,
+        before: 'Les initiatives écologiques ',
+        target: 'que',
+        kw: 'que_rel',
+        after: ' nous soutenons peuvent faire une grande différence.',
+        english: 'The ecological initiatives that we support can make a big difference.',
+        why: '"Que" is used because "nous soutenons" already has its own subject ("nous") and "initiatives" is the object being supported.'
+      },
+      {
+        num: 4,
+        before: 'On devrait ',
+        target: 'toujours',
+        kw: 'toujours',
+        after: ' recycler les matériaux pour réduire les déchets.',
+        english: 'We/one should always recycle materials to reduce waste.',
+        why: '"Toujours" (always) fits the positive advice to recycle materials.'
+      },
+      {
+        num: 5,
+        before: 'Les enfants, ',
+        target: 'qui',
+        kw: 'qui_rel',
+        after: ' apprennent à protéger la planète, deviennent de futurs écologistes.',
+        english: 'Children who learn to protect the planet become future environmentalists.',
+        why: '"Qui" refers to "les enfants" and is the subject of "apprennent".'
+      },
+      {
+        num: 6,
+        before: "Il ne faut ",
+        target: 'jamais',
+        kw: 'jamais',
+        after: " oublier d'éteindre les appareils électroniques inutilisés.",
+        english: 'You must never forget to turn off unused electronic devices.',
+        why: '"Ne ... jamais" means "never" — never forget to turn off unused devices.'
+      },
+      {
+        num: 7,
+        before: 'Les rivières, ',
+        target: 'qui',
+        kw: 'qui_rel',
+        after: ' sont polluées, nécessitent une attention particulière.',
+        english: 'Rivers that are polluted require special attention.',
+        why: '"Qui" is the subject of "sont polluées" (note: on Hugo\'s sheet, #7 had "jamais" written without "ne", whereas "qui" makes the relative clause grammatically complete).'
+      },
+      {
+        num: 8,
+        before: '',
+        target: 'Tous',
+        kw: 'tous',
+        after: " les membres de la communauté doivent s'engager dans la protection de l'environnement.",
+        english: 'All members of the community must get involved in protecting the environment.',
+        why: '"Tous" (all) agrees with masculine plural "les membres".'
+      },
+      {
+        num: 9,
+        before: 'Les espèces menacées, ',
+        target: 'que',
+        kw: 'que_rel',
+        after: " nous devons sauver, jouent un rôle crucial dans l'écosystème.",
+        english: 'Endangered species, which we must save, play a crucial role in the ecosystem.',
+        why: '"Que" is used because "nous" is the subject of "devons sauver", and "espèces menacées" is what we must save.'
+      },
+      {
+        num: 10,
+        before: '',
+        target: 'Rien',
+        kw: 'rien',
+        after: " n'est plus beau que la nature ",
+        target2: 'qui',
+        kw2: 'qui_rel',
+        after2: ' nous entoure.',
+        english: 'Nothing is more beautiful than the nature that surrounds us.',
+        why: '"Rien" (nothing) pairs with "ne ... est", and "qui" is the subject of "nous entoure".'
+      }
+    ];
+
+    /* =====================================================================
+       5. TAB 4: STADIUM HOMEWORK DRAFT (~8 LINES, MARDI 1ER DÉCEMBRE)
+       ===================================================================== */
+    const MODEL_STADIUM_SEGMENTS = [
+      { text: 'Salut Léo, ' },
+      { kw: 'je_suis_alle', text: 'Le week-end dernier, je suis allé' },
+      { text: ' ' },
+      { kw: 'au_stade', text: 'au stade' },
+      { text: ' avec mes amis. Le stade était immense et très animé. ' },
+      { kw: 'et_conj', text: 'D\'abord, nous avons couru et joué au foot sur la pelouse' },
+      { text: ' sous le soleil. ' },
+      { kw: 'parce_que', text: "J'ai beaucoup aimé l'ambiance parce que mes amis étaient là" },
+      { text: ' et nous avons bien rigolé. Ensuite, un gros nuage gris est arrivé ' },
+      { kw: 'et_conj', text: 'et' },
+      { text: ' il a commencé à pleuvoir. ' },
+      { kw: 'parce_que', text: "Je n'ai pas aimé la pluie parce que nous étions trempés" },
+      { text: ' et nous avons dû nous asseoir sur le bord. Malgré ça, c\'était une super sortie ! À mardi !' }
+    ];
+
+    const MODEL_STADIUM_PLAIN =
+      "Salut Léo, le week-end dernier, je suis allé au stade avec mes amis. Le stade était immense et très animé. D'abord, nous avons couru et joué au foot sur la pelouse sous le soleil. J'ai beaucoup aimé l'ambiance parce que mes amis étaient là et nous avons bien rigolé. Ensuite, un gros nuage gris est arrivé et il a commencé à pleuvoir. Je n'ai pas aimé la pluie parce que nous étions trempés et nous avons dû nous asseoir sur le bord. Malgré ça, c'était une super sortie ! À mardi !";
+
+    /* =====================================================================
+       6. SPEECH, INSPECTOR, TABS & RENDERERS
+       ===================================================================== */
+    let slowSpeech = false;
+    let activeGrammarKey = null;
+
+    // MC Accent state
+    let accentMcList = [];
+    let accentMcIdx = 0;
+    let accentMcResults = [];
+    let accentMcAnswered = false;
+
+    function toggleSpeechRate() {
+      slowSpeech = !slowSpeech;
+      const btn = document.getElementById('speechRateBtn');
+      btn.textContent = slowSpeech ? '🐢 Slow Audio: ON' : '🐢 Slow Audio: OFF';
+      btn.className = slowSpeech
+        ? 'px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-400 text-slate-950 border border-amber-500 transition cursor-pointer'
+        : 'px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition cursor-pointer';
+    }
+
+    function speakFrench(text) {
+      if (!('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'fr-FR';
+        u.rate = slowSpeech ? 0.72 : 0.96;
+        const voices = window.speechSynthesis.getVoices();
+        const fr = voices.find((v) => v.lang && v.lang.toLowerCase().startsWith('fr'));
+        if (fr) u.voice = fr;
+        window.speechSynthesis.speak(u);
+      } catch (e) {
+        console.warn('Speech error:', e);
+      }
+    }
+
+    function inspectGrammar(key, shouldSpeak = false) {
+      const info = GRAMMAR_NOTES[key];
+      if (!info) return;
+      activeGrammarKey = key;
+
+      document.querySelectorAll('.kw-token').forEach((el) => {
+        el.classList.toggle('active-kw', el.dataset.kwKey === key);
+      });
+
+      const bar = document.getElementById('inspectorText');
+      bar.innerHTML =
+        `<strong class="text-emerald-300 text-sm sm:text-base">${escapeHtml(info.term)}</strong> ` +
+        `<span class="font-bold text-white">("${escapeHtml(info.meaning)}")</span> — ` +
+        `<span class="text-slate-200">${escapeHtml(info.rule)}</span>`;
+
+      document.getElementById('inspectorSpeakBtn').classList.remove('hidden');
+      if (shouldSpeak) speakFrench(info.term);
+    }
+
+    function speakInspectorWord() {
+      if (activeGrammarKey && GRAMMAR_NOTES[activeGrammarKey]) {
+        speakFrench(GRAMMAR_NOTES[activeGrammarKey].term);
+      }
+    }
+
+    function switchTab(tab) {
+      ['mistakes', 'accents', 'answers', 'stadium'].forEach((t) => {
+        document.getElementById(`view-${t}`).classList.toggle('hidden', t !== tab);
+        const btn = document.getElementById(`tab-${t}`);
+        btn.className =
+          t === tab
+            ? 'px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition cursor-pointer bg-sky-700 text-white shadow-sm'
+            : 'px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200';
+      });
+    }
+
+    function renderMistakeDrills() {
+      const container = document.getElementById('mistakesDrillContainer');
+      container.innerHTML = MISTAKE_DRILLS.map(
+        (d, idx) => `
+        <article class="soft-card p-5 sm:p-6 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+            <div>
+              <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-sky-100 text-sky-800">
+                Drill ${idx + 1}
+              </span>
+              <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-2">${escapeHtml(d.title)}</h3>
+              <p class="text-xs sm:text-sm text-rose-700 font-medium mt-1">${escapeHtml(d.pastIssue)}</p>
+            </div>
+            <button
+              type="button"
+              onclick="speakFrench(${JSON.stringify(d.fixText)})"
+              class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-sky-700 hover:bg-sky-800 text-white transition cursor-pointer shrink-0"
+            >
+              🔊 Listen
+            </button>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-base sm:text-lg leading-relaxed text-slate-900">
+            ${d.segments
+              .map((seg) =>
+                seg.kw
+                  ? `<span tabindex="0" role="button" data-kw-key="${seg.kw}" onmouseenter="inspectGrammar('${seg.kw}', false)" onclick="inspectGrammar('${seg.kw}', true)" class="kw-token">${escapeHtml(seg.text)}</span>`
+                  : `<span>${escapeHtml(seg.text)}</span>`
+              )
+              .join('')}
+          </div>
+
+          <div class="pt-1 space-y-2.5">
+            <p class="text-sm font-bold text-slate-800">${escapeHtml(d.mcPrompt)}</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              ${d.mcOptions
+                .map(
+                  (opt, oIdx) => `
+                  <button
+                    type="button"
+                    id="drill-${d.id}-${oIdx}"
+                    onclick="checkDrillMc('${d.id}', ${oIdx})"
+                    class="p-3 rounded-xl border-2 border-slate-200 hover:border-sky-500 text-left text-sm font-bold text-slate-800 transition cursor-pointer"
+                  >
+                    ${escapeHtml(opt)}
+                  </button>
+                `
+                )
+                .join('')}
+            </div>
+            <div id="drill-fb-${d.id}" class="hidden p-3.5 rounded-xl text-xs sm:text-sm"></div>
+          </div>
+        </article>
+      `
+      ).join('');
+    }
+
+    function checkDrillMc(drillId, optIdx) {
+      const drill = MISTAKE_DRILLS.find((x) => x.id === drillId);
+      if (!drill) return;
+      const chosen = drill.mcOptions[optIdx];
+      const isCorrect = chosen === drill.mcAnswer;
+
+      drill.mcOptions.forEach((opt, i) => {
+        const btn = document.getElementById(`drill-${drillId}-${i}`);
+        if (opt === drill.mcAnswer) {
+          btn.className = 'p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-left text-sm font-extrabold text-emerald-950';
+        } else if (i === optIdx && !isCorrect) {
+          btn.className = 'p-3 rounded-xl border-2 border-rose-500 bg-rose-50 text-left text-sm font-extrabold text-rose-950';
+        } else {
+          btn.className = 'p-3 rounded-xl border border-slate-200 bg-slate-50 text-left text-sm text-slate-500';
+        }
+      });
+
+      const fb = document.getElementById(`drill-fb-${drillId}`);
+      fb.classList.remove('hidden');
+      fb.className = isCorrect
+        ? 'p-3.5 rounded-xl text-xs sm:text-sm bg-emerald-50 border border-emerald-200 text-emerald-950'
+        : 'p-3.5 rounded-xl text-xs sm:text-sm bg-rose-50 border border-rose-200 text-rose-950';
+      fb.innerHTML = `<strong>${isCorrect ? '✅ Correct!' : '❌ Try again:'}</strong> ${escapeHtml(drill.mcWhy)}`;
+    }
+
+    function startAccentMcTest() {
+      accentMcList = shuffleArray(ACCENT_MC_QUESTIONS);
+      accentMcIdx = 0;
+      accentMcResults = [];
+      accentMcAnswered = false;
+      document.getElementById('accentMcReview').classList.add('hidden');
+      renderAccentMcQuestion();
+    }
+
+    function renderAccentMcQuestion() {
+      const stage = document.getElementById('accentMcStage');
+      if (accentMcIdx >= accentMcList.length) {
+        renderAccentMcSummary();
+        return;
+      }
+
+      const q = accentMcList[accentMcIdx];
+      const shuffled = shuffleArray(q.options);
+      q._currentOptions = shuffled;
+      const pct = Math.round(((accentMcIdx + (accentMcAnswered ? 1 : 0)) / accentMcList.length) * 100);
+
+      stage.innerHTML = `
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs font-extrabold text-slate-600">
+            <span>Accent MC ${accentMcIdx + 1} of ${accentMcList.length}</span>
+            <span class="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700">Multiple Choice</span>
+          </div>
+          <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full bg-rose-600 transition-all duration-300" style="width: ${pct}%"></div>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Sentence Context</p>
+          <p class="text-lg font-extrabold text-slate-900 mt-1">${escapeHtml(q.context)}</p>
+        </div>
+
+        <h3 class="text-lg sm:text-xl font-extrabold text-slate-900">${escapeHtml(q.prompt)}</h3>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          ${shuffled
+            .map(
+              (opt, idx) => `
+              <button
+                type="button"
+                id="accMcBtn-${idx}"
+                onclick="submitAccentMc(${idx})"
+                class="p-4 rounded-2xl border-2 border-slate-200 hover:border-rose-400 hover:bg-rose-50/40 text-left font-bold text-base text-slate-800 transition cursor-pointer"
+              >
+                ${escapeHtml(opt)}
+              </button>
+            `
+            )
+            .join('')}
+        </div>
+
+        <div id="accMcFeedback" class="hidden"></div>
+      `;
+    }
+
+    function submitAccentMc(idx) {
+      if (accentMcAnswered) return;
+      accentMcAnswered = true;
+
+      const q = accentMcList[accentMcIdx];
+      const chosen = q._currentOptions[idx];
+      const isCorrect = chosen === q.answer;
+
+      accentMcResults.push({ q, chosen, isCorrect });
+
+      q._currentOptions.forEach((opt, i) => {
+        const btn = document.getElementById(`accMcBtn-${i}`);
+        btn.disabled = true;
+        if (opt === q.answer) {
+          btn.className = 'p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-left font-extrabold text-base text-emerald-950';
+        } else if (i === idx && !isCorrect) {
+          btn.className = 'p-4 rounded-2xl border-2 border-rose-500 bg-rose-50 text-left font-extrabold text-base text-rose-950';
+        } else {
+          btn.className = 'p-4 rounded-2xl border border-slate-200 bg-slate-50 text-left text-base text-slate-500';
+        }
+      });
+
+      const fb = document.getElementById('accMcFeedback');
+      fb.classList.remove('hidden');
+      fb.className = isCorrect
+        ? 'p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 space-y-3'
+        : 'p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-950 space-y-3';
+
+      fb.innerHTML = `
+        <div class="flex items-center justify-between gap-2">
+          <span class="font-extrabold text-sm sm:text-base">${isCorrect ? '✅ Exact!' : `❌ Answer: ${escapeHtml(q.answer)}`}</span>
+          <button type="button" onclick="speakFrench(${JSON.stringify(q.answer)})" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer">🔊 Listen</button>
+        </div>
+        <p class="text-xs sm:text-sm">${escapeHtml(q.why)}</p>
+        <button type="button" onclick="accentMcIdx += 1; accentMcAnswered = false; renderAccentMcQuestion();" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-extrabold transition cursor-pointer">
+          ${accentMcIdx + 1 < accentMcList.length ? 'Next Question →' : 'See Accent Summary →'}
+        </button>
+      `;
+    }
+
+    function renderAccentMcSummary() {
+      const score = accentMcResults.filter((r) => r.isCorrect).length;
+      document.getElementById('accentMcStage').innerHTML = `
+        <div class="text-center py-4 space-y-3">
+          <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-rose-100 text-rose-700 text-2xl font-extrabold">${score}/${accentMcResults.length}</div>
+          <h3 class="text-2xl font-extrabold text-slate-900">Tricky Accents (MC) Complete!</h3>
+          <p class="text-sm text-slate-600">Review every accent choice below.</p>
+          <button type="button" onclick="startAccentMcTest()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-extrabold transition cursor-pointer">
+            ↻ Try Again
+          </button>
+        </div>
+      `;
+
+      const rev = document.getElementById('accentMcReview');
+      rev.classList.remove('hidden');
+      rev.innerHTML = `
+        <h4 class="text-lg font-extrabold text-slate-900">Accent Review Details</h4>
+        <div class="space-y-2.5">
+          ${accentMcResults
+            .map(
+              (r, i) => `
+              <div class="p-3.5 rounded-xl border ${r.isCorrect ? 'border-emerald-200 bg-emerald-50/50' : 'border-rose-200 bg-rose-50/70'} text-xs sm:text-sm space-y-1">
+                <p class="font-bold text-slate-900">${i + 1}. ${escapeHtml(r.q.prompt)}</p>
+                <p>Your pick: <strong>${escapeHtml(r.chosen)}</strong> ${!r.isCorrect ? `• Correct: <strong class="text-emerald-800">${escapeHtml(r.q.answer)}</strong>` : ''}</p>
+                <p class="text-slate-600">${escapeHtml(r.q.why)}</p>
+              </div>
+            `
+            )
+            .join('')}
+        </div>
+      `;
+    }
+
+    function renderNewWorkAnswers() {
+      const listEl = document.getElementById('newWorkAnswersList');
+      listEl.innerHTML = NEW_WORK_ANSWERS.map((item) => {
+        const plain =
+          item.before +
+          item.target +
+          item.after +
+          (item.target2 ? item.target2 + (item.after2 || '') : '');
+
+        const secondTokenHtml = item.target2
+          ? `<span tabindex="0" role="button" data-kw-key="${item.kw2}" onmouseenter="inspectGrammar('${item.kw2}', false)" onclick="inspectGrammar('${item.kw2}', true)" class="kw-token">${escapeHtml(item.target2)}</span><span>${escapeHtml(item.after2 || '')}</span>`
+          : '';
+
+        return `
+          <article class="soft-card p-5 space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700">
+                Sentence ${item.num}
+              </span>
+              <button
+                type="button"
+                onclick="speakFrench(${JSON.stringify(plain)})"
+                class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-indigo-600 hover:bg-indigo-700 text-white transition cursor-pointer"
+              >
+                🔊 French
+              </button>
+            </div>
+            <p class="text-base sm:text-lg leading-relaxed text-slate-900">
+              <span>${escapeHtml(item.before)}</span>
+              <span tabindex="0" role="button" data-kw-key="${item.kw}" onmouseenter="inspectGrammar('${item.kw}', false)" onclick="inspectGrammar('${item.kw}', true)" class="kw-token">${escapeHtml(item.target)}</span>
+              <span>${escapeHtml(item.after)}</span>
+              ${secondTokenHtml}
+            </p>
+            <p class="text-xs sm:text-sm text-slate-600"><strong>Meaning:</strong> ${escapeHtml(item.english)}</p>
+            <p class="text-xs sm:text-sm text-slate-700"><strong>Why:</strong> ${escapeHtml(item.why)}</p>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderStadiumDraft() {
+      const box = document.getElementById('modelDraftBox');
+      box.innerHTML = MODEL_STADIUM_SEGMENTS.map((seg) =>
+        seg.kw
+          ? `<span tabindex="0" role="button" data-kw-key="${seg.kw}" onmouseenter="inspectGrammar('${seg.kw}', false)" onclick="inspectGrammar('${seg.kw}', true)" class="kw-token">${escapeHtml(seg.text)}</span>`
+          : `<span>${escapeHtml(seg.text)}</span>`
+      ).join('');
+    }
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderMistakeDrills();
+      startAccentMcTest();
+      renderNewWorkAnswers();
+      renderStadiumDraft();
+    });
+  </script>
+</body>
+</html>
