@@ -199,7 +199,7 @@
     let selectedSubject = 'mandarin';
 
     // Exact GitHub repository filenames matching user's repo screenshot
-    const CURRICULUM_TREE = {
+const CURRICULUM_TREE = {
       hugo: {
         name: 'Hugo',
         emoji: '👦',
@@ -209,7 +209,7 @@
             title: '🏟️ Sports Stadium, Past Mistakes & Accents',
             subtitle: '過去錯誤強化、重音選擇題、Unité 1 解答與體育場作業指南 (1er déc.)',
             badge: '✨ 最新 New',
-            url: 'hugo_fis_sports_stadium_2026.11.27.html'
+            url: 'Hugo_FIS_Sports_Stadium_2026.11.27.html'
           },
           {
             date: '2026.11.20',
@@ -267,8 +267,8 @@
             subtitle: '6幅天氣場景插圖、Feuille d\'orthographe 拼寫練習與測驗',
             badge: '✅ 開啟 Open',
             url: 'Hazel_FIS_La_Meteo.html'
-          }
-                    {
+          },
+          {
             date: '2026.11.19',
             title: '🛏️ Dans ma chambre (Passage 6 · A1 Level)',
             subtitle: '法語短文朗讀、20個房間詞彙字卡、聽力測驗與閱讀問答',
@@ -281,6 +281,15 @@
             subtitle: 'Hazel FIS 法語互動課程與測驗',
             badge: '✅ 開啟 Open',
             url: 'Hazel_FIS_2026.11.14.html'
+          }
+        ],
+        mandarin: [
+          {
+            date: '2026.11.07',
+            title: '📚 LingoAce 階段複習 (LA 20261107)',
+            subtitle: 'LingoAce 短文朗讀、詞彙字卡與測驗',
+            badge: '✅ 開啟 Open',
+            url: 'Hazel_LA_20261107.html'
           }
         ]
       }
@@ -304,6 +313,7 @@
     function goToStep2Subject(learnerKey) {
       selectedLearner = learnerKey;
       const learner = CURRICULUM_TREE[learnerKey];
+      if (!learner) return;
 
       document.getElementById('dirPage1Learner').classList.add('hidden');
       document.getElementById('dirPage2Subject').classList.remove('hidden');
@@ -323,6 +333,7 @@
     function goToStep3Content(subjectKey) {
       selectedSubject = subjectKey;
       const learner = CURRICULUM_TREE[selectedLearner];
+      if (!learner) return;
       const units = learner[subjectKey] || [];
       const subjectLabel = subjectKey === 'french' ? '🇫🇷 French' : '🏮 普通話 Mandarin';
 
@@ -367,7 +378,27 @@
       `).join('');
     }
 
+    function bindLearnerButtons() {
+      const hugoBtn = document.querySelector('button[onclick*="goToStep2Subject(\'hugo\')"]');
+      const hazelBtn = document.querySelector('button[onclick*="goToStep2Subject(\'hazel\')"]');
+      if (hugoBtn) {
+        hugoBtn.style.touchAction = 'manipulation';
+        hugoBtn.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          goToStep2Subject('hugo');
+        }, { passive: false });
+      }
+      if (hazelBtn) {
+        hazelBtn.style.touchAction = 'manipulation';
+        hazelBtn.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          goToStep2Subject('hazel');
+        }, { passive: false });
+      }
+    }
+
     window.onload = function() {
+      bindLearnerButtons();
       goToStep1Learner();
     };
   </script>
