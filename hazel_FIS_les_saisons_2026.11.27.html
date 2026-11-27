@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hazel French — Les saisons</title>
+  <title>Hazel French — Les saisons (27 Nov 2026)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    /* Base typography and smooth interactions for kid-friendly learning */
+    /* Typography and tactile surfaces for Hazel's Les saisons worksheet */
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: #f8fafc;
@@ -17,7 +17,6 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Interactive keyword token styling inside sentences */
     .kw-token {
       display: inline-block;
       font-weight: 700;
@@ -28,7 +27,7 @@
       padding: 1px 6px;
       margin: 1px 1px;
       cursor: pointer;
-      transition: background-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+      transition: background-color 0.15s ease, color 0.15s ease;
     }
 
     .kw-token:hover,
@@ -40,7 +39,6 @@
       outline: none;
     }
 
-    /* Smooth card elevation */
     .soft-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
@@ -48,7 +46,6 @@
       box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.06);
     }
 
-    /* Accent pill button tactile press */
     .accent-key {
       min-width: 46px;
       height: 44px;
@@ -73,7 +70,6 @@
       box-shadow: none;
     }
 
-    /* Hide scrollbars cleanly on horizontal nav if narrow */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -86,259 +82,166 @@
 <body class="min-h-screen flex flex-col">
 
   <!-- Top Header & Navigation -->
-  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-400 to-rose-500 flex items-center justify-center text-white font-extrabold text-xl shadow-sm" aria-hidden="true">
-            🇫🇷
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+    <div class="max-w-5xl mx-auto px-3 sm:px-4 py-1.5">
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 min-w-0">
+          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-400 via-orange-400 to-rose-500 flex items-center justify-center text-white font-extrabold text-xs shadow-sm shrink-0" aria-hidden="true">
+            FR
           </div>
-          <div>
-            <div class="flex items-center gap-2 flex-wrap">
-              <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">
-                Hazel French — Les saisons
-              </h1>
-              <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800">
-                Je peux écrire des phrases en français
-              </span>
-            </div>
-            <p class="text-xs sm:text-sm text-slate-500">
-              Worksheet practice • Hover or tap blue words for meaning • Audio (<code class="text-xs font-semibold text-slate-700">fr-FR</code>)
-            </p>
+          <div class="min-w-0 flex items-center gap-1.5 flex-wrap">
+            <h1 class="text-xs sm:text-sm font-extrabold tracking-tight text-slate-900 truncate">
+              Hazel French — Les saisons
+            </h1>
+            <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">
+              27 Nov 2026
+            </span>
           </div>
         </div>
 
-        <!-- Quick speech status / speed toggle -->
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1.5 shrink-0">
+          <a href="index.html" class="bg-stone-800 hover:bg-stone-900 text-white px-2 py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1">
+            <span>🏠</span>
+            <span>Directory</span>
+          </a>
           <button
             id="speechRateBtn"
             type="button"
             onclick="toggleSpeechRate()"
-            class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition cursor-pointer"
-            title="Toggle French speaking speed"
+            class="px-2 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition cursor-pointer"
           >
-            🐢 Slow Audio: OFF
+            🐢 Slow: OFF
           </button>
         </div>
       </div>
 
-      <!-- Main Navigation Tabs -->
-      <nav class="mt-3 flex gap-2 overflow-x-auto no-scrollbar pb-1" aria-label="Main sections">
-        <button
-          id="tab-sentences"
-          type="button"
-          onclick="switchTab('sentences')"
-          class="nav-tab px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition cursor-pointer bg-blue-600 text-white shadow-sm"
-        >
+      <nav class="mt-1.5 flex gap-1.5 overflow-x-auto no-scrollbar" aria-label="Main sections">
+        <button id="tab-sentences" type="button" onclick="switchTab('sentences')" class="px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer bg-blue-600 text-white shadow-sm">
           1. Sentences &amp; Hover
         </button>
-        <button
-          id="tab-keywords"
-          type="button"
-          onclick="switchTab('keywords')"
-          class="nav-tab px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200"
-        >
+        <button id="tab-keywords" type="button" onclick="switchTab('keywords')" class="px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">
           2. Keywords
         </button>
-        <button
-          id="tab-tests"
-          type="button"
-          onclick="switchTab('tests')"
-          class="nav-tab px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200"
-        >
+        <button id="tab-tests" type="button" onclick="switchTab('tests')" class="px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">
           3. 3-Round Test
         </button>
-        <button
-          id="tab-accents"
-          type="button"
-          onclick="switchTab('accents')"
-          class="nav-tab px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200"
-        >
-          4. Tricky Accent Tests
+        <button id="tab-accents" type="button" onclick="switchTab('accents')" class="px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">
+          4. Tricky Accents
         </button>
       </nav>
     </div>
+
+    <!-- Keyword Hover & Tap Inspector Bar docked inside header -->
+    <div id="keywordInspector" class="bg-blue-950 text-white border-t border-blue-800">
+      <div class="max-w-5xl mx-auto px-3 sm:px-4 py-1.5 flex items-center justify-between gap-2">
+        <div class="flex items-start sm:items-center gap-2 min-w-0">
+          <span class="shrink-0 text-[10px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-400 text-slate-950">
+            Keyword Tip
+          </span>
+          <p id="inspectorText" class="text-[11px] sm:text-xs text-blue-100 leading-snug">
+            Hover or tap any <strong class="text-white underline decoration-sky-400">blue keyword</strong> to see meaning &amp; tip.
+          </p>
+        </div>
+        <button
+          id="inspectorSpeakBtn"
+          type="button"
+          onclick="speakInspectorWord()"
+          class="hidden shrink-0 px-2.5 py-0.5 rounded bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-[11px] transition cursor-pointer"
+        >
+          🔊 Listen
+        </button>
+      </div>
+    </div>
   </header>
 
-  <!-- Floating / Docked Keyword Hover & Tap Inspector Bar -->
-  <div id="keywordInspector" class="sticky top-[116px] sm:top-[112px] z-20 bg-blue-950 text-white border-b border-blue-800 shadow-md transition-all">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-      <div class="flex items-start sm:items-center gap-2.5 min-w-0">
-        <span class="shrink-0 text-xs font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-400 text-slate-950">
-          Keyword Tip
-        </span>
-        <p id="inspectorText" class="text-xs sm:text-sm text-blue-100 leading-snug">
-          Hover over or tap any <strong class="text-white underline decoration-sky-400">blue keyword</strong> in a sentence to see its English meaning, part of speech, and grammar/spelling note.
-        </p>
-      </div>
-      <button
-        id="inspectorSpeakBtn"
-        type="button"
-        onclick="speakInspectorWord()"
-        class="hidden shrink-0 self-start sm:self-center px-3 py-1 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs transition cursor-pointer"
-      >
-        🔊 Listen
-      </button>
-    </div>
-  </div>
+  <!-- Main Content -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-5 space-y-6">
 
-  <!-- Main Content Area -->
-  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 space-y-8">
-
-    <!-- ========================================================= -->
-    <!-- SECTION 1: SENTENCES & HOVER (Section A 1-6 + Section B 1-3) -->
-    <!-- ========================================================= -->
-    <section id="view-sentences" class="space-y-8">
-      <div class="soft-card p-5 sm:p-6 bg-gradient-to-r from-sky-50 via-white to-amber-50">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <!-- Section 1: Sentences & Hover -->
+    <section id="view-sentences" class="space-y-6">
+      <div class="soft-card p-4 sm:p-5 bg-gradient-to-r from-sky-50 via-white to-amber-50">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div>
             <p class="text-xs font-extrabold uppercase tracking-wider text-blue-700">
               Worksheet Guide • Les saisons
             </p>
-            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
+            <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-0.5">
               Section A (Translations) &amp; Section B (Dictée)
             </h2>
-            <p class="text-sm text-slate-600 mt-1">
-              Every French sentence has clickable/hoverable blue keywords. Tap <strong>🔊 French</strong> to hear natural pronunciation, or <strong>Show/Hide English</strong> to test yourself first!
-            </p>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onclick="toggleAllTranslations(true)"
-              class="px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition cursor-pointer"
-            >
-              Show All English
-            </button>
-            <button
-              type="button"
-              onclick="toggleAllTranslations(false)"
-              class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 transition cursor-pointer"
-            >
-              Hide All English
-            </button>
+            <button type="button" onclick="toggleAllTranslations(true)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition cursor-pointer">Show All English</button>
+            <button type="button" onclick="toggleAllTranslations(false)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 transition cursor-pointer">Hide All English</button>
           </div>
         </div>
       </div>
 
       <!-- Part A: Traduis les phrases en français -->
       <div class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 flex items-center gap-2">
-            <span class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm font-extrabold">A</span>
-            Traduis (translate) les phrases en français (1–6)
-          </h3>
-        </div>
+        <h3 class="text-base sm:text-lg font-extrabold text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xs font-extrabold">A</span>
+          Traduis (translate) les phrases en français (1–6)
+        </h3>
         <div id="sectionAContainer" class="grid grid-cols-1 gap-4"></div>
       </div>
 
       <!-- Part B: Mémorise ces phrases pour la dictée -->
       <div class="space-y-4 pt-2">
-        <div class="flex items-center justify-between">
-          <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 flex items-center gap-2">
-            <span class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm font-extrabold">B</span>
-            Mémorise ces phrases pour la dictée (1–3)
-          </h3>
-        </div>
+        <h3 class="text-base sm:text-lg font-extrabold text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xs font-extrabold">B</span>
+          Mémorise ces phrases pour la dictée (1–3)
+        </h3>
         <div id="sectionBContainer" class="grid grid-cols-1 gap-4"></div>
       </div>
     </section>
 
-    <!-- ========================================================= -->
-    <!-- SECTION 2: KEYWORDS LIBRARY                               -->
-    <!-- ========================================================= -->
+    <!-- Section 2: Keywords Library -->
     <section id="view-keywords" class="hidden space-y-6">
       <div class="soft-card p-5 sm:p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <p class="text-xs font-extrabold uppercase tracking-wider text-indigo-600">
-              Vocabulary &amp; Grammar Bank
-            </p>
-            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
-              Essential Keywords for Les saisons
-            </h2>
-            <p class="text-sm text-slate-600 mt-1">
-              Filter by category, listen to French pronunciation, and check spelling &amp; agreement notes.
-            </p>
+            <p class="text-xs font-extrabold uppercase tracking-wider text-indigo-600">Vocabulary &amp; Grammar Bank</p>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">Essential Keywords for Les saisons</h2>
+            <p class="text-sm text-slate-600 mt-1">Filter by category, listen to French pronunciation, and check spelling &amp; agreement notes.</p>
           </div>
           <div class="w-full sm:w-64">
             <label for="keywordSearch" class="sr-only">Search keywords</label>
-            <input
-              id="keywordSearch"
-              type="text"
-              oninput="renderKeywords()"
-              placeholder="Search French or English..."
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <input id="keywordSearch" type="text" oninput="renderKeywords()" placeholder="Search French or English..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
         </div>
-
-        <!-- Category Filter Buttons -->
         <div id="keywordFilters" class="mt-4 flex flex-wrap gap-2">
-          <button type="button" data-cat="all" onclick="setKeywordCategory('all')" class="kw-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white cursor-pointer">
-            All Keywords
-          </button>
-          <button type="button" data-cat="seasons" onclick="setKeywordCategory('seasons')" class="kw-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">
-            Seasons
-          </button>
-          <button type="button" data-cat="weather" onclick="setKeywordCategory('weather')" class="kw-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">
-            Weather &amp; Expressions
-          </button>
-          <button type="button" data-cat="clothing" onclick="setKeywordCategory('clothing')" class="kw-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">
-            Clothing &amp; Swimming
-          </button>
-          <button type="button" data-cat="verbs" onclick="setKeywordCategory('verbs')" class="kw-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">
-            Connectors &amp; Verbs
-          </button>
+          <button type="button" data-cat="all" onclick="setKeywordCategory('all')" class="kw-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white cursor-pointer">All Keywords</button>
+          <button type="button" data-cat="seasons" onclick="setKeywordCategory('seasons')" class="kw-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Seasons</button>
+          <button type="button" data-cat="weather" onclick="setKeywordCategory('weather')" class="kw-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Weather &amp; Expressions</button>
+          <button type="button" data-cat="clothing" onclick="setKeywordCategory('clothing')" class="kw-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Clothing &amp; Swimming</button>
+          <button type="button" data-cat="verbs" onclick="setKeywordCategory('verbs')" class="kw-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Connectors &amp; Verbs</button>
         </div>
       </div>
-
       <div id="keywordsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
     </section>
 
-    <!-- ========================================================= -->
-    <!-- SECTION 3: 3-ROUND INTERACTIVE TEST + MISTAKES REVIEW     -->
-    <!-- ========================================================= -->
+    <!-- Section 3: 3-Round Test & Mistakes Review -->
     <section id="view-tests" class="hidden space-y-6">
       <div class="soft-card p-5 sm:p-6">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <p class="text-xs font-extrabold uppercase tracking-wider text-purple-600">
-              Interactive Practice • 3 Rounds
-            </p>
-            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
-              3-Round Test &amp; Mistakes Review
-            </h2>
-            <p class="text-sm text-slate-600 mt-1">
-              Each round shuffles fresh questions from Section A translations, Section B dictée, and keywords. Every mistake is saved for detailed review!
-            </p>
+            <p class="text-xs font-extrabold uppercase tracking-wider text-purple-600">Interactive Practice • 3 Rounds</p>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">3-Round Test &amp; Mistakes Review</h2>
+            <p class="text-sm text-slate-600 mt-1">Each round shuffles fresh questions from Section A translations, Section B dictée, and keywords.</p>
           </div>
-
-          <!-- Round Selector -->
           <div class="flex flex-wrap gap-2">
-            <button id="roundBtn-1" type="button" onclick="startRound(1)" class="round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-purple-600 text-white shadow-sm cursor-pointer">
-              Round 1
-            </button>
-            <button id="roundBtn-2" type="button" onclick="startRound(2)" class="round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">
-              Round 2
-            </button>
-            <button id="roundBtn-3" type="button" onclick="startRound(3)" class="round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">
-              Round 3
-            </button>
+            <button id="roundBtn-1" type="button" onclick="startRound(1)" class="round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-purple-600 text-white shadow-sm cursor-pointer">Round 1</button>
+            <button id="roundBtn-2" type="button" onclick="startRound(2)" class="round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Round 2</button>
+            <button id="roundBtn-3" type="button" onclick="startRound(3)" class="round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Round 3</button>
           </div>
         </div>
       </div>
 
-      <!-- Active Test Card -->
       <div id="testStage" class="soft-card p-5 sm:p-7 space-y-5"></div>
-
-      <!-- End-of-Round Mistakes & Details Review Panel -->
       <div id="roundReviewPanel" class="hidden soft-card p-5 sm:p-7 space-y-5 border-2 border-purple-200"></div>
     </section>
 
-    <!-- ========================================================= -->
-    <!-- SECTION 4: TRICKY ACCENT TESTS (é, è, ê, à, ç, ù)          -->
-    <!-- ========================================================= -->
+    <!-- Section 4: Tricky Accent Tests -->
     <section id="view-accents" class="hidden space-y-6">
       <div class="soft-card p-5 sm:p-6 bg-gradient-to-r from-amber-50 via-white to-rose-50">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -350,21 +253,14 @@
               Tricky Accent Tests
             </h2>
             <p class="text-sm text-slate-600 mt-1">
-              French accents change sound and meaning! Spot missing or wrong accents, pick the right spelling in context, and type/tap accented words for dictation.
+              Spot missing or wrong accents, pick the right spelling in context, and type/tap accented words for dictation.
             </p>
           </div>
-          <div class="flex items-center gap-2">
-            <button
-              type="button"
-              onclick="startAccentTest()"
-              class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-rose-600 hover:bg-rose-700 text-white shadow-sm transition cursor-pointer"
-            >
-              ↻ New Accent Set
-            </button>
-          </div>
+          <button type="button" onclick="startAccentTest()" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-rose-600 hover:bg-rose-700 text-white shadow-sm transition cursor-pointer">
+            ↻ New Accent Set
+          </button>
         </div>
 
-        <!-- On-Screen French Accent Helper Bar -->
         <div class="mt-4 pt-4 border-t border-slate-200/80">
           <div class="flex items-center justify-between gap-2 mb-2">
             <span class="text-xs font-bold text-slate-600">
@@ -388,28 +284,20 @@
         </div>
       </div>
 
-      <!-- Accent Question Stage -->
       <div id="accentStage" class="soft-card p-5 sm:p-7 space-y-5"></div>
-
-      <!-- Accent Mistakes Review -->
       <div id="accentReviewPanel" class="hidden soft-card p-5 sm:p-7 space-y-5 border-2 border-rose-200"></div>
     </section>
 
   </main>
 
-  <!-- Footer -->
   <footer class="bg-white border-t border-slate-200 mt-10">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
       <span>Bon courage, Hazel! • Les saisons — Je peux écrire des phrases en français</span>
-      <span>Tip: Hover/tap any blue keyword to inspect • Uses browser <code class="font-semibold">fr-FR</code> speech</span>
+      <span>Uses browser <code class="font-semibold">fr-FR</code> speech</span>
     </div>
   </footer>
 
   <script>
-    /* =====================================================================
-       1. DATA MODEL: KEYWORDS, SECTION A (1-6), SECTION B (1-3), TESTS
-       ===================================================================== */
-
     const KEYWORDS = {
       le_printemps: {
         id: 'le_printemps',
@@ -417,7 +305,7 @@
         category: 'seasons',
         pos: 'masculine noun (n. m.)',
         english: 'spring',
-        note: 'Use "au printemps" (not *"en printemps") to say "in spring". Note the silent "p" and final "s".',
+        note: 'Use "au printemps" to say "in spring". Note the silent "p" and final "s".',
         exampleFr: 'Au printemps, il fait beau.',
         exampleEn: 'In spring, the weather is nice/sunny.'
       },
@@ -427,7 +315,7 @@
         category: 'seasons',
         pos: 'masculine noun (n. m.)',
         english: 'summer',
-        note: 'Starts with a vowel, so "le" becomes "l\'" ("l\'été"). Use "en été" for "in summer". Both "é" letters take an acute accent.',
+        note: 'Use "en été" for "in summer". Both "é" letters take an acute accent.',
         exampleFr: "En été, il fait très chaud.",
         exampleEn: 'In summer, it is very hot.'
       },
@@ -437,9 +325,9 @@
         category: 'seasons',
         pos: 'masculine noun (n. m.)',
         english: 'autumn / fall',
-        note: 'Use "en automne" for "in autumn". The "mn" is pronounced like /n/ (the "m" is silent in standard French).',
-        exampleFr: "En automne, il pleut souvent.",
-        exampleEn: 'In autumn, it often rains.'
+        note: 'Use "en automne" for "in autumn". The "m" before "n" is silent in standard French.',
+        exampleFr: "En automne, il pleut.",
+        exampleEn: 'In autumn, it rains.'
       },
       l_hiver: {
         id: 'l_hiver',
@@ -447,7 +335,7 @@
         category: 'seasons',
         pos: 'masculine noun (n. m.)',
         english: 'winter',
-        note: 'Use "en hiver" for "in winter". Notice the "h" is mute so "en hiver" links smoothly (liaison).',
+        note: 'Use "en hiver" for "in winter".',
         exampleFr: "En hiver, il neige.",
         exampleEn: 'In winter, it snows.'
       },
@@ -457,9 +345,9 @@
         category: 'weather',
         pos: 'weather expression',
         english: 'it is sunny / nice weather',
-        note: 'French uses "il fait + adjective/noun" for weather. "Beau" is masculine singular ("beaux" is plural).',
+        note: 'French uses "il fait + adjective" for weather.',
         exampleFr: 'Au printemps, il fait beau et doux.',
-        exampleEn: 'In spring, it is sunny/nice and mild.'
+        exampleEn: 'In spring, it is sunny and mild.'
       },
       chaud: {
         id: 'chaud',
@@ -467,8 +355,8 @@
         category: 'weather',
         pos: 'adjective (adj.)',
         english: 'warm / hot',
-        note: 'In "il fait chaud", it means "it is hot/warm". Silent "d" at the end; feminine is "chaude".',
-        exampleFr: "Il fait beau et chaud.",
+        note: 'Silent "d" at the end; feminine is "chaude".',
+        exampleFr: 'Il fait beau et chaud.',
         exampleEn: 'It is sunny and warm.'
       },
       tres_chaud: {
@@ -477,7 +365,7 @@
         category: 'weather',
         pos: 'adverb + adjective',
         english: 'very hot',
-        note: '"Très" has a grave accent (è) and means "very". In French, "très" comes before the adjective.',
+        note: '"Très" has a grave accent (è) and means "very".',
         exampleFr: "En été, il fait très chaud.",
         exampleEn: 'In summer, it is very hot.'
       },
@@ -487,8 +375,8 @@
         category: 'weather',
         pos: 'impersonal verb (neiger)',
         english: 'it snows / it is snowing',
-        note: 'From the verb "neiger" (to snow). Always used with "il" for weather.',
-        exampleFr: "En hiver, il neige.",
+        note: 'From "neiger" (to snow).',
+        exampleFr: 'En hiver, il neige.',
         exampleEn: 'In winter, it snows.'
       },
       il_pleut: {
@@ -497,8 +385,8 @@
         category: 'weather',
         pos: 'impersonal verb (pleuvoir)',
         english: 'it rains / it is raining',
-        note: 'From "pleuvoir" (to rain). Ends in "t" (silent), not *"pleu".',
-        exampleFr: "En automne, il pleut.",
+        note: 'From "pleuvoir" (to rain). Ends in silent "t".',
+        exampleFr: 'En automne, il pleut.',
         exampleEn: 'In autumn, it rains.'
       },
       trop_humide: {
@@ -507,7 +395,7 @@
         category: 'weather',
         pos: 'adverb + adjective',
         english: 'too humid',
-        note: '"Trop" means "too" (the "p" is silent before a consonant). "Humide" starts with a silent "h" and has no accent on "u".',
+        note: '"Trop" means "too" (silent "p"). "Humide" has no accent on "u".',
         exampleFr: "C'est trop humide à Hong Kong.",
         exampleEn: 'It is too humid in Hong Kong.'
       },
@@ -517,7 +405,7 @@
         category: 'weather',
         pos: 'adjective (adj.)',
         english: 'stormy',
-        note: 'In "il est orageux" or "c\'est orageux", it describes stormy weather (from "orage", a storm).',
+        note: 'Describes stormy weather (from "orage", a storm).',
         exampleFr: "Au printemps, le temps est orageux.",
         exampleEn: 'In spring, the weather is stormy.'
       },
@@ -527,8 +415,8 @@
         category: 'verbs',
         pos: 'impersonal expression + infinitive',
         english: 'one must stay / you have to stay',
-        note: 'Written on Hazel\'s worksheet above "have to stay"! "Il faut + infinitive" means "it is necessary to / have to". ("Je dois rester" = "I have to stay" also works.)',
-        exampleFr: "Il faut rester à la maison.",
+        note: 'Matches the worksheet note above "have to stay".',
+        exampleFr: 'Il faut rester à la maison.',
         exampleEn: 'You/one have to stay at home.'
       },
       je_mets: {
@@ -537,9 +425,9 @@
         category: 'clothing',
         pos: 'verb phrase (mettre)',
         english: 'I put on / I wear',
-        note: 'From "mettre" (to put / put on / wear clothing). First person singular is "je mets" (ends in "ts", silent "s").',
-        exampleFr: "Je mets mon gros manteau vert.",
-        exampleEn: 'I put on / wear my big green coat.'
+        note: 'From "mettre" (to put on / wear).',
+        exampleFr: 'Je mets mon gros manteau vert.',
+        exampleEn: 'I put on my big green coat.'
       },
       gros_manteau_vert: {
         id: 'gros_manteau_vert',
@@ -547,7 +435,7 @@
         category: 'clothing',
         pos: 'noun phrase (masculine singular)',
         english: 'big green coat',
-        note: '"Gros" (big/thick) goes before the noun; "vert" (green) goes after. Both are masculine singular to match "manteau".',
+        note: 'Masculine singular agreement for "manteau".',
         exampleFr: "J'ai un gros manteau vert.",
         exampleEn: 'I have a big green coat.'
       },
@@ -557,8 +445,8 @@
         category: 'clothing',
         pos: 'noun phrase (feminine plural)',
         english: 'green boots',
-        note: '"Bottes" is feminine plural, so "vert" adds "-es" -> "vertes" (and both "e"s are underlined on the worksheet for agreement!).',
-        exampleFr: "Je mets mes bottes vertes.",
+        note: 'Feminine plural: "vert" adds "-es" -> "vertes".',
+        exampleFr: 'Je mets mes bottes vertes.',
         exampleEn: 'I put on my green boots.'
       },
       maillot_de_bains: {
@@ -567,8 +455,8 @@
         category: 'clothing',
         pos: 'masculine noun phrase',
         english: 'swimsuit / swimming costume',
-        note: '"Maillot" is pronounced /majo/ ("ll" sounds like "y"). "Bains" has "-ns" at the end.',
-        exampleFr: "Je mets mon maillot de bains.",
+        note: '"Maillot" has "ll" pronounced like /y/.',
+        exampleFr: 'Je mets mon maillot de bains.',
         exampleEn: 'I put on my swimsuit.'
       },
       nager_piscine: {
@@ -577,7 +465,7 @@
         category: 'clothing',
         pos: 'verb + prepositional phrase',
         english: 'to swim in the pool',
-        note: 'Keep "nager" in the infinitive (-er) after "pour" (in order to). "Piscine" has a silent "s" after "i".',
+        note: 'Infinitive "nager" after "pour".',
         exampleFr: "J'aime nager dans la piscine.",
         exampleEn: 'I like to swim in the pool.'
       },
@@ -587,8 +475,8 @@
         category: 'clothing',
         pos: 'noun phrase (feminine singular)',
         english: 'pretty white cap',
-        note: '"Casquette" is feminine singular, so "beau" becomes "belle" (before the noun) and "blanc" becomes "blanche" (after the noun).',
-        exampleFr: "Je mets ma belle casquette blanche.",
+        note: 'Feminine singular: "belle" (before noun) and "blanche" (after noun).',
+        exampleFr: 'Je mets ma belle casquette blanche.',
         exampleEn: 'I put on my pretty white cap.'
       },
       lunettes_soleil_noires: {
@@ -597,8 +485,8 @@
         category: 'clothing',
         pos: 'noun phrase (feminine plural)',
         english: 'black sunglasses',
-        note: '"Lunettes" is feminine plural, so "noir" takes "-es" -> "noires". Notice "de soleil" stays singular.',
-        exampleFr: "Je mets mes lunettes de soleil noires.",
+        note: 'Feminine plural: "noir" adds "-es" -> "noires".',
+        exampleFr: 'Je mets mes lunettes de soleil noires.',
         exampleEn: 'I put on my black sunglasses.'
       },
       parce_que: {
@@ -607,7 +495,7 @@
         category: 'verbs',
         pos: 'conjunction',
         english: 'because',
-        note: 'Written as two words: "parce que". Before a vowel (like "il"), it can stay "parce que il" or shorten to "parce qu\'" in speech/writing.',
+        note: 'Written as two words: "parce que" (or "parce qu\'" before a vowel).',
         exampleFr: "J'aime l'été parce qu'il fait chaud.",
         exampleEn: 'I like summer because it is hot.'
       },
@@ -617,7 +505,7 @@
         category: 'verbs',
         pos: 'adverb',
         english: 'a lot / very much',
-        note: '"J\'aime beaucoup" means "I like very much / a lot". Ends in "-p" (silent).',
+        note: '"J\'aime beaucoup" = I like very much.',
         exampleFr: "J'aime beaucoup l'été.",
         exampleEn: 'I like summer very much.'
       },
@@ -627,7 +515,7 @@
         category: 'verbs',
         pos: 'verb (préférer)',
         english: 'I prefer',
-        note: 'Watch the two accents in "je préfère": the first "é" is acute, and the second "è" is grave because of the silent "-e" at the end.',
+        note: 'First "é" is acute, second "è" is grave.',
         exampleFr: "Je préfère l'automne.",
         exampleEn: 'I prefer autumn.'
       },
@@ -637,8 +525,8 @@
         category: 'verbs',
         pos: 'verb (détester)',
         english: 'I hate',
-        note: 'First "e" has an acute accent ("dé-"). Second "e" has no accent ("-tes-"), followed by silent "-te".',
-        exampleFr: "Je déteste le printemps.",
+        note: 'Acute accent on "dé-", no accent on "-tes-".',
+        exampleFr: 'Je déteste le printemps.',
         exampleEn: 'I hate spring.'
       },
       pouvoir: {
@@ -647,13 +535,12 @@
         category: 'verbs',
         pos: 'verb (pouvoir)',
         english: 'I can',
-        note: '"Je peux + infinitive" means "I can [do something]". Ends in "-x" (silent).',
-        exampleFr: "Je peux nager dans la mer.",
+        note: '"Je peux + infinitive" means "I can [do something]".',
+        exampleFr: 'Je peux nager dans la mer.',
         exampleEn: 'I can swim in the sea.'
       }
     };
 
-    /* Section A (1-6): Worksheet English prompts + natural French translations + keyword tokens */
     const SECTION_A = [
       {
         num: 1,
@@ -689,7 +576,7 @@
           { kw: 'pouvoir', text: 'je peux' },
           { text: ' nager dans la mer.' }
         ],
-        note: '"J\'aime beaucoup" = I like very much. "Je peux nager" = I can swim (infinitive "nager" after "peux").'
+        note: '"J\'aime beaucoup" = I like very much. "Je peux nager" = I can swim.'
       },
       {
         num: 3,
@@ -705,7 +592,7 @@
           { kw: 'pouvoir', text: 'je peux' },
           { text: ' mettre mon pull.' }
         ],
-        note: '"J\'adore" = I love. "Il neige" = it snows. "Mettre mon pull" (or "mon chandail") = wear my sweater.'
+        note: '"J\'adore" = I love. "Il neige" = it snows. "Je peux mettre mon pull" = I can wear my sweater.'
       },
       {
         num: 4,
@@ -724,7 +611,7 @@
           { kw: 'bottes_vertes', text: 'mes bottes' },
           { text: '.' }
         ],
-        note: 'Watch the accents in "préfère" (é then è) and "mes bottes" (plural "mes" + "bottes").'
+        note: 'Watch the accents in "préfère" (é then è) and plural "mes bottes".'
       },
       {
         num: 5,
@@ -739,7 +626,7 @@
           { kw: 'trop_humide', text: 'trop humide' },
           { text: '.' }
         ],
-        note: 'Negative is "je n\'aime pas". "À" has a grave accent before city names like Hong Kong.'
+        note: 'Negative is "je n\'aime pas". "À" has a grave accent before Hong Kong.'
       },
       {
         num: 6,
@@ -757,11 +644,10 @@
           { kw: 'il_faut_rester', text: 'il faut rester' },
           { text: ' à la maison.' }
         ],
-        note: 'Matches the handwritten note above "have to stay" on Hazel\'s worksheet: "il faut rester" (or "je dois rester").'
+        note: 'Matches the handwritten note above "have to stay" on Hazel\'s worksheet: "il faut rester".'
       }
     ];
 
-    /* Section B (1-3): Mémorise ces phrases pour la dictée */
     const SECTION_B = [
       {
         num: 1,
@@ -778,7 +664,7 @@
           { kw: 'bottes_vertes', text: 'mes bottes vertes' },
           { text: '.' }
         ],
-        note: 'Dictée trap: "mon gros manteau vert" is masculine singular; "mes bottes vertes" adds "-es" to "vertes".'
+        note: '"Mon gros manteau vert" is masculine singular; "mes bottes vertes" adds "-es" to "vertes".'
       },
       {
         num: 2,
@@ -795,7 +681,7 @@
           { kw: 'nager_piscine', text: 'nager dans la piscine' },
           { text: '.' }
         ],
-        note: 'Dictée trap: "été" has two "é"s, "maillot" has "ll", and "nager" stays in the infinitive after "pour".'
+        note: '"Été" has two "é"s, and "nager" stays in the infinitive after "pour".'
       },
       {
         num: 3,
@@ -812,11 +698,10 @@
           { kw: 'lunettes_soleil_noires', text: 'mes lunettes de soleil noires' },
           { text: '.' }
         ],
-        note: 'Dictée trap: "Au printemps" (not "En"), "belle" (feminine of beau), "casquette" (-ette), and "noires" (feminine plural -es).'
+        note: '"Au printemps" (not "En"), "belle" (feminine of beau), and "noires" (feminine plural -es).'
       }
     ];
 
-    /* Question Bank for the 3-Round Interactive Test */
     const TEST_QUESTION_POOL = [
       {
         id: 'q1',
@@ -829,7 +714,7 @@
           "J'aime le printemps parce qu'il fait trop humide."
         ],
         answer: "J'aime le printemps parce qu'il fait beau et chaud.",
-        explanation: '<strong>le printemps</strong> means <em>spring</em>, <strong>parce que</strong> means <em>because</em>, and <strong>il fait beau et chaud</strong> means <em>it is sunny and warm</em>.'
+        explanation: '<strong>le printemps</strong> = <em>spring</em>, <strong>parce que</strong> = <em>because</em>, and <strong>il fait beau et chaud</strong> = <em>it is sunny and warm</em>.'
       },
       {
         id: 'q2',
@@ -894,7 +779,7 @@
           "Je n'aime pas le printemps parce qu'il neige et il faut rester à la maison."
         ],
         answer: "Je déteste le printemps parce qu'il est orageux et il faut rester à la maison.",
-        explanation: '<strong>je déteste</strong> = <em>I hate</em>, <strong>orageux</strong> = <em>stormy</em>, and <strong>il faut rester</strong> = <em>you/one have to stay</em> (from the worksheet note).'
+        explanation: '<strong>je déteste</strong> = <em>I hate</em>, <strong>orageux</strong> = <em>stormy</em>, and <strong>il faut rester</strong> = <em>you/one have to stay</em>.'
       },
       {
         id: 'q7',
@@ -907,7 +792,7 @@
           'mon gros manteau vert / ma belle casquette blanche'
         ],
         answer: 'mon gros manteau vert / mes bottes vertes',
-        explanation: 'In winter (<strong>en hiver</strong>), <strong>je mets</strong> pairs with <strong>mon gros manteau vert</strong> (masculine singular) and <strong>mes bottes vertes</strong> (feminine plural).'
+        explanation: 'In winter (<strong>en hiver</strong>), <strong>je mets</strong> pairs with <strong>mon gros manteau vert</strong> and <strong>mes bottes vertes</strong>.'
       },
       {
         id: 'q8',
@@ -920,7 +805,7 @@
           'mon gros manteau vert / nager dans la piscine'
         ],
         answer: 'mon maillot de bains / nager dans la piscine',
-        explanation: 'In summer (<strong>en été</strong>), you wear <strong>mon maillot de bains</strong> (swimsuit) to <strong>nager dans la piscine</strong> (swim in the pool).'
+        explanation: 'In summer (<strong>en été</strong>), you wear <strong>mon maillot de bains</strong> to <strong>nager dans la piscine</strong>.'
       },
       {
         id: 'q9',
@@ -933,50 +818,10 @@
           'mon maillot de bains / mes lunettes de soleil noires'
         ],
         answer: 'ma belle casquette blanche / mes lunettes de soleil noires',
-        explanation: '<strong>Au printemps</strong> uses <strong>ma belle casquette blanche</strong> (feminine singular) and <strong>mes lunettes de soleil noires</strong> (feminine plural).'
-      },
-      {
-        id: 'q10',
-        tag: 'Grammar & Agreement',
-        prompt: 'Why is it "mes bottes vertes" and "mes lunettes de soleil noires" with "-es"?',
-        options: [
-          'Because "bottes" and "lunettes" are feminine plural nouns',
-          'Because "je mets" always makes adjectives plural',
-          'Because "vert" and "noir" never change spelling',
-          'Because plural nouns in French always end in "-es"'
-        ],
-        answer: 'Because "bottes" and "lunettes" are feminine plural nouns',
-        explanation: 'Adjectives agree in gender and number: <strong>vertes</strong> and <strong>noires</strong> take <strong>-e</strong> for feminine and <strong>-s</strong> for plural.'
-      },
-      {
-        id: 'q11',
-        tag: 'Season Prepositions',
-        prompt: 'Which phrase correctly says "in spring" in French?',
-        options: [
-          'au printemps',
-          'en printemps',
-          'à le printemps',
-          'dans printemps'
-        ],
-        answer: 'au printemps',
-        explanation: 'Most seasons take <strong>en</strong> (<strong>en été</strong>, <strong>en automne</strong>, <strong>en hiver</strong>), while spring takes <strong>au printemps</strong>.'
-      },
-      {
-        id: 'q12',
-        tag: 'Keywords & Meaning',
-        prompt: 'What does "il faut rester" mean on Hazel\'s worksheet?',
-        options: [
-          'one must stay / have to stay',
-          'I can swim',
-          'it is too humid',
-          'I put on'
-        ],
-        answer: 'one must stay / have to stay',
-        explanation: '<strong>Il faut rester</strong> means <em>one must stay / have to stay</em> (written above "have to stay" in Question A.6).'
+        explanation: '<strong>Au printemps</strong> uses <strong>ma belle casquette blanche</strong> and <strong>mes lunettes de soleil noires</strong>.'
       }
     ];
 
-    /* Tricky Accent Test Questions (é, è, ê, à, ç, ù) */
     const ACCENT_QUESTIONS = [
       {
         id: 'acc1',
@@ -986,7 +831,7 @@
         contextFr: 'En _____, il fait très chaud.',
         options: ["l'été", "l'èti", "l'ete", "l'êté"],
         answer: "l'été",
-        explanation: '<strong>L\'été</strong> has an acute accent (<strong>é</strong>) on both "e"s, giving a clear /e/ sound.'
+        explanation: '<strong>L\'été</strong> has an acute accent (<strong>é</strong>) on both "e"s.'
       },
       {
         id: 'acc2',
@@ -996,60 +841,40 @@
         contextFr: "Je _____ l'automne parce qu'il pleut.",
         options: ['préfère', 'prèfère', 'préfére', 'prefere'],
         answer: 'préfère',
-        explanation: '<strong>Je préfère</strong> uses <strong>é</strong> (acute) on the first "e" and <strong>è</strong> (grave) before the silent final "-e".'
+        explanation: '<strong>Je préfère</strong> uses <strong>é</strong> (acute) first and <strong>è</strong> (grave) second.'
       },
       {
         id: 'acc3',
         type: 'choice',
         title: 'Very vs. Accent',
         prompt: 'How do you spell "very" in "très chaud"?',
-        contextFr: "Il fait _____ chaud en été.",
+        contextFr: 'Il fait _____ chaud en été.',
         options: ['très', 'trés', 'tres', 'três'],
         answer: 'très',
-        explanation: '<strong>Très</strong> (meaning <em>very</em>) takes a grave accent: <strong>è</strong>.'
+        explanation: '<strong>Très</strong> takes a grave accent: <strong>è</strong>.'
       },
       {
         id: 'acc4',
         type: 'choice',
-        title: 'Preposition "à" vs. "a"',
-        prompt: 'Pick the correct word for "in/at" before "Hong Kong" or "la maison":',
-        contextFr: "Il faut rester _____ la maison.",
+        title: 'Preposition "à"',
+        prompt: 'Pick the correct word for "at/in" before "la maison":',
+        contextFr: 'Il faut rester _____ la maison.',
         options: ['à', 'a', 'â', 'é'],
         answer: 'à',
-        explanation: 'The preposition <strong>à</strong> (to/at/in) has a grave accent to distinguish it from <em>a</em> (has).'
+        explanation: 'The preposition <strong>à</strong> takes a grave accent.'
       },
       {
         id: 'acc5',
-        type: 'choice',
-        title: 'I Hate — Accent Check',
-        prompt: 'Choose the correct spelling of "I hate" in Question A.6:',
-        contextFr: 'Je _____ le printemps.',
-        options: ['déteste', 'dèteste', 'deteste', 'détestè'],
-        answer: 'déteste',
-        explanation: '<strong>Je déteste</strong> has an acute accent (<strong>é</strong>) on the first letter, and no accent on the second "e".'
-      },
-      {
-        id: 'acc6',
-        type: 'choice',
-        title: 'Cedilla Trap ("ç")',
-        prompt: 'In French, "c" before "e" or "i" sounds like /s/, whereas before "a", "o", "u" it needs a cedilla (ç) for /s/. Which word uses "ç"?',
-        contextFr: 'Accent check: ç vs. c',
-        options: ['ça (that)', 'casquette', 'chaud', 'canard'],
-        answer: 'ça (that)',
-        explanation: '<strong>Ça</strong> uses a cedilla (<strong>ç</strong>) so it sounds like /sa/ instead of /ka/. In <strong>casquette</strong> and <strong>chaud</strong>, "ca" and "ch" already sound right without a cedilla.'
-      },
-      {
-        id: 'acc7',
         type: 'typing',
         title: 'Type the Accented Word',
-        prompt: 'Type the French word for "summer" with its accents (hint: 4 letters, two "é"s):',
-        contextFr: "En _____, il fait chaud.",
+        prompt: 'Type the French word for "summer" with its accents (été):',
+        contextFr: 'En _____, il fait chaud.',
         acceptedAnswers: ['été'],
         displayAnswer: 'été',
         explanation: '<strong>Été</strong> is spelled with two acute accents: <strong>é-t-é</strong>.'
       },
       {
-        id: 'acc8',
+        id: 'acc6',
         type: 'typing',
         title: 'Type the Accented Verb',
         prompt: 'Type "préfère" with both accents (é and è):',
@@ -1057,45 +882,20 @@
         acceptedAnswers: ['préfère'],
         displayAnswer: 'préfère',
         explanation: '<strong>Préfère</strong> has <strong>é</strong> first and <strong>è</strong> second.'
-      },
-      {
-        id: 'acc9',
-        type: 'typing',
-        title: 'Type the Accented Word',
-        prompt: 'Type "très" with its grave accent (è):',
-        contextFr: 'Il fait _____ chaud.',
-        acceptedAnswers: ['très'],
-        displayAnswer: 'très',
-        explanation: '<strong>Très</strong> means <em>very</em> and uses <strong>è</strong>.'
-      },
-      {
-        id: 'acc10',
-        type: 'typing',
-        title: 'Type the Accented Verb',
-        prompt: 'Type "déteste" with its acute accent (é):',
-        contextFr: 'Je _____ le printemps.',
-        acceptedAnswers: ['déteste'],
-        displayAnswer: 'déteste',
-        explanation: '<strong>Déteste</strong> starts with <strong>dé-</strong> (acute accent).'
       }
     ];
 
-    /* =====================================================================
-       2. APP STATE & SPEECH SYNTHESIS (fr-FR)
-       ===================================================================== */
     let slowSpeech = false;
     let activeKeywordId = null;
     let currentKeywordCategory = 'all';
     let lastFocusedInput = null;
 
-    // Test state
     let currentRound = 1;
     let roundQuestions = [];
     let roundIndex = 0;
-    let roundResults = []; // { question, userAnswer, isCorrect }
+    let roundResults = [];
     let roundAnswered = false;
 
-    // Accent test state
     let accentSet = [];
     let accentIndex = 0;
     let accentResults = [];
@@ -1104,28 +904,25 @@
     function toggleSpeechRate() {
       slowSpeech = !slowSpeech;
       const btn = document.getElementById('speechRateBtn');
-      btn.textContent = slowSpeech ? '🐢 Slow Audio: ON' : '🐢 Slow Audio: OFF';
+      btn.textContent = slowSpeech ? '🐢 Slow: ON' : '🐢 Slow: OFF';
       btn.className = slowSpeech
-        ? 'px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-400 text-slate-950 border border-amber-500 transition cursor-pointer'
-        : 'px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition cursor-pointer';
+        ? 'px-2 py-1 rounded-lg text-[11px] font-bold bg-amber-400 text-slate-950 border border-amber-500 transition cursor-pointer'
+        : 'px-2 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition cursor-pointer';
     }
 
     function speakFrench(text) {
       if (!('speechSynthesis' in window)) return;
       try {
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'fr-FR';
-        utterance.rate = slowSpeech ? 0.72 : 0.96;
-
-        // Prefer a French voice if available
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'fr-FR';
+        u.rate = slowSpeech ? 0.72 : 0.96;
         const voices = window.speechSynthesis.getVoices();
-        const frVoice = voices.find((v) => v.lang && v.lang.toLowerCase().startsWith('fr'));
-        if (frVoice) utterance.voice = frVoice;
-
-        window.speechSynthesis.speak(utterance);
-      } catch (err) {
-        console.warn('Speech synthesis unavailable:', err);
+        const fr = voices.find((v) => v.lang && v.lang.toLowerCase().startsWith('fr'));
+        if (fr) u.voice = fr;
+        window.speechSynthesis.speak(u);
+      } catch (e) {
+        console.warn('Speech error:', e);
       }
     }
 
@@ -1139,121 +936,64 @@
       const kw = KEYWORDS[kwId];
       if (!kw) return;
       activeKeywordId = kwId;
-
-      // Highlight matching tokens
       document.querySelectorAll('.kw-token').forEach((el) => {
         el.classList.toggle('active-kw', el.dataset.kwId === kwId);
       });
-
-      const inspectorText = document.getElementById('inspectorText');
-      const speakBtn = document.getElementById('inspectorSpeakBtn');
-      inspectorText.innerHTML =
-        `<strong class="text-amber-300 text-sm sm:text-base">${escapeHtml(kw.term)}</strong> ` +
-        `<span class="text-xs px-1.5 py-0.5 rounded bg-blue-800 text-blue-200 mx-1">${escapeHtml(kw.pos)}</span> ` +
+      document.getElementById('inspectorText').innerHTML =
+        `<strong class="text-amber-300 text-xs sm:text-sm">${escapeHtml(kw.term)}</strong> ` +
+        `<span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-800 text-blue-200 mx-1">${escapeHtml(kw.pos)}</span> ` +
         `<span class="font-bold text-white">= "${escapeHtml(kw.english)}"</span> — ` +
         `<span class="text-blue-100">${escapeHtml(kw.note)}</span>`;
-
-      speakBtn.classList.remove('hidden');
-      if (shouldSpeak) {
-        speakFrench(kw.term);
-      }
+      document.getElementById('inspectorSpeakBtn').classList.remove('hidden');
+      if (shouldSpeak) speakFrench(kw.term);
     }
 
-    /* =====================================================================
-       3. NAVIGATION BETWEEN TABS
-       ===================================================================== */
     function switchTab(tabName) {
-      const tabs = ['sentences', 'keywords', 'tests', 'accents'];
-      tabs.forEach((t) => {
+      ['sentences', 'keywords', 'tests', 'accents'].forEach((t) => {
         document.getElementById(`view-${t}`).classList.toggle('hidden', t !== tabName);
         const btn = document.getElementById(`tab-${t}`);
-        if (t === tabName) {
-          btn.className = 'nav-tab px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition cursor-pointer bg-blue-600 text-white shadow-sm';
-        } else {
-          btn.className = 'nav-tab px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200';
-        }
+        btn.className =
+          t === tabName
+            ? 'px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer bg-blue-600 text-white shadow-sm'
+            : 'px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200';
       });
-
-      // Show keyword inspector primarily on Sentences & Keywords tabs
-      const inspector = document.getElementById('keywordInspector');
-      if (tabName === 'sentences' || tabName === 'keywords') {
-        inspector.classList.remove('hidden');
-      } else {
-        inspector.classList.add('hidden');
-      }
+      document.getElementById('keywordInspector').classList.toggle('hidden', !(tabName === 'sentences' || tabName === 'keywords'));
     }
 
-    /* =====================================================================
-       4. RENDER SENTENCES (SECTION A & SECTION B) WITH HOVER KEYWORDS
-       ===================================================================== */
     function renderSentenceCard(item, sectionType) {
       const idPrefix = `${sectionType}-${item.num}`;
-      const promptOrMeaning =
+      const headerBlock =
         sectionType === 'A'
           ? `<span class="text-xs font-extrabold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg">A.${item.num} • English Prompt</span>
              <p class="text-sm sm:text-base font-bold text-slate-800 mt-2">${escapeHtml(item.englishPrompt)}</p>`
           : `<span class="text-xs font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg">B.${item.num} • Dictée Phrase</span>
-             <p id="eng-${idPrefix}" class="hidden text-sm font-semibold text-emerald-800 mt-2 bg-emerald-50/70 px-3 py-2 rounded-xl">
-               English meaning: "${escapeHtml(item.englishMeaning)}"
-             </p>`;
+             <p id="eng-${idPrefix}" class="hidden text-sm font-semibold text-emerald-800 mt-2 bg-emerald-50/70 px-3 py-2 rounded-xl">English meaning: "${escapeHtml(item.englishMeaning)}"</p>`;
 
       const segmentsHtml = item.segments
-        .map((seg) => {
-          if (seg.kw) {
-            return `<span
-              tabindex="0"
-              role="button"
-              data-kw-id="${seg.kw}"
-              onmouseenter="inspectKeyword('${seg.kw}', false)"
-              onclick="inspectKeyword('${seg.kw}', true)"
-              onfocus="inspectKeyword('${seg.kw}', false)"
-              class="kw-token"
-            >${escapeHtml(seg.text)}</span>`;
-          }
-          return `<span>${escapeHtml(seg.text)}</span>`;
-        })
+        .map((seg) =>
+          seg.kw
+            ? `<span tabindex="0" role="button" data-kw-id="${seg.kw}" onmouseenter="inspectKeyword('${seg.kw}', false)" onclick="inspectKeyword('${seg.kw}', true)" class="kw-token">${escapeHtml(seg.text)}</span>`
+            : `<span>${escapeHtml(seg.text)}</span>`
+        )
         .join('');
 
-      const translationBlock =
+      const engBox =
         sectionType === 'A'
-          ? `<div id="eng-${idPrefix}" class="hidden mt-3 p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-sm text-slate-800">
-               <span class="font-bold text-amber-900">English:</span> ${escapeHtml(item.englishPrompt)}
-             </div>`
+          ? `<div id="eng-${idPrefix}" class="hidden mt-3 p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-sm text-slate-800"><span class="font-bold text-amber-900">English:</span> ${escapeHtml(item.englishPrompt)}</div>`
           : '';
 
       return `
         <article class="soft-card p-5 sm:p-6">
           <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-            <div class="flex-1">
-              ${promptOrMeaning}
-            </div>
+            <div class="flex-1">${headerBlock}</div>
             <div class="flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                onclick="speakFrench(${JSON.stringify(item.frenchPlain)})"
-                class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition cursor-pointer"
-              >
-                🔊 French
-              </button>
-              <button
-                type="button"
-                onclick="toggleSingleTranslation('${idPrefix}')"
-                class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition cursor-pointer"
-              >
-                ${sectionType === 'A' ? 'Show/Hide English' : 'Meaning'}
-              </button>
+              <button type="button" onclick="speakFrench(${JSON.stringify(item.frenchPlain)})" class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition cursor-pointer">🔊 French</button>
+              <button type="button" onclick="toggleSingleTranslation('${idPrefix}')" class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition cursor-pointer">${sectionType === 'A' ? 'Show/Hide English' : 'Meaning'}</button>
             </div>
           </div>
-
-          <div class="mt-4 p-4 rounded-2xl bg-slate-50 border border-slate-200/90 text-lg sm:text-xl leading-relaxed text-slate-900">
-            ${segmentsHtml}
-          </div>
-
-          ${translationBlock}
-
-          <p class="mt-3 text-xs sm:text-sm text-slate-600">
-            <strong class="text-slate-800">Note:</strong> ${escapeHtml(item.note)}
-          </p>
+          <div class="mt-4 p-4 rounded-2xl bg-slate-50 border border-slate-200/90 text-lg sm:text-xl leading-relaxed text-slate-900">${segmentsHtml}</div>
+          ${engBox}
+          <p class="mt-3 text-xs sm:text-sm text-slate-600"><strong class="text-slate-800">Note:</strong> ${escapeHtml(item.note)}</p>
         </article>
       `;
     }
@@ -1279,16 +1019,13 @@
       });
     }
 
-    /* =====================================================================
-       5. RENDER KEYWORDS LIBRARY
-       ===================================================================== */
     function setKeywordCategory(cat) {
       currentKeywordCategory = cat;
       document.querySelectorAll('.kw-filter-btn').forEach((btn) => {
-        const isSelected = btn.dataset.cat === cat;
-        btn.className = isSelected
-          ? 'kw-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white cursor-pointer'
-          : 'kw-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer';
+        btn.className =
+          btn.dataset.cat === cat
+            ? 'kw-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white cursor-pointer'
+            : 'kw-filter-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer';
       });
       renderKeywords();
     }
@@ -1296,63 +1033,35 @@
     function renderKeywords() {
       const searchVal = (document.getElementById('keywordSearch')?.value || '').trim().toLowerCase();
       const list = Object.values(KEYWORDS).filter((kw) => {
-        const matchesCat = currentKeywordCategory === 'all' || kw.category === currentKeywordCategory;
-        const matchesSearch =
+        const catOk = currentKeywordCategory === 'all' || kw.category === currentKeywordCategory;
+        const searchOk =
           !searchVal ||
           kw.term.toLowerCase().includes(searchVal) ||
           kw.english.toLowerCase().includes(searchVal) ||
           kw.note.toLowerCase().includes(searchVal);
-        return matchesCat && matchesSearch;
+        return catOk && searchOk;
       });
 
-      const grid = document.getElementById('keywordsGrid');
-      if (list.length === 0) {
-        grid.innerHTML = `<div class="soft-card p-6 col-span-full text-center text-slate-500 text-sm">No keywords match that filter.</div>`;
-        return;
-      }
-
-      grid.innerHTML = list
+      document.getElementById('keywordsGrid').innerHTML = list
         .map(
           (kw) => `
-          <div class="soft-card p-5 flex flex-col justify-between gap-4 hover:border-indigo-300 transition">
+          <div class="soft-card p-5 flex flex-col justify-between gap-4">
             <div>
               <div class="flex items-start justify-between gap-2">
                 <div>
-                  <span class="text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700">
-                    ${escapeHtml(kw.category)}
-                  </span>
-                  <h3 class="text-xl font-extrabold text-slate-900 mt-2">
-                    <strong>${escapeHtml(kw.term)}</strong>
-                  </h3>
+                  <span class="text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700">${escapeHtml(kw.category)}</span>
+                  <h3 class="text-xl font-extrabold text-slate-900 mt-2">${escapeHtml(kw.term)}</h3>
                   <p class="text-xs font-semibold text-slate-500">${escapeHtml(kw.pos)}</p>
                 </div>
-                <button
-                  type="button"
-                  onclick="speakFrench(${JSON.stringify(kw.term)})"
-                  class="px-3 py-2 rounded-xl text-xs font-extrabold bg-indigo-600 hover:bg-indigo-700 text-white transition cursor-pointer shrink-0"
-                >
-                  🔊 Listen
-                </button>
+                <button type="button" onclick="speakFrench(${JSON.stringify(kw.term)})" class="px-3 py-2 rounded-xl text-xs font-extrabold bg-indigo-600 hover:bg-indigo-700 text-white transition cursor-pointer shrink-0">🔊 Listen</button>
               </div>
-
-              <p class="mt-3 text-sm font-bold text-emerald-700">
-                English: ${escapeHtml(kw.english)}
-              </p>
-              <p class="mt-1.5 text-xs sm:text-sm text-slate-600 leading-relaxed">
-                ${escapeHtml(kw.note)}
-              </p>
+              <p class="mt-3 text-sm font-bold text-emerald-700">English: ${escapeHtml(kw.english)}</p>
+              <p class="mt-1.5 text-xs sm:text-sm text-slate-600">${escapeHtml(kw.note)}</p>
             </div>
-
             <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-xs sm:text-sm">
               <div class="flex items-center justify-between gap-2">
                 <span class="font-bold text-slate-800">${escapeHtml(kw.exampleFr)}</span>
-                <button
-                  type="button"
-                  onclick="speakFrench(${JSON.stringify(kw.exampleFr)})"
-                  class="text-xs font-bold text-blue-600 hover:underline cursor-pointer shrink-0"
-                >
-                  🔊
-                </button>
+                <button type="button" onclick="speakFrench(${JSON.stringify(kw.exampleFr)})" class="text-xs font-bold text-blue-600 hover:underline cursor-pointer">🔊</button>
               </div>
               <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(kw.exampleEn)}</p>
             </div>
@@ -1362,9 +1071,6 @@
         .join('');
     }
 
-    /* =====================================================================
-       6. 3-ROUND INTERACTIVE TEST & MISTAKES REVIEW
-       ===================================================================== */
     function startRound(roundNum, customQuestions = null) {
       currentRound = roundNum;
       document.querySelectorAll('.round-select-btn').forEach((btn) => {
@@ -1373,16 +1079,11 @@
           ? 'round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-purple-600 text-white shadow-sm cursor-pointer'
           : 'round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer';
       });
-
-      const basePool = customQuestions && customQuestions.length > 0 ? customQuestions : shuffleArray(TEST_QUESTION_POOL);
-      roundQuestions = basePool.slice(0, Math.min(6, basePool.length)).map((q) => ({
-        ...q,
-        shuffledOptions: shuffleArray(q.options)
-      }));
+      const pool = customQuestions && customQuestions.length > 0 ? customQuestions : shuffleArray(TEST_QUESTION_POOL);
+      roundQuestions = pool.slice(0, Math.min(6, pool.length)).map((q) => ({ ...q, shuffledOptions: shuffleArray(q.options) }));
       roundIndex = 0;
       roundResults = [];
       roundAnswered = false;
-
       document.getElementById('roundReviewPanel').classList.add('hidden');
       renderRoundQuestion();
     }
@@ -1393,42 +1094,25 @@
         renderRoundComplete();
         return;
       }
-
       const q = roundQuestions[roundIndex];
-      const progressPct = Math.round(((roundIndex + (roundAnswered ? 1 : 0)) / roundQuestions.length) * 100);
-
+      const pct = Math.round(((roundIndex + (roundAnswered ? 1 : 0)) / roundQuestions.length) * 100);
       stage.innerHTML = `
-        <div class="space-y-3">
+        <div class="space-y-2">
           <div class="flex items-center justify-between text-xs font-extrabold text-slate-600">
             <span>Round ${currentRound} of 3 • Question ${roundIndex + 1} of ${roundQuestions.length}</span>
             <span class="px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700">${escapeHtml(q.tag)}</span>
           </div>
-          <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-            <div class="h-full bg-purple-600 transition-all duration-300" style="width: ${progressPct}%"></div>
-          </div>
+          <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-purple-600 transition-all duration-300" style="width: ${pct}%"></div></div>
         </div>
-
-        <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 leading-snug">
-          ${escapeHtml(q.prompt)}
-        </h3>
-
+        <h3 class="text-lg sm:text-xl font-extrabold text-slate-900">${escapeHtml(q.prompt)}</h3>
         <div class="grid grid-cols-1 gap-3">
           ${q.shuffledOptions
             .map(
-              (opt, idx) => `
-              <button
-                type="button"
-                id="roundOpt-${idx}"
-                onclick="submitRoundAnswer(${idx})"
-                class="w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-purple-400 hover:bg-purple-50/40 font-semibold text-sm sm:text-base text-slate-800 transition cursor-pointer"
-              >
-                ${escapeHtml(opt)}
-              </button>
-            `
+              (opt, idx) =>
+                `<button type="button" id="roundOpt-${idx}" onclick="submitRoundAnswer(${idx})" class="w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-purple-400 hover:bg-purple-50/40 font-semibold text-sm sm:text-base text-slate-800 transition cursor-pointer">${escapeHtml(opt)}</button>`
             )
             .join('')}
         </div>
-
         <div id="roundFeedback" class="hidden"></div>
       `;
     }
@@ -1436,21 +1120,14 @@
     function submitRoundAnswer(selectedIdx) {
       if (roundAnswered) return;
       roundAnswered = true;
-
       const q = roundQuestions[roundIndex];
       const chosen = q.shuffledOptions[selectedIdx];
       const isCorrect = chosen === q.answer;
-
-      roundResults.push({
-        question: q,
-        userAnswer: chosen,
-        isCorrect
-      });
+      roundResults.push({ question: q, userAnswer: chosen, isCorrect });
 
       q.shuffledOptions.forEach((opt, idx) => {
         const btn = document.getElementById(`roundOpt-${idx}`);
         btn.disabled = true;
-        btn.classList.remove('hover:border-purple-400', 'hover:bg-purple-50/40');
         if (opt === q.answer) {
           btn.className = 'w-full text-left p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 font-bold text-sm sm:text-base text-emerald-950';
         } else if (idx === selectedIdx && !isCorrect) {
@@ -1465,61 +1142,30 @@
       fb.className = isCorrect
         ? 'p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 space-y-3'
         : 'p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-950 space-y-3';
-
       fb.innerHTML = `
         <div class="flex items-center justify-between gap-2">
-          <span class="font-extrabold text-sm sm:text-base">
-            ${isCorrect ? '✅ Bravo! Great job!' : '❌ Not quite — let’s check why'}
-          </span>
-          <button
-            type="button"
-            onclick="speakFrench(${JSON.stringify(q.answer)})"
-            class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-800 hover:bg-slate-100 cursor-pointer"
-          >
-            🔊 Hear Answer
-          </button>
+          <span class="font-extrabold text-sm sm:text-base">${isCorrect ? '✅ Bravo!' : '❌ Let’s review'}</span>
+          <button type="button" onclick="speakFrench(${JSON.stringify(q.answer)})" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer">🔊 Hear Answer</button>
         </div>
-        <p class="text-xs sm:text-sm leading-relaxed">${q.explanation}</p>
-        <div class="pt-1">
-          <button
-            type="button"
-            onclick="nextRoundQuestion()"
-            class="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs sm:text-sm font-extrabold transition cursor-pointer"
-          >
-            ${roundIndex + 1 < roundQuestions.length ? 'Next Question →' : 'Finish Round & See Review →'}
-          </button>
-        </div>
+        <p class="text-xs sm:text-sm">${q.explanation}</p>
+        <button type="button" onclick="roundIndex += 1; roundAnswered = false; renderRoundQuestion();" class="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs sm:text-sm font-extrabold transition cursor-pointer">
+          ${roundIndex + 1 < roundQuestions.length ? 'Next Question →' : 'Finish Round & See Review →'}
+        </button>
       `;
-    }
-
-    function nextRoundQuestion() {
-      roundIndex += 1;
-      roundAnswered = false;
-      renderRoundQuestion();
     }
 
     function renderRoundComplete() {
       const correctCount = roundResults.filter((r) => r.isCorrect).length;
       const mistakes = roundResults.filter((r) => !r.isCorrect);
-      const stage = document.getElementById('testStage');
-
-      stage.innerHTML = `
+      document.getElementById('testStage').innerHTML = `
         <div class="text-center py-4 space-y-3">
-          <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-purple-100 text-purple-700 text-2xl font-extrabold">
-            ${correctCount}/${roundResults.length}
-          </div>
-          <h3 class="text-2xl font-extrabold text-slate-900">
-            Round ${currentRound} Complete!
-          </h3>
-          <p class="text-sm text-slate-600 max-w-lg mx-auto">
-            You scored <strong>${correctCount} out of ${roundResults.length}</strong>. Below is your full <strong>Mistakes &amp; Details Review</strong> so you can learn from every question.
-          </p>
+          <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-purple-100 text-purple-700 text-2xl font-extrabold">${correctCount}/${roundResults.length}</div>
+          <h3 class="text-2xl font-extrabold text-slate-900">Round ${currentRound} Complete!</h3>
+          <p class="text-sm text-slate-600">You scored <strong>${correctCount} out of ${roundResults.length}</strong>.</p>
           <div class="pt-2 flex flex-wrap justify-center gap-3">
             ${
               mistakes.length > 0
-                ? `<button type="button" onclick="practiceRoundMistakes()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-extrabold transition cursor-pointer">
-                     🎯 Practice ${mistakes.length} Missed Item${mistakes.length > 1 ? 's' : ''}
-                   </button>`
+                ? `<button type="button" onclick="startRound(currentRound, roundResults.filter(r => !r.isCorrect).map(r => r.question))" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-extrabold transition cursor-pointer">🎯 Retry ${mistakes.length} Missed</button>`
                 : ''
             }
             <button type="button" onclick="startRound(${currentRound < 3 ? currentRound + 1 : 1})" class="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs sm:text-sm font-extrabold transition cursor-pointer">
@@ -1529,46 +1175,18 @@
         </div>
       `;
 
-      const reviewPanel = document.getElementById('roundReviewPanel');
-      reviewPanel.classList.remove('hidden');
-      reviewPanel.innerHTML = `
-        <div class="flex items-center justify-between flex-wrap gap-2">
-          <div>
-            <span class="text-xs font-extrabold uppercase tracking-wider text-purple-600">Mistakes &amp; Details Review</span>
-            <h4 class="text-lg sm:text-xl font-extrabold text-slate-900">
-              Round ${currentRound} Breakdown (${mistakes.length} mistake${mistakes.length === 1 ? '' : 's'})
-            </h4>
-          </div>
-        </div>
-
+      const panel = document.getElementById('roundReviewPanel');
+      panel.classList.remove('hidden');
+      panel.innerHTML = `
+        <h4 class="text-lg font-extrabold text-slate-900">Round ${currentRound} Mistakes &amp; Details Review</h4>
         <div class="space-y-3">
           ${roundResults
             .map(
               (item, i) => `
-              <div class="p-4 rounded-2xl border ${item.isCorrect ? 'border-emerald-200 bg-emerald-50/50' : 'border-rose-200 bg-rose-50/70'} space-y-2">
-                <div class="flex items-start justify-between gap-2">
-                  <p class="font-bold text-sm sm:text-base text-slate-900">
-                    ${i + 1}. ${escapeHtml(item.question.prompt)}
-                  </p>
-                  <span class="shrink-0 text-xs font-extrabold px-2.5 py-0.5 rounded-full ${item.isCorrect ? 'bg-emerald-200 text-emerald-900' : 'bg-rose-200 text-rose-900'}">
-                    ${item.isCorrect ? 'Correct' : 'Mistake'}
-                  </span>
-                </div>
-                <p class="text-xs sm:text-sm">
-                  <strong class="text-slate-700">Your answer:</strong>
-                  <span class="${item.isCorrect ? 'text-emerald-800 font-semibold' : 'text-rose-800 font-semibold line-through'}">${escapeHtml(item.userAnswer)}</span>
-                </p>
-                ${
-                  !item.isCorrect
-                    ? `<p class="text-xs sm:text-sm">
-                         <strong class="text-slate-700">Correct answer:</strong>
-                         <span class="text-emerald-800 font-bold">${escapeHtml(item.question.answer)}</span>
-                       </p>`
-                    : ''
-                }
-                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed pt-1">
-                  <strong>Details:</strong> ${item.question.explanation}
-                </p>
+              <div class="p-4 rounded-2xl border ${item.isCorrect ? 'border-emerald-200 bg-emerald-50/50' : 'border-rose-200 bg-rose-50/70'} space-y-1.5 text-xs sm:text-sm">
+                <p class="font-bold text-slate-900">${i + 1}. ${escapeHtml(item.question.prompt)}</p>
+                <p>Your answer: <strong>${escapeHtml(item.userAnswer)}</strong> ${!item.isCorrect ? `• Correct: <strong class="text-emerald-800">${escapeHtml(item.question.answer)}</strong>` : ''}</p>
+                <p class="text-slate-700">${item.question.explanation}</p>
               </div>
             `
             )
@@ -1577,23 +1195,11 @@
       `;
     }
 
-    function practiceRoundMistakes() {
-      const missedQuestions = roundResults.filter((r) => !r.isCorrect).map((r) => r.question);
-      if (missedQuestions.length > 0) {
-        startRound(currentRound, missedQuestions);
-      }
-    }
-
-    /* =====================================================================
-       7. TRICKY ACCENT TESTS (é, è, ê, à, ç, ù)
-       ===================================================================== */
-    function startAccentTest(customSet = null) {
-      const pool = customSet && customSet.length > 0 ? customSet : shuffleArray(ACCENT_QUESTIONS);
-      accentSet = pool.slice(0, Math.min(6, pool.length));
+    function startAccentTest() {
+      accentSet = shuffleArray(ACCENT_QUESTIONS);
       accentIndex = 0;
       accentResults = [];
       accentAnswered = false;
-
       document.getElementById('accentReviewPanel').classList.add('hidden');
       renderAccentQuestion();
     }
@@ -1604,74 +1210,27 @@
         renderAccentComplete();
         return;
       }
-
       const q = accentSet[accentIndex];
       const pct = Math.round(((accentIndex + (accentAnswered ? 1 : 0)) / accentSet.length) * 100);
 
-      let inputAreaHtml = '';
-      if (q.type === 'choice') {
-        inputAreaHtml = `
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            ${q.options
-              .map(
-                (opt, idx) => `
-                <button
-                  type="button"
-                  id="accOpt-${idx}"
-                  onclick="submitAccentChoice(${idx})"
-                  class="p-4 rounded-2xl border-2 border-slate-200 hover:border-rose-400 hover:bg-rose-50/40 font-bold text-base text-slate-800 text-left transition cursor-pointer"
-                >
-                  ${escapeHtml(opt)}
-                </button>
-              `
-              )
-              .join('')}
-          </div>
-        `;
-      } else {
-        inputAreaHtml = `
-          <div class="space-y-3">
-            <div class="flex flex-col sm:flex-row gap-2.5">
-              <input
-                id="accentTypingInput"
-                type="text"
-                onfocus="lastFocusedInput = this"
-                onkeydown="if(event.key==='Enter'){submitAccentTyping();}"
-                placeholder="Type accented word here (or tap accent keys above)..."
-                class="flex-1 px-4 py-3 rounded-2xl border-2 border-slate-300 text-base font-bold text-slate-900 focus:outline-none focus:border-rose-500"
-              />
-              <button
-                type="button"
-                onclick="submitAccentTyping()"
-                class="px-5 py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-sm transition cursor-pointer shrink-0"
-              >
-                Check Spelling
-              </button>
-            </div>
-          </div>
-        `;
-      }
+      const bodyHtml =
+        q.type === 'choice'
+          ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${q.options
+              .map((opt, idx) => `<button type="button" id="accOpt-${idx}" onclick="submitAccentChoice(${idx})" class="p-4 rounded-2xl border-2 border-slate-200 hover:border-rose-400 font-bold text-base text-slate-800 text-left transition cursor-pointer">${escapeHtml(opt)}</button>`)
+              .join('')}</div>`
+          : `<div class="flex flex-col sm:flex-row gap-2.5"><input id="accentTypingInput" type="text" onfocus="lastFocusedInput = this" onkeydown="if(event.key==='Enter'){submitAccentTyping();}" placeholder="Type here or tap accent buttons above..." class="flex-1 px-4 py-3 rounded-2xl border-2 border-slate-300 text-base font-bold text-slate-900" /><button type="button" onclick="submitAccentTyping()" class="px-5 py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-sm cursor-pointer">Check</button></div>`;
 
       stage.innerHTML = `
-        <div class="space-y-3">
+        <div class="space-y-2">
           <div class="flex items-center justify-between text-xs font-extrabold text-slate-600">
             <span>Accent Challenge ${accentIndex + 1} of ${accentSet.length}</span>
             <span class="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700">${escapeHtml(q.title)}</span>
           </div>
-          <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-            <div class="h-full bg-rose-600 transition-all duration-300" style="width: ${pct}%"></div>
-          </div>
+          <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-rose-600 transition-all duration-300" style="width: ${pct}%"></div></div>
         </div>
-
-        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-          <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Context</p>
-          <p class="text-lg sm:text-xl font-extrabold text-slate-900 mt-1">${escapeHtml(q.contextFr)}</p>
-        </div>
-
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200"><p class="text-lg font-extrabold text-slate-900">${escapeHtml(q.contextFr)}</p></div>
         <h3 class="text-lg sm:text-xl font-extrabold text-slate-900">${escapeHtml(q.prompt)}</h3>
-
-        ${inputAreaHtml}
-
+        ${bodyHtml}
         <div id="accentFeedback" class="hidden"></div>
       `;
 
@@ -1688,37 +1247,24 @@
       const start = target.selectionStart ?? target.value.length;
       const end = target.selectionEnd ?? target.value.length;
       target.value = target.value.slice(0, start) + char + target.value.slice(end);
-      const nextPos = start + char.length;
       target.focus();
-      target.setSelectionRange(nextPos, nextPos);
+      target.setSelectionRange(start + char.length, start + char.length);
     }
 
     function submitAccentChoice(idx) {
       if (accentAnswered) return;
       accentAnswered = true;
-
       const q = accentSet[accentIndex];
       const chosen = q.options[idx];
       const isCorrect = chosen === q.answer;
-
-      accentResults.push({
-        question: q,
-        userAnswer: chosen,
-        correctAnswer: q.answer,
-        isCorrect
-      });
+      accentResults.push({ question: q, userAnswer: chosen, correctAnswer: q.answer, isCorrect });
 
       q.options.forEach((opt, i) => {
         const btn = document.getElementById(`accOpt-${i}`);
         btn.disabled = true;
-        btn.classList.remove('hover:border-rose-400', 'hover:bg-rose-50/40');
-        if (opt === q.answer) {
-          btn.className = 'p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 font-extrabold text-base text-emerald-950 text-left';
-        } else if (i === idx && !isCorrect) {
-          btn.className = 'p-4 rounded-2xl border-2 border-rose-500 bg-rose-50 font-extrabold text-base text-rose-950 text-left line-through';
-        } else {
-          btn.className = 'p-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-500 font-semibold text-base text-left';
-        }
+        if (opt === q.answer) btn.className = 'p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 font-extrabold text-base text-emerald-950 text-left';
+        else if (i === idx && !isCorrect) btn.className = 'p-4 rounded-2xl border-2 border-rose-500 bg-rose-50 font-extrabold text-base text-rose-950 text-left';
+        else btn.className = 'p-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-500 text-base text-left';
       });
 
       showAccentFeedback(isCorrect, q.answer, q.explanation);
@@ -1727,24 +1273,13 @@
     function submitAccentTyping() {
       if (accentAnswered) return;
       const input = document.getElementById('accentTypingInput');
-      if (!input) return;
-      const rawVal = input.value.trim();
-      if (!rawVal) return;
-
+      if (!input || !input.value.trim()) return;
       accentAnswered = true;
       input.disabled = true;
-
       const q = accentSet[accentIndex];
-      const normalized = rawVal.toLowerCase();
-      const isCorrect = q.acceptedAnswers.some((ans) => ans.toLowerCase() === normalized);
-
-      accentResults.push({
-        question: q,
-        userAnswer: rawVal,
-        correctAnswer: q.displayAnswer,
-        isCorrect
-      });
-
+      const rawVal = input.value.trim();
+      const isCorrect = q.acceptedAnswers.some((a) => a.toLowerCase() === rawVal.toLowerCase());
+      accentResults.push({ question: q, userAnswer: rawVal, correctAnswer: q.displayAnswer, isCorrect });
       showAccentFeedback(isCorrect, q.displayAnswer, q.explanation);
     }
 
@@ -1754,89 +1289,39 @@
       fb.className = isCorrect
         ? 'p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 space-y-3'
         : 'p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-950 space-y-3';
-
       fb.innerHTML = `
         <div class="flex items-center justify-between gap-2">
-          <span class="font-extrabold text-sm sm:text-base">
-            ${isCorrect ? '✨ Spot on! Exact accent match!' : `❌ Watch the accent! Correct: "${escapeHtml(correctAnswer)}"`}
-          </span>
-          <button
-            type="button"
-            onclick="speakFrench(${JSON.stringify(correctAnswer)})"
-            class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-800 hover:bg-slate-100 cursor-pointer"
-          >
-            🔊 Pronounce
-          </button>
+          <span class="font-extrabold text-sm sm:text-base">${isCorrect ? '✨ Spot on!' : `❌ Correct: "${escapeHtml(correctAnswer)}"`}</span>
+          <button type="button" onclick="speakFrench(${JSON.stringify(correctAnswer)})" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer">🔊 Pronounce</button>
         </div>
-        <p class="text-xs sm:text-sm leading-relaxed">${explanation}</p>
-        <div>
-          <button
-            type="button"
-            onclick="accentIndex += 1; accentAnswered = false; renderAccentQuestion();"
-            class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-extrabold transition cursor-pointer"
-          >
-            ${accentIndex + 1 < accentSet.length ? 'Next Accent Question →' : 'See Accent Review →'}
-          </button>
-        </div>
+        <p class="text-xs sm:text-sm">${explanation}</p>
+        <button type="button" onclick="accentIndex += 1; accentAnswered = false; renderAccentQuestion();" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-extrabold transition cursor-pointer">
+          ${accentIndex + 1 < accentSet.length ? 'Next Accent Question →' : 'See Accent Review →'}
+        </button>
       `;
     }
 
     function renderAccentComplete() {
       const score = accentResults.filter((r) => r.isCorrect).length;
-      const missed = accentResults.filter((r) => !r.isCorrect);
-      const stage = document.getElementById('accentStage');
-
-      stage.innerHTML = `
+      document.getElementById('accentStage').innerHTML = `
         <div class="text-center py-4 space-y-3">
-          <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-rose-100 text-rose-700 text-2xl font-extrabold">
-            ${score}/${accentResults.length}
-          </div>
-          <h3 class="text-2xl font-extrabold text-slate-900">
-            Accent Test Complete!
-          </h3>
-          <p class="text-sm text-slate-600 max-w-lg mx-auto">
-            You got <strong>${score} out of ${accentResults.length}</strong> accent questions right. Review every accent below!
-          </p>
-          <div class="pt-2 flex flex-wrap justify-center gap-3">
-            ${
-              missed.length > 0
-                ? `<button type="button" onclick="startAccentTest(${JSON.stringify(missed.map((m) => m.question)).replace(/"/g, '&quot;')})" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs sm:text-sm font-extrabold transition cursor-pointer">
-                     🎯 Retry ${missed.length} Missed Accent${missed.length > 1 ? 's' : ''}
-                   </button>`
-                : ''
-            }
-            <button type="button" onclick="startAccentTest()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-extrabold transition cursor-pointer">
-              ↻ New Accent Test Set
-            </button>
-          </div>
+          <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-rose-100 text-rose-700 text-2xl font-extrabold">${score}/${accentResults.length}</div>
+          <h3 class="text-2xl font-extrabold text-slate-900">Accent Test Complete!</h3>
+          <button type="button" onclick="startAccentTest()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-extrabold transition cursor-pointer">↻ New Accent Test Set</button>
         </div>
       `;
-
       const panel = document.getElementById('accentReviewPanel');
       panel.classList.remove('hidden');
       panel.innerHTML = `
-        <div>
-          <span class="text-xs font-extrabold uppercase tracking-wider text-rose-600">Accent Review</span>
-          <h4 class="text-lg sm:text-xl font-extrabold text-slate-900">
-            All Accent Questions &amp; Explanations
-          </h4>
-        </div>
-        <div class="space-y-3">
+        <h4 class="text-lg font-extrabold text-slate-900">Accent Questions &amp; Explanations</h4>
+        <div class="space-y-2.5">
           ${accentResults
             .map(
               (r, idx) => `
-              <div class="p-4 rounded-2xl border ${r.isCorrect ? 'border-emerald-200 bg-emerald-50/50' : 'border-rose-200 bg-rose-50/70'} space-y-1.5">
-                <div class="flex items-start justify-between gap-2">
-                  <p class="font-bold text-sm text-slate-900">${idx + 1}. ${escapeHtml(r.question.prompt)} <span class="text-slate-500 font-normal">(${escapeHtml(r.question.contextFr)})</span></p>
-                  <span class="shrink-0 text-xs font-extrabold px-2.5 py-0.5 rounded-full ${r.isCorrect ? 'bg-emerald-200 text-emerald-900' : 'bg-rose-200 text-rose-900'}">
-                    ${r.isCorrect ? 'Correct' : 'Mistake'}
-                  </span>
-                </div>
-                <p class="text-xs sm:text-sm">
-                  <strong>Your answer:</strong> <span class="${r.isCorrect ? 'text-emerald-800 font-bold' : 'text-rose-800 font-bold'}">${escapeHtml(r.userAnswer)}</span>
-                  ${!r.isCorrect ? ` • <strong>Correct:</strong> <span class="text-emerald-800 font-bold">${escapeHtml(r.correctAnswer)}</span>` : ''}
-                </p>
-                <p class="text-xs sm:text-sm text-slate-700">${r.question.explanation}</p>
+              <div class="p-3.5 rounded-xl border ${r.isCorrect ? 'border-emerald-200 bg-emerald-50/50' : 'border-rose-200 bg-rose-50/70'} text-xs sm:text-sm space-y-1">
+                <p class="font-bold text-slate-900">${idx + 1}. ${escapeHtml(r.question.prompt)}</p>
+                <p>Your answer: <strong>${escapeHtml(r.userAnswer)}</strong> ${!r.isCorrect ? `• Correct: <strong class="text-emerald-800">${escapeHtml(r.correctAnswer)}</strong>` : ''}</p>
+                <p class="text-slate-700">${r.question.explanation}</p>
               </div>
             `
             )
@@ -1845,9 +1330,6 @@
       `;
     }
 
-    /* =====================================================================
-       8. UTILITIES & INITIALIZATION
-       ===================================================================== */
     function shuffleArray(arr) {
       const copy = [...arr];
       for (let i = copy.length - 1; i > 0; i--) {
@@ -1867,14 +1349,12 @@
         .replace(/'/g, '&#39;');
     }
 
-    // Load voices when browser populates speechSynthesis list
     if ('speechSynthesis' in window) {
       window.speechSynthesis.onvoiceschanged = () => {
         window.speechSynthesis.getVoices();
       };
     }
 
-    // Initialize all views on page load
     window.addEventListener('DOMContentLoaded', () => {
       renderAllSentences();
       renderKeywords();
