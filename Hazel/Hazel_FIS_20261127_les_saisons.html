@@ -15,6 +15,11 @@
       background-color: #f8fafc;
       color: #0f172a;
       -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    button, a, input, select, label, [role="button"], .kw-token, .accent-key {
+      touch-action: manipulation;
     }
 
     .kw-token {
@@ -192,6 +197,24 @@
           Mémorise ces phrases pour la dictée (1–3)
         </h3>
         <div id="sectionBContainer" class="grid grid-cols-1 gap-4"></div>
+
+        <!-- Part B Chunks Section -->
+        <div class="soft-card p-5 sm:p-6 bg-gradient-to-r from-emerald-50/70 via-white to-teal-50/70 border-emerald-200 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+                Part B • Chunks &amp; Building Blocks
+              </span>
+              <h4 class="text-base sm:text-lg font-extrabold text-slate-900 mt-0.5">
+                Learn Dictée Sentences Step by Step
+              </h4>
+              <p class="text-xs sm:text-sm text-slate-600">
+                Tap each chunk to hear it spoken clearly, then tap <strong>🔊 Full Sentence</strong> to put the blocks together.
+              </p>
+            </div>
+          </div>
+          <div id="sectionBChunksContainer" class="space-y-4"></div>
+        </div>
       </div>
     </section>
 
@@ -225,14 +248,14 @@
       <div class="soft-card p-5 sm:p-6">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <p class="text-xs font-extrabold uppercase tracking-wider text-purple-600">Interactive Practice • 3 Rounds</p>
-            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">3-Round Test &amp; Mistakes Review</h2>
-            <p class="text-sm text-slate-600 mt-1">Each round shuffles fresh questions from Section A translations, Section B dictée, and keywords.</p>
+            <p class="text-xs font-extrabold uppercase tracking-wider text-purple-600">Interactive Practice • 3 Rounds × 20 Questions</p>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">3-Round Test (20 Qs Each) &amp; Mistakes Review</h2>
+            <p class="text-sm text-slate-600 mt-1">Complete 3 rounds of 20 questions covering translations, dictée chunks, <em>mettre</em>, and season prepositions (<em>en</em> / <em>au</em> / <em>à la</em>).</p>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button id="roundBtn-1" type="button" onclick="startRound(1)" class="round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-purple-600 text-white shadow-sm cursor-pointer">Round 1</button>
-            <button id="roundBtn-2" type="button" onclick="startRound(2)" class="round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Round 2</button>
-            <button id="roundBtn-3" type="button" onclick="startRound(3)" class="round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Round 3</button>
+            <button id="roundBtn-1" type="button" onclick="startRound(1)" class="round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-purple-600 text-white shadow-sm cursor-pointer">Round 1 (20 Qs)</button>
+            <button id="roundBtn-2" type="button" onclick="startRound(2)" class="round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Round 2 (20 Qs)</button>
+            <button id="roundBtn-3" type="button" onclick="startRound(3)" class="round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Round 3 (20 Qs)</button>
           </div>
         </div>
       </div>
@@ -581,7 +604,7 @@
       {
         num: 3,
         englishPrompt: 'I love winter because it snows and I can wear my sweater.',
-        frenchPlain: "J'adore l'hiver parce qu'il neige et je peux mettre mon pull.",
+        frenchPlain: "J'adore l'hiver parce qu'il neige et je mets mon pull.",
         segments: [
           { text: "J'adore " },
           { kw: 'l_hiver', text: "l'hiver" },
@@ -589,15 +612,15 @@
           { kw: 'parce_que', text: "parce qu'" },
           { kw: 'il_neige', text: 'il neige' },
           { text: ' et ' },
-          { kw: 'pouvoir', text: 'je peux' },
-          { text: ' mettre mon pull.' }
+          { kw: 'je_mets', text: 'je mets' },
+          { text: ' mon pull.' }
         ],
-        note: '"J\'adore" = I love. "Il neige" = it snows. "Je peux mettre mon pull" = I can wear my sweater.'
+        note: '"J\'adore" = I love. "Il neige" = it snows. Uses "je mets mon pull" (from mettre) for wearing my sweater.'
       },
       {
         num: 4,
         englishPrompt: 'I prefer autumn because it rains and I can wear my boots.',
-        frenchPlain: "Je préfère l'automne parce qu'il pleut et je peux mettre mes bottes.",
+        frenchPlain: "Je préfère l'automne parce qu'il pleut et je mets mes bottes.",
         segments: [
           { kw: 'preferer', text: 'Je préfère' },
           { text: ' ' },
@@ -606,12 +629,12 @@
           { kw: 'parce_que', text: "parce qu'" },
           { kw: 'il_pleut', text: 'il pleut' },
           { text: ' et ' },
-          { kw: 'pouvoir', text: 'je peux' },
-          { text: ' mettre ' },
+          { kw: 'je_mets', text: 'je mets' },
+          { text: ' ' },
           { kw: 'bottes_vertes', text: 'mes bottes' },
           { text: '.' }
         ],
-        note: 'Watch the accents in "préfère" (é then è) and plural "mes bottes".'
+        note: 'Watch the accents in "préfère" (é then è) and "je mets mes bottes" (from mettre) for wearing my boots.'
       },
       {
         num: 5,
@@ -653,6 +676,12 @@
         num: 1,
         englishMeaning: 'In winter, I put on my big green coat and my green boots.',
         frenchPlain: 'En hiver, je mets mon gros manteau vert et mes bottes vertes.',
+        chunks: [
+          { fr: 'En hiver,', en: 'In winter,' },
+          { fr: 'je mets', en: 'I put on / I wear' },
+          { fr: 'mon gros manteau vert', en: 'my big green coat (m. sg.)' },
+          { fr: 'et mes bottes vertes.', en: 'and my green boots (f. pl.)' }
+        ],
         segments: [
           { text: 'En ' },
           { kw: 'l_hiver', text: 'hiver' },
@@ -670,6 +699,12 @@
         num: 2,
         englishMeaning: 'In summer, I put on my swimsuit to swim in the pool.',
         frenchPlain: 'En été, je mets mon maillot de bains pour nager dans la piscine.',
+        chunks: [
+          { fr: 'En été,', en: 'In summer,' },
+          { fr: 'je mets', en: 'I put on / I wear' },
+          { fr: 'mon maillot de bains', en: 'my swimsuit' },
+          { fr: 'pour nager dans la piscine.', en: 'to swim in the pool' }
+        ],
         segments: [
           { text: 'En ' },
           { kw: 'l_ete', text: 'été' },
@@ -687,6 +722,12 @@
         num: 3,
         englishMeaning: 'In spring, I put on my pretty white cap and my black sunglasses.',
         frenchPlain: 'Au printemps, je mets ma belle casquette blanche et mes lunettes de soleil noires.',
+        chunks: [
+          { fr: 'Au printemps,', en: 'In spring,' },
+          { fr: 'je mets', en: 'I put on / I wear' },
+          { fr: 'ma belle casquette blanche', en: 'my pretty white cap (f. sg.)' },
+          { fr: 'et mes lunettes de soleil noires.', en: 'and my black sunglasses (f. pl.)' }
+        ],
         segments: [
           { text: 'Au ' },
           { kw: 'le_printemps', text: 'printemps' },
@@ -731,29 +772,29 @@
       },
       {
         id: 'q3',
-        tag: 'Section A • Translation',
-        prompt: 'Translate to French: "I love winter because it snows and I can wear my sweater."',
+        tag: 'Section A • Translation (Mettre)',
+        prompt: 'Translate to French: "I love winter because it snows and I wear my sweater."',
         options: [
-          "J'adore l'hiver parce qu'il neige et je peux mettre mon pull.",
+          "J'adore l'hiver parce qu'il neige et je mets mon pull.",
           "J'adore l'hiver parce qu'il pleut et je mets mes bottes vertes.",
           "Je préfère l'hiver parce qu'il neige et il faut rester à la maison.",
           "J'aime l'hiver parce qu'il fait beau et je peux nager."
         ],
-        answer: "J'adore l'hiver parce qu'il neige et je peux mettre mon pull.",
-        explanation: '<strong>l\'hiver</strong> = <em>winter</em>, <strong>il neige</strong> = <em>it snows</em>, and <strong>je peux mettre</strong> = <em>I can wear / put on</em>.'
+        answer: "J'adore l'hiver parce qu'il neige et je mets mon pull.",
+        explanation: '<strong>l\'hiver</strong> = <em>winter</em>, <strong>il neige</strong> = <em>it snows</em>, and <strong>je mets mon pull</strong> (from <em>mettre</em>) = <em>I wear my sweater</em>.'
       },
       {
         id: 'q4',
-        tag: 'Section A • Translation',
-        prompt: 'Translate to French: "I prefer autumn because it rains and I can wear my boots."',
+        tag: 'Section A • Translation (Mettre)',
+        prompt: 'Translate to French: "I prefer autumn because it rains and I wear my boots."',
         options: [
-          "Je préfère l'automne parce qu'il pleut et je peux mettre mes bottes.",
+          "Je préfère l'automne parce qu'il pleut et je mets mes bottes.",
           "Je préfère l'automne parce qu'il neige et je mets mon gros manteau vert.",
           "Je déteste l'automne parce qu'il pleut et je peux nager.",
           "Je préfère le printemps parce qu'il pleut et je mets mes bottes."
         ],
-        answer: "Je préfère l'automne parce qu'il pleut et je peux mettre mes bottes.",
-        explanation: '<strong>je préfère</strong> = <em>I prefer</em>, <strong>l\'automne</strong> = <em>autumn</em>, and <strong>il pleut</strong> = <em>it rains</em>.'
+        answer: "Je préfère l'automne parce qu'il pleut et je mets mes bottes.",
+        explanation: '<strong>je préfère</strong> = <em>I prefer</em>, <strong>l\'automne</strong> = <em>autumn</em>, and <strong>je mets mes bottes</strong> (from <em>mettre</em>) = <em>I wear my boots</em>.'
       },
       {
         id: 'q5',
@@ -819,6 +860,164 @@
         ],
         answer: 'ma belle casquette blanche / mes lunettes de soleil noires',
         explanation: '<strong>Au printemps</strong> uses <strong>ma belle casquette blanche</strong> and <strong>mes lunettes de soleil noires</strong>.'
+      },
+      {
+        id: 'q10',
+        tag: 'Season Preposition Trap',
+        prompt: 'Choose the right preposition for "In winter": "___ hiver, je mets mon gros manteau vert."',
+        options: ['En', 'Au', 'À la', 'Aux'],
+        answer: 'En',
+        explanation: 'Use <strong>En hiver</strong> ("in winter") because <em>hiver</em> starts with a mute <em>h</em> (vowel sound).'
+      },
+      {
+        id: 'q11',
+        tag: 'Season Preposition Trap',
+        prompt: 'Choose the right preposition for "In summer": "___ été, je mets mon maillot de bains."',
+        options: ['En', 'Au', 'À la', 'À'],
+        answer: 'En',
+        explanation: 'Use <strong>En été</strong> ("in summer") because <em>été</em> begins with a vowel.'
+      },
+      {
+        id: 'q12',
+        tag: 'Season Preposition Trap',
+        prompt: 'Choose the right preposition for "In spring": "___ printemps, je mets ma belle casquette blanche."',
+        options: ['Au', 'En', 'À la', 'À'],
+        answer: 'Au',
+        explanation: 'Spring is the exception: use <strong>Au printemps</strong> (never <em>*En printemps</em> or <em>*À la printemps</em>).'
+      },
+      {
+        id: 'q13',
+        tag: 'Season Preposition Trap',
+        prompt: 'Choose the right preposition for "In autumn": "___ automne, il pleut."',
+        options: ['En', 'Au', 'À la', 'Aux'],
+        answer: 'En',
+        explanation: 'Use <strong>En automne</strong> ("in autumn") because <em>automne</em> begins with a vowel.'
+      },
+      {
+        id: 'q14',
+        tag: 'Place Preposition Trap',
+        prompt: 'Choose the right preposition: "Il faut rester ___ maison." (stay at home)',
+        options: ['à la', 'au', 'en', 'aux'],
+        answer: 'à la',
+        explanation: '<em>Maison</em> is feminine singular, so "at home" is <strong>à la maison</strong>.'
+      },
+      {
+        id: 'q15',
+        tag: 'Place Preposition Trap',
+        prompt: 'Choose the right preposition: "Je peux nager ___ piscine." (in the pool)',
+        options: ['dans la', 'au', 'en', 'à'],
+        answer: 'dans la',
+        explanation: '<em>Piscine</em> is feminine singular, so "in the pool" is <strong>dans la piscine</strong>.'
+      },
+      {
+        id: 'q16',
+        tag: 'Verb Mettre Conjugation',
+        prompt: 'Which spelling is correct for "I put on / I wear" from the verb "mettre"?',
+        options: ['je mets', 'je met', 'je mettre', 'je mes'],
+        answer: 'je mets',
+        explanation: 'With <strong>je</strong>, the verb <em>mettre</em> is spelled <strong>je mets</strong> (silent <em>-ts</em>).'
+      },
+      {
+        id: 'q17',
+        tag: 'Adjective Agreement',
+        prompt: 'Pick the correct feminine plural color for "mes bottes ___" (my green boots):',
+        options: ['vertes', 'vert', 'verts', 'verte'],
+        answer: 'vertes',
+        explanation: '<em>Bottes</em> is feminine plural, so <em>vert</em> adds <strong>-es</strong> → <strong>vertes</strong>.'
+      },
+      {
+        id: 'q18',
+        tag: 'Adjective Agreement',
+        prompt: 'Pick the correct feminine plural color for "mes lunettes de soleil ___" (black sunglasses):',
+        options: ['noires', 'noir', 'noirs', 'noire'],
+        answer: 'noires',
+        explanation: '<em>Lunettes</em> is feminine plural, so <em>noir</em> adds <strong>-es</strong> → <strong>noires</strong>.'
+      },
+      {
+        id: 'q19',
+        tag: 'Adjective Agreement',
+        prompt: 'Pick the right feminine forms for "my pretty white cap": "ma ___ casquette ___"',
+        options: ['belle / blanche', 'beau / blanc', 'belle / blanc', 'beau / blanche'],
+        answer: 'belle / blanche',
+        explanation: '<em>Casquette</em> is feminine singular: <em>beau</em> → <strong>belle</strong>, and <em>blanc</em> → <strong>blanche</strong>.'
+      },
+      {
+        id: 'q20',
+        tag: 'Weather & Vocabulary',
+        prompt: 'What does "il fait beau et chaud" mean in English?',
+        options: [
+          'it is sunny and warm',
+          'it is stormy and cold',
+          'it rains and snows',
+          'it is too humid'
+        ],
+        answer: 'it is sunny and warm',
+        explanation: '<strong>il fait beau</strong> = <em>it is sunny / nice</em>, and <strong>chaud</strong> = <em>warm / hot</em>.'
+      },
+      {
+        id: 'q21',
+        tag: 'Weather & Vocabulary',
+        prompt: 'How do you say "because it is too humid" in French?',
+        options: [
+          "parce qu'il est trop humide",
+          "parce qu'il fait beau",
+          "parce qu'il neige",
+          "parce qu'il pleut"
+        ],
+        answer: "parce qu'il est trop humide",
+        explanation: '<strong>parce qu\'il est trop humide</strong> means <em>because it is too humid</em>.'
+      },
+      {
+        id: 'q22',
+        tag: 'Weather & Vocabulary',
+        prompt: 'What does "il faut rester à la maison" mean?',
+        options: [
+          'one must stay / have to stay home',
+          'I can swim in the sea',
+          'I wear my big green coat',
+          'I prefer autumn'
+        ],
+        answer: 'one must stay / have to stay home',
+        explanation: '<strong>Il faut rester à la maison</strong> means <em>one must stay / have to stay home</em>.'
+      },
+      {
+        id: 'q23',
+        tag: 'Section B • Dictée Chunk',
+        prompt: 'Which French chunk means "my swimsuit"?',
+        options: [
+          'mon maillot de bains',
+          'mon gros manteau vert',
+          'ma belle casquette blanche',
+          'mes bottes vertes'
+        ],
+        answer: 'mon maillot de bains',
+        explanation: '<strong>mon maillot de bains</strong> means <em>my swimsuit</em>.'
+      },
+      {
+        id: 'q24',
+        tag: 'Section B • Dictée Chunk',
+        prompt: 'Which French chunk means "to swim in the pool"?',
+        options: [
+          'pour nager dans la piscine',
+          'pour nager dans la mer',
+          'parce qu’il fait très chaud',
+          'il faut rester à la maison'
+        ],
+        answer: 'pour nager dans la piscine',
+        explanation: '<strong>pour nager dans la piscine</strong> uses the infinitive <em>nager</em> after <em>pour</em>.'
+      },
+      {
+        id: 'q25',
+        tag: 'Season Preposition Trap',
+        prompt: 'Which sentence uses the CORRECT season preposition?',
+        options: [
+          'En hiver, il neige.',
+          'Au hiver, il neige.',
+          'À la hiver, il neige.',
+          'En printemps, il fait beau.'
+        ],
+        answer: 'En hiver, il neige.',
+        explanation: 'Use <strong>En hiver</strong>, <strong>En été</strong>, <strong>En automne</strong>, and <strong>Au printemps</strong>.'
       }
     ];
 
@@ -911,19 +1110,67 @@
     }
 
     function speakFrench(text) {
-      if (!('speechSynthesis' in window)) return;
+      if (!text) return;
+      if (!('speechSynthesis' in window)) {
+        playFallbackTone();
+        return;
+      }
       try {
         window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(text);
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
+        const cleanText = String(text).trim();
+        const u = new SpeechSynthesisUtterance(cleanText);
         u.lang = 'fr-FR';
         u.rate = slowSpeech ? 0.72 : 0.96;
+
         const voices = window.speechSynthesis.getVoices();
-        const fr = voices.find((v) => v.lang && v.lang.toLowerCase().startsWith('fr'));
-        if (fr) u.voice = fr;
-        window.speechSynthesis.speak(u);
+        const fr =
+          voices.find((v) => v.lang && v.lang.toLowerCase() === 'fr-fr') ||
+          voices.find((v) => v.lang && v.lang.toLowerCase().startsWith('fr'));
+        if (fr) {
+          u.voice = fr;
+        }
+
+        // Keep a global reference so iOS Safari does not garbage-collect the utterance mid-sentence
+        window.__currentUtterance = u;
+        setTimeout(() => {
+          try {
+            window.speechSynthesis.speak(u);
+          } catch (innerErr) {
+            console.warn('Speech speak error:', innerErr);
+            playFallbackTone();
+          }
+        }, 40);
       } catch (e) {
         console.warn('Speech error:', e);
+        playFallbackTone();
       }
+    }
+
+    function playFallbackTone() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.18);
+      } catch (_) {}
+    }
+
+    function speakFromBtn(btn) {
+      if (!btn) return;
+      const text = btn.getAttribute('data-speech');
+      if (text) speakFrench(text);
     }
 
     function speakInspectorWord() {
@@ -949,15 +1196,42 @@
     }
 
     function switchTab(tabName) {
-      ['sentences', 'keywords', 'tests', 'accents'].forEach((t) => {
-        document.getElementById(`view-${t}`).classList.toggle('hidden', t !== tabName);
+      const tabs = ['sentences', 'keywords', 'tests', 'accents'];
+      tabs.forEach((t) => {
+        const viewEl = document.getElementById(`view-${t}`);
+        if (viewEl) {
+          viewEl.classList.toggle('hidden', t !== tabName);
+        }
         const btn = document.getElementById(`tab-${t}`);
-        btn.className =
-          t === tabName
-            ? 'px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer bg-blue-600 text-white shadow-sm'
-            : 'px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200';
+        if (btn) {
+          btn.className =
+            t === tabName
+              ? 'px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer bg-blue-600 text-white shadow-sm'
+              : 'px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200';
+        }
       });
-      document.getElementById('keywordInspector').classList.toggle('hidden', !(tabName === 'sentences' || tabName === 'keywords'));
+
+      const inspector = document.getElementById('keywordInspector');
+      if (inspector) {
+        inspector.classList.toggle('hidden', !(tabName === 'sentences' || tabName === 'keywords'));
+      }
+
+      // Ensure tab content is populated whenever switching to tabs 2, 3, or 4
+      if (tabName === 'keywords') {
+        renderKeywords();
+      } else if (tabName === 'tests') {
+        if (!roundQuestions || roundQuestions.length === 0) {
+          startRound(1);
+        } else {
+          renderRoundQuestion();
+        }
+      } else if (tabName === 'accents') {
+        if (!accentSet || accentSet.length === 0) {
+          startAccentTest();
+        } else {
+          renderAccentQuestion();
+        }
+      }
     }
 
     function renderSentenceCard(item, sectionType) {
@@ -987,7 +1261,7 @@
           <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
             <div class="flex-1">${headerBlock}</div>
             <div class="flex items-center gap-2 shrink-0">
-              <button type="button" onclick="speakFrench(${JSON.stringify(item.frenchPlain)})" class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition cursor-pointer">🔊 French</button>
+              <button type="button" data-speech="${escapeHtml(item.frenchPlain)}" onclick="speakFromBtn(this)" class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition cursor-pointer">🔊 French</button>
               <button type="button" onclick="toggleSingleTranslation('${idPrefix}')" class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition cursor-pointer">${sectionType === 'A' ? 'Show/Hide English' : 'Meaning'}</button>
             </div>
           </div>
@@ -999,8 +1273,55 @@
     }
 
     function renderAllSentences() {
-      document.getElementById('sectionAContainer').innerHTML = SECTION_A.map((item) => renderSentenceCard(item, 'A')).join('');
-      document.getElementById('sectionBContainer').innerHTML = SECTION_B.map((item) => renderSentenceCard(item, 'B')).join('');
+      const secA = document.getElementById('sectionAContainer');
+      const secB = document.getElementById('sectionBContainer');
+      if (secA) secA.innerHTML = SECTION_A.map((item) => renderSentenceCard(item, 'A')).join('');
+      if (secB) secB.innerHTML = SECTION_B.map((item) => renderSentenceCard(item, 'B')).join('');
+      renderSectionBChunks();
+    }
+
+    function renderSectionBChunks() {
+      const container = document.getElementById('sectionBChunksContainer');
+      if (!container) return;
+
+      container.innerHTML = SECTION_B.map(
+        (item) => `
+          <div class="p-4 rounded-2xl bg-white border border-emerald-200/90 space-y-3 shadow-sm">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-700">Dictée B.${item.num}</span>
+                <p class="text-xs text-slate-500 font-medium">${escapeHtml(item.englishMeaning)}</p>
+              </div>
+              <button
+                type="button"
+                data-speech="${escapeHtml(item.frenchPlain)}"
+                onclick="speakFromBtn(this)"
+                class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white transition cursor-pointer"
+              >
+                🔊 Full Sentence
+              </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+              ${item.chunks
+                .map(
+                  (ch, cIdx) => `
+                  <button
+                    type="button"
+                    data-speech="${escapeHtml(ch.fr)}"
+                    onclick="speakFromBtn(this)"
+                    class="text-left p-3 rounded-xl bg-emerald-50/70 hover:bg-emerald-100 border border-emerald-200 transition cursor-pointer flex flex-col justify-between gap-1"
+                  >
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">Chunk ${cIdx + 1} • 🔊</span>
+                    <span class="text-sm font-extrabold text-slate-900 leading-snug">${escapeHtml(ch.fr)}</span>
+                    <span class="text-[11px] text-slate-600">${escapeHtml(ch.en)}</span>
+                  </button>
+                `
+                )
+                .join('')}
+            </div>
+          </div>
+        `
+      ).join('');
     }
 
     function toggleSingleTranslation(idPrefix) {
@@ -1032,7 +1353,7 @@
 
     function renderKeywords() {
       const searchVal = (document.getElementById('keywordSearch')?.value || '').trim().toLowerCase();
-      const list = Object.values(KEYWORDS).filter((kw) => {
+      const list = Object.values(KEYWORDS || {}).filter((kw) => {
         const catOk = currentKeywordCategory === 'all' || kw.category === currentKeywordCategory;
         const searchOk =
           !searchVal ||
@@ -1041,8 +1362,13 @@
           kw.note.toLowerCase().includes(searchVal);
         return catOk && searchOk;
       });
-
-      document.getElementById('keywordsGrid').innerHTML = list
+      const grid = document.getElementById('keywordsGrid');
+      if (!grid) return;
+      if (list.length === 0) {
+        grid.innerHTML = `<div class="soft-card p-6 col-span-full text-center text-slate-500 text-sm">No matching keywords found.</div>`;
+        return;
+      }
+      grid.innerHTML = list
         .map(
           (kw) => `
           <div class="soft-card p-5 flex flex-col justify-between gap-4">
@@ -1053,7 +1379,7 @@
                   <h3 class="text-xl font-extrabold text-slate-900 mt-2">${escapeHtml(kw.term)}</h3>
                   <p class="text-xs font-semibold text-slate-500">${escapeHtml(kw.pos)}</p>
                 </div>
-                <button type="button" onclick="speakFrench(${JSON.stringify(kw.term)})" class="px-3 py-2 rounded-xl text-xs font-extrabold bg-indigo-600 hover:bg-indigo-700 text-white transition cursor-pointer shrink-0">🔊 Listen</button>
+                <button type="button" data-speech="${escapeHtml(kw.term)}" onclick="speakFromBtn(this)" class="px-3 py-2 rounded-xl text-xs font-extrabold bg-indigo-600 hover:bg-indigo-700 text-white transition cursor-pointer shrink-0">🔊 Listen</button>
               </div>
               <p class="mt-3 text-sm font-bold text-emerald-700">English: ${escapeHtml(kw.english)}</p>
               <p class="mt-1.5 text-xs sm:text-sm text-slate-600">${escapeHtml(kw.note)}</p>
@@ -1061,7 +1387,7 @@
             <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-xs sm:text-sm">
               <div class="flex items-center justify-between gap-2">
                 <span class="font-bold text-slate-800">${escapeHtml(kw.exampleFr)}</span>
-                <button type="button" onclick="speakFrench(${JSON.stringify(kw.exampleFr)})" class="text-xs font-bold text-blue-600 hover:underline cursor-pointer">🔊</button>
+                <button type="button" data-speech="${escapeHtml(kw.exampleFr)}" onclick="speakFromBtn(this)" class="text-xs font-bold text-blue-600 hover:underline cursor-pointer">🔊</button>
               </div>
               <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(kw.exampleEn)}</p>
             </div>
@@ -1079,17 +1405,27 @@
           ? 'round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-purple-600 text-white shadow-sm cursor-pointer'
           : 'round-select-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer';
       });
-      const pool = customQuestions && customQuestions.length > 0 ? customQuestions : shuffleArray(TEST_QUESTION_POOL);
-      roundQuestions = pool.slice(0, Math.min(6, pool.length)).map((q) => ({ ...q, shuffledOptions: shuffleArray(q.options) }));
+      const sourcePool =
+        customQuestions && customQuestions.length > 0
+          ? customQuestions
+          : (typeof TEST_QUESTION_POOL !== 'undefined' && TEST_QUESTION_POOL.length > 0
+              ? TEST_QUESTION_POOL
+              : []);
+      if (sourcePool.length === 0) return;
+
+      const pool = shuffleArray(sourcePool);
+      roundQuestions = pool.slice(0, Math.min(20, pool.length)).map((q) => ({ ...q, shuffledOptions: shuffleArray(q.options) }));
       roundIndex = 0;
       roundResults = [];
       roundAnswered = false;
-      document.getElementById('roundReviewPanel').classList.add('hidden');
+      const reviewPanel = document.getElementById('roundReviewPanel');
+      if (reviewPanel) reviewPanel.classList.add('hidden');
       renderRoundQuestion();
     }
 
     function renderRoundQuestion() {
       const stage = document.getElementById('testStage');
+      if (!stage) return;
       if (roundIndex >= roundQuestions.length) {
         renderRoundComplete();
         return;
@@ -1145,7 +1481,7 @@
       fb.innerHTML = `
         <div class="flex items-center justify-between gap-2">
           <span class="font-extrabold text-sm sm:text-base">${isCorrect ? '✅ Bravo!' : '❌ Let’s review'}</span>
-          <button type="button" onclick="speakFrench(${JSON.stringify(q.answer)})" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer">🔊 Hear Answer</button>
+          <button type="button" data-speech="${escapeHtml(q.answer)}" onclick="speakFromBtn(this)" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer">🔊 Hear Answer</button>
         </div>
         <p class="text-xs sm:text-sm">${q.explanation}</p>
         <button type="button" onclick="roundIndex += 1; roundAnswered = false; renderRoundQuestion();" class="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs sm:text-sm font-extrabold transition cursor-pointer">
@@ -1196,16 +1532,20 @@
     }
 
     function startAccentTest() {
-      accentSet = shuffleArray(ACCENT_QUESTIONS);
+      const sourceAccents = typeof ACCENT_QUESTIONS !== 'undefined' ? ACCENT_QUESTIONS : [];
+      if (sourceAccents.length === 0) return;
+      accentSet = shuffleArray(sourceAccents);
       accentIndex = 0;
       accentResults = [];
       accentAnswered = false;
-      document.getElementById('accentReviewPanel').classList.add('hidden');
+      const reviewPanel = document.getElementById('accentReviewPanel');
+      if (reviewPanel) reviewPanel.classList.add('hidden');
       renderAccentQuestion();
     }
 
     function renderAccentQuestion() {
       const stage = document.getElementById('accentStage');
+      if (!stage) return;
       if (accentIndex >= accentSet.length) {
         renderAccentComplete();
         return;
@@ -1292,7 +1632,7 @@
       fb.innerHTML = `
         <div class="flex items-center justify-between gap-2">
           <span class="font-extrabold text-sm sm:text-base">${isCorrect ? '✨ Spot on!' : `❌ Correct: "${escapeHtml(correctAnswer)}"`}</span>
-          <button type="button" onclick="speakFrench(${JSON.stringify(correctAnswer)})" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer">🔊 Pronounce</button>
+          <button type="button" data-speech="${escapeHtml(correctAnswer)}" onclick="speakFromBtn(this)" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer">🔊 Pronounce</button>
         </div>
         <p class="text-xs sm:text-sm">${explanation}</p>
         <button type="button" onclick="accentIndex += 1; accentAnswered = false; renderAccentQuestion();" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-extrabold transition cursor-pointer">
@@ -1355,12 +1695,18 @@
       };
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
+    function initHazelApp() {
       renderAllSentences();
       renderKeywords();
       startRound(1);
       startAccentTest();
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', initHazelApp);
+    } else {
+      initHazelApp();
+    }
   </script>
 </body>
 </html>
